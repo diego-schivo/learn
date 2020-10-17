@@ -24,7 +24,7 @@ switch ($_POST['action'] ?? '') {
 try {
   $stmt = $pdo->query('SELECT name, completed FROM task');
 } catch (\PDOException $e) {
-  $pdo->exec('CREATE TABLE task (name varchar(1000) DEFAULT NULL, completed tinyint(1) DEFAULT NULL)');
+  $pdo->exec('CREATE TABLE task (name varchar(1000), completed tinyint(1))');
   $stmt = $pdo->query('SELECT name, completed FROM task');
 }
 
