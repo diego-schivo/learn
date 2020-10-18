@@ -10,14 +10,7 @@ $options = [
 ];
 $pdo = new PDO($dsn, $config['user'], $config['pass'], $options);
 
-class Pet {
-  public ?string $name;
-  public ?string $owner;
-  public ?string $species;
-  public ?string $sex;
-  public ?string $birth;
-  public ?string $death;
-}
+require 'Pet.php';
 
 $class = 'Pet';
 $table = strtolower($class);
@@ -64,8 +57,14 @@ if (isset($_POST['delete'])) {
 try {
   $stmt = $pdo->query("SELECT * FROM $table");
 } catch (\PDOException $e) {
+  $dataTypes = [
+    'birth' => 'DATE',
+    'death' => 'DATE',
+    'sex' => 'CHAR(1)'
+  ];
+
   $cols = implode(', ', array_map(function($prop) {
-    return $prop->getName() . ' ' . ($prop->getType()->getName() === 'int' ? 'TINYINT(1)' : 'VARCHAR(1000)');
+    return $prop->getName() . ' ' . ($dataTypes[$prop->getName()] ?? 'VARCHAR(20)');
   }, $props));
   $pdo->exec("CREATE TABLE $table ($cols)");
 
@@ -73,79 +72,25 @@ try {
 }
 
 $items = $stmt->fetchAll(PDO::FETCH_CLASS, $class);
+
+$controls = [
+  'birth' => [
+    'element' => 'input',
+    'type' => 'date'
+  ],
+  'death' => [
+    'element' => 'input',
+    'type' => 'date'
+  ],
+  'sex' => [
+    'element' => 'select',
+    'options' => ['f', 'm']
+  ],
+  'species' => [
+    'element' => 'select',
+    'options' => ['bird', 'cat', 'dog', 'hamster', 'snake']
+  ]
+];
+
+include 'html.php';
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-</style>
-</head>
-<body>
-
-<h2>Menagerie</h2>
-
-<table>
-  <tr>
-    <?php foreach ($props as $i=>$prop) { ?>
-      <th><?php echo $prop->getName(); ?></th>
-    <?php } ?>
-    <th></th>
-  </tr>
-
-  <?php foreach ($items as $i=>$item) { ?>
-    <tr>
-      <?php foreach ($props as $prop) { ?>
-        <td>
-          <input
-            form="<?php echo "update$i"; ?>"
-            type="text"
-            name="<?php echo $prop->getName(); ?>"
-            value="<?php echo $prop->getValue($item); ?>"
-            >
-        </td>
-      <?php } ?>
-      <td>
-        <form id="<?php echo "update$i"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-          <input
-            type="hidden"
-            name="<?php echo '_' . $props[0]->getName(); ?>"
-            value="<?php echo $props[0]->getValue($item); ?>"
-            >
-          <input type="submit" name="update" value="update">
-          <input type="submit" name="delete" value="delete">
-        </form>
-      </td>
-    </tr>
-  <?php } ?>
-
-  <tr>
-    <?php foreach ($props as $prop) { ?>
-      <td>
-        <input form="create" type="text" name="<?php echo $prop->getName(); ?>">
-      </td>
-    <?php } ?>
-    <td>
-      <form id="create" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-        <input type="submit" name="insert" value="insert">
-      </form>
-    </td>
-  </tr>
-</table>
-
-</body>
-</html>
