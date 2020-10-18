@@ -1,4 +1,38 @@
  <?php
+$class = 'Pet';
+require $class . '.php';
+
+$meta = [
+  'properties' => [
+    'birth' => [
+      'type' => 'DATE',
+      'control' => [
+        'element' => 'input',
+        'type' => 'date'
+      ]
+    ],
+    'death' => [
+      'type' => 'DATE',
+      'control' => [
+        'element' => 'input',
+        'type' => 'date'
+      ]
+    ],
+    'sex' => [
+      'type' => 'CHAR(1)',
+      'control' => [
+        'element' => 'select',
+        'options' => ['f', 'm']
+      ]
+    ],
+    'species' => [
+      'control' => [
+        'element' => 'select',
+        'options' => ['bird', 'cat', 'dog', 'hamster', 'snake']
+      ]
+    ]
+  ]
+];
 
 $config = parse_ini_file('config.ini');
 
@@ -10,9 +44,6 @@ $options = [
 ];
 $pdo = new PDO($dsn, $config['user'], $config['pass'], $options);
 
-require 'Pet.php';
-
-$class = 'Pet';
 $table = strtolower($class);
 $reflect = new ReflectionClass($class);
 $props = $reflect->getProperties();
@@ -57,14 +88,8 @@ if (isset($_POST['delete'])) {
 try {
   $stmt = $pdo->query("SELECT * FROM $table");
 } catch (\PDOException $e) {
-  $dataTypes = [
-    'birth' => 'DATE',
-    'death' => 'DATE',
-    'sex' => 'CHAR(1)'
-  ];
-
   $cols = implode(', ', array_map(function($prop) {
-    return $prop->getName() . ' ' . ($dataTypes[$prop->getName()] ?? 'VARCHAR(20)');
+    return $prop->getName() . ' ' . ($meta['properties'][$prop->getName()]['type'] ?? 'VARCHAR(20)');
   }, $props));
   $pdo->exec("CREATE TABLE $table ($cols)");
 
@@ -72,25 +97,6 @@ try {
 }
 
 $items = $stmt->fetchAll(PDO::FETCH_CLASS, $class);
-
-$controls = [
-  'birth' => [
-    'element' => 'input',
-    'type' => 'date'
-  ],
-  'death' => [
-    'element' => 'input',
-    'type' => 'date'
-  ],
-  'sex' => [
-    'element' => 'select',
-    'options' => ['f', 'm']
-  ],
-  'species' => [
-    'element' => 'select',
-    'options' => ['bird', 'cat', 'dog', 'hamster', 'snake']
-  ]
-];
 
 include 'html.php';
 ?>

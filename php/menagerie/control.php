@@ -1,5 +1,5 @@
 <?php
-  $control = $controls[$prop->getName()];
+  $control = $meta['properties'][$prop->getName()]['control'];
 ?>
 
 <?php include ($control['element'] ?? 'input') . '.php'; ?>
