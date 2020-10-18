@@ -1,10 +1,51 @@
  <?php
 
 class Pet {
-  public ?string $name;
-  public ?string $owner;
-  public ?string $species;
-  public ?string $sex;
-  public ?string $birth;
-  public ?string $death;
+
+  public $name;
+
+  public $owner;
+
+  /**
+  * [
+  *   'control' => [
+  *     'element' => 'select',
+  *     'options' => ['bird', 'cat', 'dog', 'hamster', 'snake']
+  *   ]
+  * ]
+  */
+  public $species;
+
+  /**
+  * [
+  *   'control' => [
+  *     'element' => 'select',
+  *     'options' => ['f', 'm']
+  *   ]
+  * ]
+  */
+  public $sex;
+
+  /**
+  * [
+  *   'type' => 'DATE',
+  *   'control' => [
+  *     'element' => 'input',
+  *     'type' => 'date'
+  *   ]
+  * ]
+  */
+  public $birth;
+
+  /**
+  * [
+  *   'type' => 'DATE',
+  *   'control' => [
+  *     'element' => 'input',
+  *     'type' => 'date'
+  *   ]
+  * ]
+  */
+  public $death;
+
 }

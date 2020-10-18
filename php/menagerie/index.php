@@ -2,36 +2,18 @@
 $class = 'Pet';
 require $class . '.php';
 
+$reflect = new ReflectionClass($class);
+$props = $reflect->getProperties();
 $meta = [
-  'properties' => [
-    'birth' => [
-      'type' => 'DATE',
-      'control' => [
-        'element' => 'input',
-        'type' => 'date'
-      ]
-    ],
-    'death' => [
-      'type' => 'DATE',
-      'control' => [
-        'element' => 'input',
-        'type' => 'date'
-      ]
-    ],
-    'sex' => [
-      'type' => 'CHAR(1)',
-      'control' => [
-        'element' => 'select',
-        'options' => ['f', 'm']
-      ]
-    ],
-    'species' => [
-      'control' => [
-        'element' => 'select',
-        'options' => ['bird', 'cat', 'dog', 'hamster', 'snake']
-      ]
-    ]
-  ]
+  'properties' => array_combine(array_map(function($prop) {
+    return $prop->getName();
+  }, $props), array_map(function($prop) {
+    if (empty($prop->getDocComment())) {
+      return [];
+    }
+    eval('$value = ' . preg_replace('/^[ ]*\/?\*+\/?/m', '', $prop->getDocComment()) . ';');
+    return $value;
+  }, $props))
 ];
 
 $config = parse_ini_file('config.ini');
@@ -45,8 +27,6 @@ $options = [
 $pdo = new PDO($dsn, $config['user'], $config['pass'], $options);
 
 $table = strtolower($class);
-$reflect = new ReflectionClass($class);
-$props = $reflect->getProperties();
 
 if (isset($_POST['insert'])) {
   $names = implode(', ', array_map(function($prop) {
