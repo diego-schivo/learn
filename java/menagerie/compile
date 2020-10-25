@@ -1,0 +1,8 @@
+#!/bin/sh
+mkdir -p lib
+if [ ! -f lib/tomcat-embed-core.jar ]; then
+  curl -s https://downloads.apache.org/tomcat/tomcat-8/v8.5.59/bin/embed/apache-tomcat-8.5.59-embed.tar.gz | tar -xvz -C lib --strip-components=1 --wildcards '*.jar'
+fi
+mkdir -p bin
+javac -cp 'lib/*' src/App.java -d bin
+javac -cp 'lib/*' src/Hello.java -d bin
