@@ -1,7 +1,8 @@
+package com.backflipsource.menagerie;
+
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getenv;
 import static java.lang.System.out;
-import static java.lang.System.setProperty;
 import static java.lang.Thread.sleep;
 import static java.nio.file.Files.createTempDirectory;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
@@ -90,7 +91,7 @@ public class App {
 	}
 
 	private void init() throws Exception {
-		setProperty("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE", "true");
+		// setProperty("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE", "true");
 
 		tomcat = new Tomcat();
 		Path tempPath = createTempDirectory(TOMCAT_BASE_DIR);
