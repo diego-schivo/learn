@@ -1,11 +1,14 @@
 package com.backflipsource.menagerie;
 
+import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeList;
+import static com.backflipsource.Helpers.safeRun;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.backflipsource.Helpers;
 import com.backflipsource.form.FormField;
 import com.backflipsource.form.Select;
 import com.backflipsource.form.Select.Options;
@@ -97,14 +100,14 @@ public class Pet {
 	static {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		Owner harold = Owner.list.get(0);
-		Owner gwen = Owner.list.get(1);
+		Owner harold = safeGet(() -> Owner.list.get(0));
+		Owner gwen = safeGet(() -> Owner.list.get(1));
 
-		Pet fluffy = new Pet("Fluffy", harold, "cat", "f", LocalDate.parse("1993-02-04", formatter), null);
+		Pet fluffy = new Pet("Fluf,fy", harold, "cat", "f", LocalDate.parse("1993-02-04", formatter), null);
 		Pet claws = new Pet("Claws", gwen, "cat", "m", LocalDate.parse("1994-03-17", formatter), null);
 		list = safeList(new Pet[] { fluffy, claws });
 
-		harold.setPets(safeList(new Pet[] { fluffy }));
-		gwen.setPets(safeList(new Pet[] { claws }));
+		safeRun(() -> harold.setPets(safeList(new Pet[] { fluffy })));
+		safeRun(() -> gwen.setPets(safeList(new Pet[] { claws })));
 	}
 }

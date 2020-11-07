@@ -1,16 +1,25 @@
 package com.backflipsource;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public interface UtilHelper {
+
+	<T> T[] safeArray(Collection<T> collection, Class<T> class1);
+
+	<T> T[] unsafeArray(Collection<T> collection, Class<T> class1);
 
 	<T> List<T> safeList(T[] array);
 
@@ -46,6 +55,12 @@ public interface UtilHelper {
 	Map<String, Function<Object, Object>> getGetterFunctions(Class<?> class1);
 
 	Map<String, BiConsumer<Object, Object>> getSetterConsumers(Class<?> class1);
+
+	Future<?>[] startExecutorService(ExecutorService executor, Callable<?>... tasks);
+
+	void stopExecutorService(ExecutorService executor, Future<?>... futures);
+
+	void watchDirectories(Path start, Consumer<Path[]> consumer);
 
 	@FunctionalInterface
 	public interface RunnableThrowingException {

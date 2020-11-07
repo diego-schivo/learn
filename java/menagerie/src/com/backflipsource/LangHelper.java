@@ -16,15 +16,19 @@ public interface LangHelper {
 
 	String unsafeString(Object object);
 
+	String nonEmptyString(String string1, String string2);
+
 	String trimString(String string);
 
 	String capitalizeString(String string);
+
+	String[] splitString(String string, int character);
 
 	<T> T nonNullInstance(T t1, T t2);
 
 	<T> T nonNullInstance(T t1, Supplier<T> t2);
 
-	List<String> getFieldNames(Class<?> class1);
+	List<Field> getFields(Class<?> class1);
 
 	String getGetterName(String field);
 

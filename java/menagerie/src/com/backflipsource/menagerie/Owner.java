@@ -11,7 +11,7 @@ public class Owner {
 
 	private String name;
 
-	@FormField(control = Select.class)
+	@FormField(control = Select.class, converter = PetStringConverter.class)
 	private List<Pet> pets;
 
 	public Owner() {

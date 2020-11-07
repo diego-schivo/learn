@@ -2,12 +2,27 @@ package com.backflipsource;
 
 import static com.backflipsource.Helpers.getGetters;
 import static com.backflipsource.Helpers.getSetters;
+import static java.nio.file.Files.walkFileTree;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 import static java.util.Collections.emptyList;
 import static java.util.Spliterators.spliteratorUnknownSize;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -16,12 +31,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Spliterator;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unchecked")
 public class DefaultUtilHelper implements UtilHelper {
+
+	@Override
+	public <T> T[] unsafeArray(Collection<T> collection, Class<T> class1) {
+		if (collection == null) {
+			return null;
+		}
+		return collection.stream().toArray(length -> (T[]) Array.newInstance(class1, length));
+	}
+
+	@Override
+	public <T> T[] safeArray(Collection<T> collection, Class<T> class1) {
+		T[] array = unsafeArray(collection, class1);
+		if (array == null) {
+			return (T[]) Array.newInstance(class1, 0);
+		}
+		return array;
+	}
 
 	@Override
 	public <T> List<T> safeList(T[] array) {
@@ -137,6 +174,7 @@ public class DefaultUtilHelper implements UtilHelper {
 			T result = supplier.get();
 			return result;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -174,5 +212,64 @@ public class DefaultUtilHelper implements UtilHelper {
 			};
 			return consumer;
 		}));
+	}
+
+	@Override
+	public Future<?>[] startExecutorService(ExecutorService executor, Callable<?>... tasks) {
+		Future<?>[] futures = safeStream(tasks).map(task -> executor.submit(task)).toArray(Future<?>[]::new);
+		executor.shutdown();
+		return futures;
+	}
+
+	@Override
+	public void stopExecutorService(ExecutorService executor, Future<?>... futures) {
+		if (executor == null) {
+			return;
+		}
+		safeStream(futures).forEach(item -> item.cancel(true));
+		try {
+			executor.awaitTermination(1, SECONDS);
+		} catch (InterruptedException e) {
+		}
+		executor.shutdownNow();
+	}
+
+	@Override
+	public void watchDirectories(Path start, Consumer<Path[]> consumer) {
+		FileSystem fileSystem = FileSystems.getDefault();
+		try (WatchService watchService = fileSystem.newWatchService()) {
+			// out.println("path " + path.toAbsolutePath());
+
+			SimpleFileVisitor<Path> visitor = new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+					dir.register(watchService, ENTRY_MODIFY);
+					return FileVisitResult.CONTINUE;
+				}
+			};
+
+			walkFileTree(start, visitor);
+
+			for (;;) {
+				WatchKey watchKey;
+				try {
+					watchKey = watchService.take();
+				} catch (InterruptedException e) {
+					break;
+				}
+
+				Path[] filenames = safeStream(watchKey.pollEvents()).filter(event -> event.kind() != OVERFLOW)
+						.map(event -> ((WatchEvent<Path>) event).context()).toArray(Path[]::new);
+				consumer.accept(filenames);
+
+				boolean valid = watchKey.reset();
+				if (!valid) {
+					break;
+				}
+			}
+		} catch (IOException e) {
+			// e.printStackTrace();
+		}
 	}
 }

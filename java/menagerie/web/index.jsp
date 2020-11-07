@@ -28,7 +28,7 @@ tr:nth-child(even) {
 
 <table>
   <tr>
-    <c:forEach var="field" items="${fields}">
+    <c:forEach var="field" items="${controlFactories.keySet()}">
       <th>${field}</th>
     </c:forEach>
     <th></th>
@@ -36,19 +36,18 @@ tr:nth-child(even) {
   <c:forEach var="item" items="${items}" varStatus="loop">
     <c:set var="form" value="update${loop.index}" />
     <tr>
-      <c:forEach var="field" items="${fields}">
+      <c:forEach var="factory" items="${controlFactories.values()}">
         <td>
-          <c:set var="control" value="${controls[field]}" scope="request" />
+          <c:set var="control" value="${factory.control(item)}" scope="request" />
           <jsp:include page="${control.page}">
             <jsp:param name="form" value="${form}" />
-            <jsp:param name="name" value="${field}" />
-            <jsp:param name="value" value="${converters[field].convertToString(item[field])}" />
           </jsp:include>
         </td>
       </c:forEach>
       <td>
         <form id="${form}" method="post" action="${pageContext.request.contextPath}">
-          <input type="hidden" name="_${fields[0]}" value="${item[fields[0]]}">
+          <c:set var="field" value="${controlFactories.keySet().iterator().next()}" />
+          <input type="hidden" name="_${field}" value="${item[field]}">
           <input type="submit" name="update" value="update">
           <input type="submit" name="delete" value="delete">
         </form>

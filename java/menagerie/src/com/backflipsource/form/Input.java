@@ -1,16 +1,24 @@
 package com.backflipsource.form;
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
+import java.util.List;
 
 public class Input extends Control {
 
-	protected static String PAGE = "input.jsp";
-	protected static String TYPE_TEXT = "text";
-	protected static String TYPE_DATE = "date";
+	public static String TYPE_TEXT = "text";
+	public static String TYPE_DATE = "date";
 
-	public Input(Field field) {
-		super(field);
+	protected static String PAGE = "input.jsp";
+
+	protected String type;
+
+	public Input(String name, List<String> values, String type) {
+		super(name, values);
+		this.type = type;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	@Override
@@ -18,10 +26,24 @@ public class Input extends Control {
 		return PAGE;
 	}
 
-	public String getType() {
-		if (LocalDate.class.isAssignableFrom(field.getType())) {
-			return TYPE_DATE;
+//	public String getType() {
+//		if (LocalDate.class.isAssignableFrom(field.getType())) {
+//			return TYPE_DATE;
+//		}
+//		return TYPE_TEXT;
+//	}
+
+	@SuppressWarnings("rawtypes")
+	public static class Factory extends Control.Factory {
+
+		public Factory(Field field, StringConverter converter) {
+			super(field, converter);
 		}
-		return TYPE_TEXT;
+
+		@Override
+		public Control control(Object object) {
+			String type = TYPE_TEXT;
+			return new Input(name(), values(object), type);
+		}
 	}
 }

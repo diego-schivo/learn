@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toList;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,6 +52,14 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
+	public String nonEmptyString(String string1, String string2) {
+		if (!emptyString(string1)) {
+			return string1;
+		}
+		return string2;
+	}
+
+	@Override
 	public String trimString(String string) {
 		if (string == null) {
 			return null;
@@ -68,29 +76,47 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
-	public <T> T nonNullInstance(T t1, T t2) {
-		if (t1 == null) {
-			return t2;
+	public String[] splitString(String string, int character) {
+		if (string == null) {
+			return null;
 		}
-		return t1;
+		List<String> list = new ArrayList<>();
+		int index0 = 0;
+		for (;;) {
+			int index = string.indexOf(character, index0);
+			if (index == -1) {
+				list.add(string.substring(index0));
+				break;
+			}
+			list.add(string.substring(index0, index));
+			index0 = index + 1;
+		}
+		return list.toArray(String[]::new);
+	}
+
+	@Override
+	public <T> T nonNullInstance(T t1, T t2) {
+		if (t1 != null) {
+			return t1;
+		}
+		return t2;
 	}
 
 	@Override
 	public <T> T nonNullInstance(T t1, Supplier<T> t2) {
-		if (t1 == null) {
-			return t2.get();
+		if (t1 != null) {
+			return t1;
 		}
-		return t1;
+		return t2.get();
 	}
 
 	@Override
-	public List<String> getFieldNames(Class<?> class1) {
+	public List<Field> getFields(Class<?> class1) {
 		if (class1 == null) {
 			return emptyList();
 		}
 		Field[] fields = class1.getDeclaredFields();
-		return safeStream(fields).filter(field -> !Modifier.isStatic(field.getModifiers()))
-				.map(field -> field.getName()).collect(toList());
+		return safeStream(fields).filter(field -> !Modifier.isStatic(field.getModifiers())).collect(toList());
 	}
 
 	@Override
@@ -132,14 +158,14 @@ public class DefaultLangHelper implements LangHelper {
 		if (class1 == null) {
 			return emptyMap();
 		}
-		Collection<String> fieldNames = getFieldNames(class1);
-		return safeStream(fieldNames).map(fieldName -> {
-			String getterName = getGetterName(fieldName);
+		List<Field> fields = getFields(class1);
+		return safeStream(fields).map(field -> {
+			String getterName = getGetterName(field.getName());
 			Method getter = safeGet(() -> class1.getMethod(getterName));
 			if (getter == null) {
 				return null;
 			}
-			return new Object[] { fieldName, getter };
+			return new Object[] { field.getName(), getter };
 		}).filter(Objects::nonNull)
 				.collect(linkedHashMapCollector(array -> (String) array[0], array -> (Method) array[1]));
 	}
@@ -149,15 +175,15 @@ public class DefaultLangHelper implements LangHelper {
 		if (class1 == null) {
 			return emptyMap();
 		}
-		Collection<String> fieldNames = getFieldNames(class1);
-		return safeStream(fieldNames).map(fieldName -> {
-			String setterName = getSetterName(fieldName);
+		List<Field> fields = getFields(class1);
+		return safeStream(fields).map(field -> {
+			String setterName = getSetterName(field.getName());
 			Method setter = safeStream(class1.getMethods())
 					.filter(method -> Objects.equals(method.getName(), setterName)).findFirst().orElse(null);
 			if (setter == null) {
 				return null;
 			}
-			return new Object[] { fieldName, setter };
+			return new Object[] { field.getName(), setter };
 		}).filter(Objects::nonNull)
 				.collect(linkedHashMapCollector(array -> (String) array[0], array -> (Method) array[1]));
 	}
