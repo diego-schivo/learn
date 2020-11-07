@@ -1,4 +1,4 @@
-package com.backflipsource.menagerie;
+package com.backflipsource;
 
 import static com.backflipsource.Helpers.initTomcat;
 import static com.backflipsource.Helpers.safeStream;

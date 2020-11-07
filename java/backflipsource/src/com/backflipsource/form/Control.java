@@ -1,5 +1,6 @@
 package com.backflipsource.form;
 
+import static com.backflipsource.Helpers.emptyCollection;
 import static com.backflipsource.Helpers.getGetter;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
@@ -32,6 +33,9 @@ public abstract class Control {
 	public abstract String getPage();
 
 	public String getValue() {
+		if (emptyCollection(getValues())) {
+			return null;
+		}
 		return getValues().get(0);
 	}
 

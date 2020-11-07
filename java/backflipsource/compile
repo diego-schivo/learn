@@ -5,6 +5,6 @@ if [ ! -d lib ]; then
   wget -P lib https://downloads.apache.org/tomcat/taglibs/taglibs-standard-1.2.5/taglibs-standard-impl-1.2.5.jar
   wget -P lib https://downloads.apache.org/tomcat/taglibs/taglibs-standard-1.2.5/taglibs-standard-spec-1.2.5.jar
 fi
-# cp ../backflipsource/backflipsource.jar lib
 mkdir -p bin
 javac -cp 'lib/*' $(find src | grep .java) -d bin
+jar cf backflipsource.jar -C bin .

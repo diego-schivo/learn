@@ -28,176 +28,208 @@ import com.backflipsource.UtilHelper.SupplierThrowingException;
 
 public class Helpers {
 
-	public static LangHelper langHelper;
+	private static LangHelper langHelper;
 
-	public static UtilHelper utilHelper;
+	private static UtilHelper utilHelper;
 
-	public static ServletHelper servletHelper;
+	private static ServletHelper servletHelper;
 
-	public static TomcatHelper tomcatHelper;
+	private static TomcatHelper tomcatHelper;
+
+	public static LangHelper getLangHelper() {
+		if (langHelper == null) {
+			langHelper = new DefaultLangHelper();
+		}
+		return langHelper;
+	}
+
+	public static UtilHelper getUtilHelper() {
+		if (utilHelper == null) {
+			utilHelper = new DefaultUtilHelper();
+		}
+		return utilHelper;
+	}
+
+	public static ServletHelper getServletHelper() {
+		if (servletHelper == null) {
+			servletHelper = new DefaultServletHelper();
+		}
+		return servletHelper;
+	}
+
+	public static TomcatHelper getTomcatHelper() {
+		if (tomcatHelper == null) {
+			tomcatHelper = new DefaultTomcatHelper();
+		}
+		return tomcatHelper;
+	}
 
 	public static String emptyString() {
-		return langHelper.emptyString();
+		return getLangHelper().emptyString();
 	}
 
 	public static boolean emptyString(String string) {
-		return langHelper.emptyString(string);
+		return getLangHelper().emptyString(string);
 	}
 
 	public static String safeString(Object object) {
-		return langHelper.safeString(object);
+		return getLangHelper().safeString(object);
 	}
 
 	public static String unsafeString(Object object) {
-		return langHelper.unsafeString(object);
+		return getLangHelper().unsafeString(object);
 	}
 
 	public static String nonEmptyString(String string1, String string2) {
-		return langHelper.nonEmptyString(string1, string2);
+		return getLangHelper().nonEmptyString(string1, string2);
 	}
 
 	public static String trimString(String string) {
-		return langHelper.trimString(string);
+		return getLangHelper().trimString(string);
 	}
 
 	public static String capitalizeString(String string) {
-		return langHelper.capitalizeString(string);
+		return getLangHelper().capitalizeString(string);
 	}
 
 	public static String[] splitString(String string, int character) {
-		return langHelper.splitString(string, character);
+		return getLangHelper().splitString(string, character);
 	}
 
 	public static <T> T nonNullInstance(T t1, T t2) {
-		return langHelper.nonNullInstance(t1, t2);
+		return getLangHelper().nonNullInstance(t1, t2);
 	}
 
 	public static <T> T nonNullInstance(T t1, Supplier<T> t2) {
-		return langHelper.nonNullInstance(t1, t2);
+		return getLangHelper().nonNullInstance(t1, t2);
 	}
 
 	public static List<Field> getFields(Class<?> class1) {
-		return langHelper.getFields(class1);
+		return getLangHelper().getFields(class1);
 	}
 
 	public static String getGetterName(String field) {
-		return langHelper.getGetterName(field);
+		return getLangHelper().getGetterName(field);
 	}
 
 	public static String getSetterName(String field) {
-		return langHelper.getSetterName(field);
+		return getLangHelper().getSetterName(field);
 	}
 
 	public static Method getGetter(Field field) {
-		return langHelper.getGetter(field);
+		return getLangHelper().getGetter(field);
 	}
 
 	public static Method getSetter(Field field) {
-		return langHelper.getSetter(field);
+		return getLangHelper().getSetter(field);
 	}
 
 	public static Map<String, Method> getGetters(Class<?> class1) {
-		return langHelper.getGetters(class1);
+		return getLangHelper().getGetters(class1);
 	}
 
 	public static Map<String, Method> getSetters(Class<?> class1) {
-		return langHelper.getSetters(class1);
+		return getLangHelper().getSetters(class1);
+	}
+
+	public static boolean emptyCollection(Collection<?> collection) {
+		return getUtilHelper().emptyCollection(collection);
 	}
 
 	public static <T> T[] unsafeArray(Collection<T> collection, Class<T> class1) {
-		return utilHelper.unsafeArray(collection, class1);
+		return getUtilHelper().unsafeArray(collection, class1);
 	}
 
 	public static <T> T[] safeArray(Collection<T> collection, Class<T> class1) {
-		return utilHelper.safeArray(collection, class1);
+		return getUtilHelper().safeArray(collection, class1);
 	}
 
 	public static <T> List<T> safeList(T[] array) {
-		return utilHelper.safeList(array);
+		return getUtilHelper().safeList(array);
 	}
 
 	public static <T> List<T> unsafeList(T[] array) {
-		return utilHelper.unsafeList(array);
+		return getUtilHelper().unsafeList(array);
 	}
 
 	public static <T> Stream<T> safeStream(T[] array) {
-		return utilHelper.safeStream(array);
+		return getUtilHelper().safeStream(array);
 	}
 
 	public static <T> Stream<T> unsafeStream(T[] array) {
-		return utilHelper.unsafeStream(array);
+		return getUtilHelper().unsafeStream(array);
 	}
 
 	public static <T> Stream<T> safeStream(Collection<T> collection) {
-		return utilHelper.safeStream(collection);
+		return getUtilHelper().safeStream(collection);
 	}
 
 	public static <T> Stream<T> unsafeStream(Collection<T> collection) {
-		return utilHelper.unsafeStream(collection);
+		return getUtilHelper().unsafeStream(collection);
 	}
 
 	public static <T> Stream<T> safeStream(Enumeration<T> enumeration) {
-		return utilHelper.safeStream(enumeration);
+		return getUtilHelper().safeStream(enumeration);
 	}
 
 	public static <T> Stream<T> unsafeStream(Enumeration<T> enumeration) {
-		return utilHelper.unsafeStream(enumeration);
+		return getUtilHelper().unsafeStream(enumeration);
 	}
 
 	public static <K, V> Stream<Entry<K, V>> safeStream(Map<K, V> map) {
-		return utilHelper.safeStream(map);
+		return getUtilHelper().safeStream(map);
 	}
 
 	public static <K, V> Stream<Entry<K, V>> unsafeStream(Map<K, V> map) {
-		return utilHelper.unsafeStream(map);
+		return getUtilHelper().unsafeStream(map);
 	}
 
 	public static <T, K, U> Collector<T, ?, Map<K, U>> linkedHashMapCollector(
 			Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends U> valueMapper) {
-		return utilHelper.linkedHashMapCollector(keyMapper, valueMapper);
+		return getUtilHelper().linkedHashMapCollector(keyMapper, valueMapper);
 	}
 
 	public static void safeRun(RunnableThrowingException runnable) {
-		utilHelper.safeRun(runnable);
+		getUtilHelper().safeRun(runnable);
 	}
 
 	public static void unsafeRun(RunnableThrowingException runnable) {
-		utilHelper.unsafeRun(runnable);
+		getUtilHelper().unsafeRun(runnable);
 	}
 
 	public static <T> T safeGet(SupplierThrowingException<T> supplier) {
-		return utilHelper.safeGet(supplier);
+		return getUtilHelper().safeGet(supplier);
 	}
 
 	public static <T> T unsafeGet(SupplierThrowingException<T> supplier) {
-		return utilHelper.unsafeGet(supplier);
+		return getUtilHelper().unsafeGet(supplier);
 	}
 
 	public static Map<String, Function<Object, Object>> getGetterFunctions(Class<?> class1) {
-		return utilHelper.getGetterFunctions(class1);
+		return getUtilHelper().getGetterFunctions(class1);
 	}
 
 	public static Map<String, BiConsumer<Object, Object>> getSetterConsumers(Class<?> class1) {
-		return utilHelper.getSetterConsumers(class1);
+		return getUtilHelper().getSetterConsumers(class1);
 	}
 
 	public static Future<?>[] startExecutorService(ExecutorService executor, Callable<?>... tasks) {
-		return utilHelper.startExecutorService(executor, tasks);
+		return getUtilHelper().startExecutorService(executor, tasks);
 	}
 
 	public static void stopExecutorService(ExecutorService executor, Future<?>... futures) {
-		utilHelper.stopExecutorService(executor, futures);
+		getUtilHelper().stopExecutorService(executor, futures);
 	}
 
 	public static void watchDirectories(Path start, Consumer<Path[]> consumer) {
-		utilHelper.watchDirectories(start, consumer);
+		getUtilHelper().watchDirectories(start, consumer);
 	}
 
 	public static void forwardServletRequest(String path, ServletRequest request, ServletResponse response) {
-		servletHelper.forwardServletRequest(path, request, response);
+		getServletHelper().forwardServletRequest(path, request, response);
 	}
 
 	public static void initTomcat(Tomcat tomcat, String root, String classes) {
-		tomcatHelper.initTomcat(tomcat, root, classes);
+		getTomcatHelper().initTomcat(tomcat, root, classes);
 	}
 }

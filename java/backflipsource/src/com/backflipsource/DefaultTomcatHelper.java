@@ -17,8 +17,6 @@ import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.EmptyResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 
-import com.backflipsource.menagerie.Server;
-
 public class DefaultTomcatHelper implements TomcatHelper {
 
 	private static final String TOMCAT_BASE_DIR = "tomcat-base-dir";

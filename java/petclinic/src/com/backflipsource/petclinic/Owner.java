@@ -1,4 +1,4 @@
-package com.backflipsource.menagerie;
+package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.safeList;
 

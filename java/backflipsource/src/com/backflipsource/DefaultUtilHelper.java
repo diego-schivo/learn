@@ -44,6 +44,14 @@ import java.util.stream.Stream;
 public class DefaultUtilHelper implements UtilHelper {
 
 	@Override
+	public boolean emptyCollection(Collection<?> collection) {
+		if (collection == null) {
+			return true;
+		}
+		return collection.size() == 0;
+	}
+
+	@Override
 	public <T> T[] unsafeArray(Collection<T> collection, Class<T> class1) {
 		if (collection == null) {
 			return null;

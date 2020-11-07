@@ -63,14 +63,15 @@ public class Select extends Control {
 			Options options2 = field.getAnnotation(Options.class);
 			if (options2 != null) {
 				options = safeList(options2.value());
+			} else {
+				Class<?> type = multiple
+						? (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]
+						: field.getType();
+				List<?> list = safeGet(() -> (List) type.getDeclaredField("list").get(null));
+				options = safeStream(list)
+						.map(item -> safeGet(() -> (String) item.getClass().getMethod("getName").invoke(item)))
+						.collect(toList());
 			}
-			Class<?> type = multiple
-					? (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]
-					: field.getType();
-			List<?> list = safeGet(() -> (List) type.getDeclaredField("list").get(null));
-			options = safeStream(list)
-					.map(item -> safeGet(() -> (String) item.getClass().getMethod("getName").invoke(item)))
-					.collect(toList());
 
 			return new Select(name(), values(object), options, multiple);
 		}

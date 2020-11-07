@@ -1,12 +1,13 @@
 package com.backflipsource.form;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Input extends Control {
 
-	public static String TYPE_TEXT = "text";
 	public static String TYPE_DATE = "date";
+	public static String TYPE_TEXT = "text";
 
 	protected static String PAGE = "input.jsp";
 
@@ -42,7 +43,7 @@ public class Input extends Control {
 
 		@Override
 		public Control control(Object object) {
-			String type = TYPE_TEXT;
+			String type = LocalDate.class.isAssignableFrom(field.getType()) ? TYPE_DATE : TYPE_TEXT;
 			return new Input(name(), values(object), type);
 		}
 	}

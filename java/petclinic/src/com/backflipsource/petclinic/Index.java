@@ -1,4 +1,4 @@
-package com.backflipsource.menagerie;
+package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.forwardServletRequest;
 import static com.backflipsource.Helpers.getFields;
@@ -34,7 +34,8 @@ import com.backflipsource.form.StringConverter;
 @SuppressWarnings({ "serial", "unchecked" })
 public class Index extends HttpServlet {
 
-	Class<?> class1 = Pet.class;
+	// Class<?> class1 = Pet.class;
+	Class<?> class1 = Owner.class;
 	List<?> items = safeGet(() -> (List<?>) class1.getDeclaredField("list").get(null));
 
 	@Override

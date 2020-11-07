@@ -1,6 +1,8 @@
-package com.backflipsource.menagerie;
+package com.backflipsource.petclinic;
 
+import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeList;
+import static com.backflipsource.Helpers.safeRun;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +17,8 @@ public class Pet {
 
 	private String name;
 
-	private String owner;
+	@FormField(control = Select.class, converter = OwnerStringConverter.class)
+	private Owner owner;
 
 	@FormField(control = Select.class)
 	@Options({ "bird", "cat", "dog", "hamster", "snake" })
@@ -34,7 +37,7 @@ public class Pet {
 	public Pet() {
 	}
 
-	public Pet(String name, String owner, String species, String sex, LocalDate birth, LocalDate death) {
+	public Pet(String name, Owner owner, String species, String sex, LocalDate birth, LocalDate death) {
 		this.name = name;
 		this.owner = owner;
 		this.species = species;
@@ -51,11 +54,11 @@ public class Pet {
 		this.name = name;
 	}
 
-	public String getOwner() {
+	public Owner getOwner() {
 		return owner;
 	}
 
-	public void setOwner(String owner) {
+	public void setOwner(Owner owner) {
 		this.owner = owner;
 	}
 
@@ -96,16 +99,14 @@ public class Pet {
 	static {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		Pet fluffy = new Pet("Fluffy", "Harold", "cat", "f", LocalDate.parse("1993-02-04", formatter), null);
-		Pet claws = new Pet("Claws", "Gwen", "cat", "m", LocalDate.parse("1994-03-17", formatter), null);
-		Pet buffy = new Pet("Buffy", "Harold", "dog", "f", LocalDate.parse("1989-05-13", formatter), null);
-		Pet fang = new Pet("Fang", "Benny", "dog", "m", LocalDate.parse("1990-08-27", formatter), null);
-		Pet bowser = new Pet("Bowser", "Diane", "dog", "m", LocalDate.parse("1979-08-31", formatter),
-				LocalDate.parse("1995-07-29", formatter));
-		Pet chirpy = new Pet("Chirpy", "Gwen", "bird", "f", LocalDate.parse("1998-09-11", formatter), null);
-		Pet whistler = new Pet("Whistler", "Gwen", "bird", null, LocalDate.parse("1997-12-09", formatter), null);
-		Pet slim = new Pet("Slim", "Benny", "snake", "m", LocalDate.parse("1996-04-29", formatter), null);
-		Pet puffball = new Pet("Puffball", "Diane", "hamster", "f", LocalDate.parse("1999-03-30", formatter), null);
-		list = safeList(new Pet[] { fluffy, claws, buffy, fang, bowser, chirpy, whistler, slim, puffball });
+		Owner harold = safeGet(() -> Owner.list.get(0));
+		Owner gwen = safeGet(() -> Owner.list.get(1));
+
+		Pet fluffy = new Pet("Fluffy", harold, "cat", "f", LocalDate.parse("1993-02-04", formatter), null);
+		Pet claws = new Pet("Claws", gwen, "cat", "m", LocalDate.parse("1994-03-17", formatter), null);
+		list = safeList(new Pet[] { fluffy, claws });
+
+		safeRun(() -> harold.setPets(safeList(new Pet[] { fluffy })));
+		safeRun(() -> gwen.setPets(safeList(new Pet[] { claws })));
 	}
 }
