@@ -5,7 +5,7 @@ import static com.backflipsource.Helpers.safeStream;
 
 import java.util.Objects;
 
-import com.backflipsource.form.StringConverter;
+import com.backflipsource.servlet.StringConverter;
 
 public class OwnerStringConverter implements StringConverter<Owner> {
 
@@ -14,7 +14,7 @@ public class OwnerStringConverter implements StringConverter<Owner> {
 		if (instance == null) {
 			return null;
 		}
-		return instance.getName();
+		return instance.getId().toString();
 	}
 
 	@Override
@@ -22,7 +22,8 @@ public class OwnerStringConverter implements StringConverter<Owner> {
 		if (emptyString(string)) {
 			return null;
 		}
-		return safeStream(Owner.list).filter(item -> Objects.equals(item.getName(), string)).findFirst().orElse(null);
+		int id = Integer.parseInt(string);
+		return safeStream(Owner.list).filter(item -> Objects.equals(item.getId(), id)).findFirst().orElse(null);
 	}
 
 }

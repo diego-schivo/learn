@@ -6,29 +6,30 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.backflipsource.form.FormField;
-import com.backflipsource.form.Select;
-import com.backflipsource.form.Select.Options;
-import com.backflipsource.form.StringConverter;
+import com.backflipsource.servlet.Select;
+import com.backflipsource.servlet.Select.Options;
+import com.backflipsource.servlet.StringConverter;
+import com.backflipsource.servlet.View;
 
+@View
 public class Pet {
 
 	private String name;
 
 	private String owner;
 
-	@FormField(control = Select.class)
+	@View.Field(control = Select.class)
 	@Options({ "bird", "cat", "dog", "hamster", "snake" })
 	private String species;
 
-	@FormField(control = Select.class)
+	@View.Field(control = Select.class)
 	@Options({ "f", "m" })
 	private String sex;
 
-	@FormField(converter = StringConverter.Date.class)
+	@View.Field(converter = StringConverter.ForLocalDate.class)
 	private LocalDate birth;
 
-	@FormField(converter = StringConverter.Date.class)
+	@View.Field(converter = StringConverter.ForLocalDate.class)
 	private LocalDate death;
 
 	public Pet() {

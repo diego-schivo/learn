@@ -1,8 +1,12 @@
 package com.backflipsource.petclinic;
 
-import com.backflipsource.Server;
+import javax.servlet.annotation.WebListener;
 
-public class App {
+import com.backflipsource.Server;
+import com.backflipsource.servlet.EntityContextListener;
+
+@WebListener
+public class App extends EntityContextListener {
 
 	public static void main(String[] args) {
 		new Server();

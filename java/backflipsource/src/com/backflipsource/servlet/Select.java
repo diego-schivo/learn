@@ -1,4 +1,4 @@
-package com.backflipsource.form;
+package com.backflipsource.servlet;
 
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeList;
@@ -18,22 +18,22 @@ public class Select extends Control {
 
 	protected static String PAGE = "select.jsp";
 
-	protected List<String> options;
-
 	protected boolean multiple;
 
-	public Select(String name, List<String> values, List<String> options, boolean multiple) {
-		super(name, values);
-		this.options = options;
-		this.multiple = multiple;
-	}
+	protected List<String> options;
 
-	public List<String> getOptions() {
-		return options;
+	public Select(String name, List<String> values, boolean multiple, List<String> options) {
+		super(name, values);
+		this.multiple = multiple;
+		this.options = options;
 	}
 
 	public boolean isMultiple() {
 		return multiple;
+	}
+
+	public List<String> getOptions() {
+		return options;
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class Select extends Control {
 						.collect(toList());
 			}
 
-			return new Select(name(), values(object), options, multiple);
+			return new Select(name(), values(object), multiple, options);
 		}
 	}
 }

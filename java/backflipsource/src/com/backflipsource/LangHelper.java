@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public interface LangHelper {
 
@@ -41,4 +42,6 @@ public interface LangHelper {
 	Map<String, Method> getGetters(Class<?> class1);
 
 	Map<String, Method> getSetters(Class<?> class1);
+
+	Stream<Class<?>> getClasses(String packageName);
 }

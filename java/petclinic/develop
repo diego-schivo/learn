@@ -1,0 +1,5 @@
+#!/bin/sh
+if [ ! -d lib-src ]; then
+  mkdir lib-src
+  curl -s https://downloads.apache.org/tomcat/tomcat-8/v8.5.59/src/apache-tomcat-8.5.59-src.tar.gz | tar -xvz -C lib-src apache-tomcat-8.5.59-src/java --strip-components=2
+fi

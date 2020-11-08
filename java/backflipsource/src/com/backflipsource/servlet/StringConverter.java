@@ -1,17 +1,10 @@
-package com.backflipsource.form;
+package com.backflipsource.servlet;
 
 import static com.backflipsource.Helpers.emptyString;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.splitString;
-import static java.net.URLDecoder.decode;
-import static java.net.URLEncoder.encode;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import static java.lang.Integer.parseInt;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public interface StringConverter<T> {
 
@@ -27,7 +20,7 @@ public interface StringConverter<T> {
 //		return safeStream(splitString(string, ',')).map(item -> decode(item, UTF_8)).toArray(String[]::new);
 //	}
 
-	public class Identity implements StringConverter<String> {
+	public class ForString implements StringConverter<String> {
 
 		@Override
 		public String convertToString(String instance) {
@@ -40,7 +33,26 @@ public interface StringConverter<T> {
 		}
 	}
 
-	public class Date implements StringConverter<LocalDate> {
+	public class ForInteger implements StringConverter<Integer> {
+
+		@Override
+		public String convertToString(Integer instance) {
+			if (instance == null) {
+				return null;
+			}
+			return instance.toString();
+		}
+
+		@Override
+		public Integer convertFromString(String string) {
+			if (emptyString(string)) {
+				return null;
+			}
+			return parseInt(string);
+		}
+	}
+
+	public class ForLocalDate implements StringConverter<LocalDate> {
 
 		private static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

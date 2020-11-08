@@ -132,6 +132,10 @@ public class Helpers {
 		return getLangHelper().getSetters(class1);
 	}
 
+	public static Stream<Class<?>> getClasses(String packageName) {
+		return getLangHelper().getClasses(packageName);
+	}
+
 	public static boolean emptyCollection(Collection<?> collection) {
 		return getUtilHelper().emptyCollection(collection);
 	}

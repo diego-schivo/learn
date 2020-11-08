@@ -3,18 +3,27 @@ package com.backflipsource;
 import static com.backflipsource.Helpers.linkedHashMapCollector;
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeStream;
+import static com.backflipsource.Helpers.unsafeGet;
+import static java.lang.Thread.currentThread;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class DefaultLangHelper implements LangHelper {
 
@@ -186,5 +195,27 @@ public class DefaultLangHelper implements LangHelper {
 			return new Object[] { field.getName(), setter };
 		}).filter(Objects::nonNull)
 				.collect(linkedHashMapCollector(array -> (String) array[0], array -> (Method) array[1]));
+	}
+
+	@Override
+	public Stream<Class<?>> getClasses(String packageName) {
+		ClassLoader classLoader = currentThread().getContextClassLoader();
+		Enumeration<URL> resources = unsafeGet(() -> classLoader.getResources(packageName.replace('.', '/')));
+		Stream<Path> paths = safeStream(resources).map(resource -> unsafeGet(() -> resource.toURI())).map(Paths::get);
+		return paths.map(path -> getClasses(path, packageName)).flatMap(identity());
+	}
+
+	private static Stream<Class<?>> getClasses(Path path, String packageName) {
+		if (!Files.isDirectory(path)) {
+			return Stream.empty();
+		}
+		Stream<Path> entries = unsafeGet(() -> Files.list(path));
+		return entries.map(entry -> {
+			String name = packageName + "." + entry.getFileName();
+			if (name.endsWith(".class")) {
+				return Stream.of(unsafeGet(() -> Class.forName(name.substring(0, name.lastIndexOf('.')))));
+			}
+			return getClasses(entry, name);
+		}).flatMap(identity());
 	}
 }
