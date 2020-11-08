@@ -1,4 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="taglibs.jsp" %>
 
-<a href="${requestURI}/${control.value}">${control.value}</a>
+<a href="${requestURI}${uri}/${control.value}">${control.value}</a>

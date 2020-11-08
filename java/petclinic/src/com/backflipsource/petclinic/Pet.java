@@ -13,38 +13,41 @@ import com.backflipsource.servlet.Select.Options;
 import com.backflipsource.servlet.StringConverter;
 import com.backflipsource.servlet.View;
 
-@View
+@View(uri = "/pets")
 public class Pet {
+
+	@View.Field(identifier = true, converter = StringConverter.ForInteger.class)
+	private Integer id;
 
 	private String name;
 
-	@View.Field(control = Select.class, converter = OwnerStringConverter.class)
+	@View.Field(converter = StringConverter.ForLocalDate.class)
+	private LocalDate birthDate;
+
+	@View.Field
+	@View.Field(view = View.Edit.class, control = Select.class)
+	@Options({ "cat", "dog", "lizard", "snake", "bird", "hamster" })
+	private String type;
+
 	private Owner owner;
-
-	@View.Field(control = Select.class)
-	@Options({ "bird", "cat", "dog", "hamster", "snake" })
-	private String species;
-
-	@View.Field(control = Select.class)
-	@Options({ "f", "m" })
-	private String sex;
-
-	@View.Field(converter = StringConverter.ForLocalDate.class)
-	private LocalDate birth;
-
-	@View.Field(converter = StringConverter.ForLocalDate.class)
-	private LocalDate death;
 
 	public Pet() {
 	}
 
-	public Pet(String name, Owner owner, String species, String sex, LocalDate birth, LocalDate death) {
+	public Pet(Integer id, String name, LocalDate birthDate, String type, Owner owner) {
+		this.id = id;
 		this.name = name;
+		this.birthDate = birthDate;
+		this.type = type;
 		this.owner = owner;
-		this.species = species;
-		this.sex = sex;
-		this.birth = birth;
-		this.death = death;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -55,6 +58,22 @@ public class Pet {
 		this.name = name;
 	}
 
+	public LocalDate getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public Owner getOwner() {
 		return owner;
 	}
@@ -63,53 +82,20 @@ public class Pet {
 		this.owner = owner;
 	}
 
-	public String getSpecies() {
-		return species;
-	}
-
-	public void setSpecies(String species) {
-		this.species = species;
-	}
-
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
-
-	public LocalDate getBirth() {
-		return birth;
-	}
-
-	public void setBirth(LocalDate birth) {
-		this.birth = birth;
-	}
-
-	public LocalDate getDeath() {
-		return death;
-	}
-
-	public void setDeath(LocalDate death) {
-		this.death = death;
-	}
-
 	public static List<Pet> list;
 
 	static {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		Owner harold = safeGet(() -> Owner.list.get(0));
-		// Owner gwen = safeGet(() -> Owner.list.get(1));
+		Owner george = safeGet(() -> Owner.list.get(0));
+		Owner jean = safeGet(() -> Owner.list.get(5));
 
-		Pet fluffy = new Pet("Fluffy", harold, "cat", "f", LocalDate.parse("1993-02-04", formatter), null);
-		// Pet claws = new Pet("Claws", gwen, "cat", "m", LocalDate.parse("1994-03-17",
-		// formatter), null);
-		// list = safeList(new Pet[] { fluffy, claws });
-		list = safeList(new Pet[] { fluffy });
+		Pet leo = new Pet(1, "Leo", LocalDate.parse("2010-09-07", formatter), "cat", george);
+		Pet samantha = new Pet(7, "Samantha", LocalDate.parse("2012-09-04", formatter), "cat", jean);
+		Pet max = new Pet(8, "Max", LocalDate.parse("2012-09-04", formatter), "cat", jean);
+		list = safeList(new Pet[] { leo, samantha, max });
 
-		safeRun(() -> harold.setPets(safeList(new Pet[] { fluffy })));
-		// safeRun(() -> gwen.setPets(safeList(new Pet[] { claws })));
+		safeRun(() -> george.setPets(safeList(new Pet[] { leo })));
+		safeRun(() -> jean.setPets(safeList(new Pet[] { samantha, max })));
 	}
 }

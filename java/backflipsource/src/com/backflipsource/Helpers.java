@@ -2,6 +2,7 @@ package com.backflipsource;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -134,6 +135,10 @@ public class Helpers {
 
 	public static Stream<Class<?>> getClasses(String packageName) {
 		return getLangHelper().getClasses(packageName);
+	}
+
+	public static List<Type> getArgumentTypes(Type type) {
+		return getLangHelper().getArgumentTypes(type);
 	}
 
 	public static boolean emptyCollection(Collection<?> collection) {

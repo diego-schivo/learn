@@ -58,11 +58,15 @@ public abstract class Control {
 		}
 
 		@SuppressWarnings("unchecked")
-		public List<String> values(Object object) {
-			Object value = unsafeGet(() -> getGetter(field).invoke(object));
+		protected List<String> values(Object object) {
+			Object value = getFieldValue(object);
 			Collection<?> collection = (value instanceof Collection) ? (Collection<?>) value
 					: ((value != null) ? singleton(value) : null);
 			return safeStream(collection).map(converter::convertToString).collect(toList());
+		}
+
+		protected Object getFieldValue(Object object) {
+			return unsafeGet(() -> getGetter(field).invoke(object));
 		}
 	}
 }

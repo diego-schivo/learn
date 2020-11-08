@@ -14,7 +14,19 @@ import javax.servlet.ServletRegistration.Dynamic;
 
 public class EntityContextListener implements ServletContextListener {
 
+	protected String packageName;
+
+	protected static Map<String, EntityView> views;
+
 	protected static Map<String, Dynamic> servlets;
+
+	public EntityContextListener(String packageName) {
+		this.packageName = packageName;
+	}
+
+	public static Map<String, EntityView> getViews() {
+		return views;
+	}
 
 	public static Map<String, Dynamic> getServlets() {
 		return servlets;
@@ -22,14 +34,19 @@ public class EntityContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		String packageName = "com.backflipsource";
 		Set<Class<?>> classes = getClasses(packageName)
 				.filter(class1 -> class1.getAnnotationsByType(View.class).length > 0).collect(toSet());
-		servlets = safeStream(classes).map(class1 -> {
-			String servletName = class1.getName();
+
+		views = safeStream(classes).map(class1 -> {
+			EntityView view = new EntityView(class1);
+			return new Object[] { class1.getName(), view };
+		}).collect(toMap(objects -> (String) objects[0], objects -> (EntityView) objects[1]));
+
+		servlets = safeStream(views).map(entry -> {
+			String servletName = entry.getKey();
 			Dynamic servlet = event.getServletContext().addServlet(servletName, EntityServlet.class);
 
-			String urlPattern1 = "/" + class1.getSimpleName().toLowerCase();
+			String urlPattern1 = entry.getValue().getUri();
 			String urlPattern2 = urlPattern1 + "/*";
 			servlet.addMapping(urlPattern1, urlPattern2);
 

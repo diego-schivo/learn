@@ -17,6 +17,8 @@ public @interface View {
 
 	Class<?>[] value() default List.class;
 
+	String uri() default "";
+
 	String page() default "";
 
 	@Target(FIELD)

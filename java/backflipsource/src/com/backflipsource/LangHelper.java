@@ -2,6 +2,7 @@ package com.backflipsource;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -44,4 +45,6 @@ public interface LangHelper {
 	Map<String, Method> getSetters(Class<?> class1);
 
 	Stream<Class<?>> getClasses(String packageName);
+
+	List<Type> getArgumentTypes(Type type);
 }

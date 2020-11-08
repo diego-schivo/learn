@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ include file="taglibs.jsp" %>
 
-<span>${control.multiple ? fn:join(control.values, ' ') : control.value}</span>
+<span>${control.multiple ? fn:join(control.values.toArray(), ' ') : control.value}</span>

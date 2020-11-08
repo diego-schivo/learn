@@ -2,6 +2,7 @@ package com.backflipsource;
 
 import static com.backflipsource.Helpers.linkedHashMapCollector;
 import static com.backflipsource.Helpers.safeGet;
+import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
 import static java.lang.Thread.currentThread;
@@ -13,6 +14,8 @@ import static java.util.stream.Collectors.toList;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -217,5 +220,14 @@ public class DefaultLangHelper implements LangHelper {
 			}
 			return getClasses(entry, name);
 		}).flatMap(identity());
+	}
+
+	@Override
+	public List<Type> getArgumentTypes(Type type) {
+		ParameterizedType type2 = (type instanceof ParameterizedType) ? (ParameterizedType) type : null;
+		if (type2 == null) {
+			return emptyList();
+		}
+		return safeList(type2.getActualTypeArguments());
 	}
 }
