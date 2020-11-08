@@ -18,11 +18,11 @@ public class Pet {
 
 	private String owner;
 
-	@View.Field(control = Select.class)
+	@View.Field(controlFactory = Select.Factory.class)
 	@Options({ "bird", "cat", "dog", "hamster", "snake" })
 	private String species;
 
-	@View.Field(control = Select.class)
+	@View.Field(controlFactory = Select.Factory.class)
 	@Options({ "f", "m" })
 	private String sex;
 

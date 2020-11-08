@@ -2,13 +2,13 @@ package com.backflipsource.petclinic;
 
 import java.util.List;
 
-import com.backflipsource.servlet.Grid;
+import com.backflipsource.servlet.Table;
 import com.backflipsource.servlet.View;
 
 @View
 public class Clinic {
 
-	@View.Field(view = View.Show.class, control = Grid.class, converter = OwnerStringConverter.class)
+	@View.Field(view = View.Show.class, controlFactory = Table.Factory.class, converter = OwnerStringConverter.class)
 	private List<Owner> owners;
 
 	public Clinic() {

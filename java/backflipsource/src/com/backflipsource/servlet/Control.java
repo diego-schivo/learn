@@ -13,24 +13,45 @@ import java.util.List;
 
 public abstract class Control {
 
+	protected Object item;
+
 	protected String name;
 
 	protected List<String> values;
 
-	protected Control(String name, List<String> values) {
-		this.name = name;
-		this.values = values;
+	protected String page;
+
+	public Object getItem() {
+		return item;
+	}
+
+	public void setItem(Object item) {
+		this.item = item;
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public List<String> getValues() {
 		return values;
 	}
 
-	public abstract String getPage();
+	public void setValues(List<String> values) {
+		this.values = values;
+	}
+
+	public String getPage() {
+		return page;
+	}
+
+	public void setPage(String page) {
+		this.page = page;
+	}
 
 	public String getValue() {
 		if (emptyCollection(getValues())) {
@@ -40,18 +61,28 @@ public abstract class Control {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static abstract class Factory {
+	public static abstract class Factory<T extends Control> {
+
+		protected Class<T> class1;
 
 		protected Field field;
 
 		protected StringConverter converter;
 
-		public Factory(Field field, StringConverter converter) {
+		protected Factory(Class<T> class1, Field field, StringConverter converter) {
+			this.class1 = class1;
 			this.field = field;
 			this.converter = converter;
 		}
 
-		public abstract Control control(Object object);
+		public T control(Object object) {
+			T control = unsafeGet(() -> class1.getDeclaredConstructor().newInstance());
+			control.setItem(object);
+			control.setName(name());
+			control.setValues(values(object));
+			control.setPage(class1.getSimpleName().toLowerCase() + ".jsp");
+			return control;
+		}
 
 		public String name() {
 			return field.getName();

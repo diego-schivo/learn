@@ -4,20 +4,20 @@ import static com.backflipsource.Helpers.safeList;
 
 import java.util.List;
 
-import com.backflipsource.servlet.Grid;
 import com.backflipsource.servlet.StringConverter;
 import com.backflipsource.servlet.View;
 
-@View(uri="/owners")
+@View(uri = "/owners")
 public class Owner {
 
 	@View.Field(identifier = true, converter = StringConverter.ForInteger.class)
+	@View.Field(view = View.List.class, controlFactory = OwnerIdAnchorFactory.class, converter = StringConverter.ForInteger.class)
 	private Integer id;
 
-	@View.Field
+	@View.Field(view = { View.Show.class, View.Edit.class })
 	private String firstName;
 
-	@View.Field
+	@View.Field(view = { View.Show.class, View.Edit.class })
 	private String lastName;
 
 	@View.Field
@@ -29,7 +29,7 @@ public class Owner {
 	@View.Field
 	private String telephone;
 
-	@View.Field(view = View.Show.class, control = Grid.class, converter = PetStringConverter.class)
+	@View.Field(view = View.Show.class, controlFactory = OwnerPetsTableFactory.class, converter = PetStringConverter.class)
 	private List<Pet> pets;
 
 	public Owner() {

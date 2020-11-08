@@ -19,13 +19,14 @@ public class Pet {
 	@View.Field(identifier = true, converter = StringConverter.ForInteger.class)
 	private Integer id;
 
+	@View.Field
 	private String name;
 
 	@View.Field(converter = StringConverter.ForLocalDate.class)
 	private LocalDate birthDate;
 
 	@View.Field
-	@View.Field(view = View.Edit.class, control = Select.class)
+	@View.Field(view = View.Edit.class, controlFactory = Select.Factory.class)
 	@Options({ "cat", "dog", "lizard", "snake", "bird", "hamster" })
 	private String type;
 

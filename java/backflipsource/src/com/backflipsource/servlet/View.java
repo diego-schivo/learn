@@ -37,7 +37,7 @@ public @interface View {
 
 		Class<?>[] view() default {};
 
-		Class<? extends Control> control() default Control.class;
+		Class<? extends Control.Factory> controlFactory() default Control.Factory.class;
 
 		Class<? extends StringConverter<?>> converter() default ForString.class;
 	}

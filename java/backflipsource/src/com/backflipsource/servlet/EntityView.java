@@ -49,20 +49,19 @@ public class EntityView {
 
 	public Map<String, Control.Factory> controlFactories(Class<?> view) {
 		return viewFieldMap(view, (field, annotation) -> {
-			Class<? extends Control> class1 = nonNullInstance(annotation != null ? annotation.control() : null,
-					Control.class);
-			if (Objects.equals(class1, Control.class)) {
+			Class<? extends Control.Factory> class1 = nonNullInstance(
+					annotation != null ? annotation.controlFactory() : null, Control.Factory.class);
+			if (Objects.equals(class1, Control.Factory.class)) {
 				if (Objects.equals(view, View.Edit.class)) {
-					class1 = annotation.identifier() ? Span.class : Input.class;
+					class1 = annotation.identifier() ? Span.Factory.class : Input.Factory.class;
 				} else {
-					class1 = annotation.identifier() ? Anchor.class : Span.class;
+					class1 = annotation.identifier() ? Anchor.Factory.class : Span.Factory.class;
 				}
 			}
-			Class<? extends Control> class2 = class1;
-			Class<?> class3 = safeGet(() -> Class.forName(class2.getName() + "$Factory"));
+			Class<? extends Control.Factory> class2 = class1;
 
 			Control.Factory factory = safeGet(
-					() -> (Control.Factory) class3.getDeclaredConstructor(Field.class, StringConverter.class)
+					() -> (Control.Factory) class2.getDeclaredConstructor(Field.class, StringConverter.class)
 							.newInstance(field, converter(annotation)));
 			return factory;
 		});

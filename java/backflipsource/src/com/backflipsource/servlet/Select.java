@@ -16,29 +16,24 @@ import java.util.List;
 
 public class Select extends Control {
 
-	protected static String PAGE = "select.jsp";
-
 	protected boolean multiple;
 
 	protected List<String> options;
 
-	public Select(String name, List<String> values, boolean multiple, List<String> options) {
-		super(name, values);
-		this.multiple = multiple;
-		this.options = options;
-	}
-
 	public boolean isMultiple() {
 		return multiple;
+	}
+
+	public void setMultiple(boolean multiple) {
+		this.multiple = multiple;
 	}
 
 	public List<String> getOptions() {
 		return options;
 	}
 
-	@Override
-	public String getPage() {
-		return PAGE;
+	public void setOptions(List<String> options) {
+		this.options = options;
 	}
 
 	@Target(FIELD)
@@ -49,29 +44,32 @@ public class Select extends Control {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static class Factory extends Control.Factory {
+	public static class Factory extends Control.Factory<Select> {
 
 		public Factory(Field field, StringConverter converter) {
-			super(field, converter);
+			super(Select.class, field, converter);
 		}
 
 		@Override
-		public Control control(Object object) {
-			boolean multiple = Collection.class.isAssignableFrom(field.getType());
+		public Select control(Object object) {
+			Select control = super.control(object);
+			control.setMultiple(Collection.class.isAssignableFrom(field.getType()));
 
 			List<String> options;
 			Options options2 = field.getAnnotation(Options.class);
 			if (options2 != null) {
 				options = safeList(options2.value());
 			} else {
-				Class<?> type = multiple ? (Class<?>) getArgumentTypes(field.getGenericType()).get(0) : field.getType();
+				Class<?> type = control.isMultiple() ? (Class<?>) getArgumentTypes(field.getGenericType()).get(0)
+						: field.getType();
 				List<?> list = safeGet(() -> (List) type.getDeclaredField("list").get(null));
 				options = safeStream(list)
 						.map(item -> safeGet(() -> (String) item.getClass().getMethod("getName").invoke(item)))
 						.collect(toList());
 			}
+			control.setOptions(options);
 
-			return new Select(name(), values(object), multiple, options);
+			return control;
 		}
 	}
 }
