@@ -4,14 +4,13 @@ import static com.backflipsource.Helpers.safeList;
 
 import java.util.List;
 
-import com.backflipsource.servlet.StringConverter;
+import com.backflipsource.servlet.StringConverter.ForInteger;
 import com.backflipsource.servlet.View;
 
 @View(uri = "/owners")
 public class Owner {
 
-	@View.Field(identifier = true, converter = StringConverter.ForInteger.class)
-	@View.Field(view = View.List.class, controlFactory = OwnerIdAnchorFactory.class, converter = StringConverter.ForInteger.class)
+	@View.Field(identifier = true, view = View.List.class, controlFactory = OwnerIdAnchorFactory.class, converter = ForInteger.class)
 	private Integer id;
 
 	@View.Field(view = { View.Show.class, View.Edit.class })

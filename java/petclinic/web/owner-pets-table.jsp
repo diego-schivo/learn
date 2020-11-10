@@ -7,25 +7,36 @@
       <td>
         <table>
           <c:forEach var="entry" items="${control.factories}">
-            <c:set var="uri0" value="${uri}" />
-            <c:set var="control0" value="${control}" />
-            <c:set var="uri" value="${control.uri}" scope="request" />
-            <c:set var="control" value="${entry.value.control(item)}" scope="request" />
-            <tr>
-              <th align="right">${entry.key}</th>
-              <td>
-                <jsp:include page="${control.page}" />
-              </td>
-            </tr>
-            <c:set var="uri" value="${uri0}" scope="request" />
-            <c:set var="control" value="${control0}" scope="request" />
+            <c:if test="${entry.key ne 'visits'}">
+              <c:set var="uri0" value="${uri}" />
+              <c:set var="control0" value="${control}" />
+              <c:set var="uri" value="${control.uri}" scope="request" />
+              <c:set var="control" value="${entry.value.control(item)}" scope="request" />
+              <tr>
+                <th align="right">${entry.key}</th>
+                <td>
+                  <jsp:include page="${control.page}" />
+                </td>
+              </tr>
+              <c:set var="uri" value="${uri0}" scope="request" />
+              <c:set var="control" value="${control0}" scope="request" />
+            </c:if>
           </c:forEach>
         </table>
       </td>
       <td>
-        <a href="${requestURI}${control.uri}/${item.id}/edit">Edit pet</a>
+        <c:forEach var="entry" items="${control.factories}">
+          <c:if test="${entry.key eq 'visits'}">
+            <c:set var="uri0" value="${uri}" />
+            <c:set var="control0" value="${control}" />
+            <c:set var="uri" value="${control.uri}" scope="request" />
+            <c:set var="control" value="${entry.value.control(item)}" scope="request" />
+            <jsp:include page="${control.page}" />
+            <c:set var="uri" value="${uri0}" scope="request" />
+            <c:set var="control" value="${control0}" scope="request" />
+          </c:if>
+        </c:forEach>
       </td>
     </tr>
   </c:forEach>
 </table>
-

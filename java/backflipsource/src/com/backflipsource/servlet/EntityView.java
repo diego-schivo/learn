@@ -47,6 +47,7 @@ public class EntityView {
 		return urlPattern1;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Map<String, Control.Factory> controlFactories(Class<?> view) {
 		return viewFieldMap(view, (field, annotation) -> {
 			Class<? extends Control.Factory> class1 = nonNullInstance(

@@ -10,19 +10,19 @@ import java.util.List;
 
 import com.backflipsource.servlet.Select;
 import com.backflipsource.servlet.Select.Options;
-import com.backflipsource.servlet.StringConverter;
+import com.backflipsource.servlet.StringConverter.ForInteger;
+import com.backflipsource.servlet.StringConverter.ForLocalDate;
 import com.backflipsource.servlet.View;
 
 @View(uri = "/pets")
 public class Pet {
 
-	@View.Field(identifier = true, converter = StringConverter.ForInteger.class)
 	private Integer id;
 
 	@View.Field
 	private String name;
 
-	@View.Field(converter = StringConverter.ForLocalDate.class)
+	@View.Field(converter = ForLocalDate.class)
 	private LocalDate birthDate;
 
 	@View.Field
@@ -31,6 +31,9 @@ public class Pet {
 	private String type;
 
 	private Owner owner;
+
+	@View.Field(controlFactory = PetVisitsTableFactory.class, converter = VisitStringConverter.class)
+	private List<Visit> visits;
 
 	public Pet() {
 	}
@@ -81,6 +84,14 @@ public class Pet {
 
 	public void setOwner(Owner owner) {
 		this.owner = owner;
+	}
+
+	public List<Visit> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(List<Visit> visits) {
+		this.visits = visits;
 	}
 
 	public static List<Pet> list;
