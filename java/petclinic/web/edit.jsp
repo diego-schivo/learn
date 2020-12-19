@@ -12,6 +12,7 @@
 
 <form method="post" action="${requestURI}">
   <table>
+    <c:set var="controlFactories" value="${entityView.controlFactories(view)}" />
     <c:forEach var="entry" items="${controlFactories}">
       <tr>
         <td>
@@ -24,7 +25,7 @@
       </tr>
     </c:forEach>
   </table>
-  <input type="submit" name="update" value="update">
+  <input type="submit" name="save" value="save">
 </form>
 <a href="${requestURI.substring(0, requestURI.lastIndexOf('/'))}">back</a>
 

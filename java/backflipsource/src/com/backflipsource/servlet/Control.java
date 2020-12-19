@@ -1,17 +1,41 @@
 package com.backflipsource.servlet;
 
 import static com.backflipsource.Helpers.emptyCollection;
+import static com.backflipsource.Helpers.getArgumentTypes;
 import static com.backflipsource.Helpers.getGetter;
+import static com.backflipsource.Helpers.listGet;
+import static com.backflipsource.Helpers.nonEmptyString;
+import static com.backflipsource.Helpers.nonNullInstance;
+import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.servlet.EntityContextListener.getViews;
 import static java.util.Collections.singleton;
+import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.backflipsource.servlet.StringConverter.ForString;
 
 public abstract class Control {
+
+	private static Logger logger = getLogger(Control.class.getName());
+
+	static {
+		logger.setLevel(Level.ALL);
+
+		ConsoleHandler handler = new ConsoleHandler();
+		handler.setLevel(Level.ALL);
+		logger.addHandler(handler);
+	}
+
+	protected EntityView entityView;
 
 	protected Object item;
 
@@ -21,36 +45,24 @@ public abstract class Control {
 
 	protected String page;
 
-	public Object getItem() {
-		return item;
+	public EntityView getEntityView() {
+		return entityView;
 	}
 
-	public void setItem(Object item) {
-		this.item = item;
+	public Object getItem() {
+		return item;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public List<String> getValues() {
 		return values;
 	}
 
-	public void setValues(List<String> values) {
-		this.values = values;
-	}
-
 	public String getPage() {
 		return page;
-	}
-
-	public void setPage(String page) {
-		this.page = page;
 	}
 
 	public String getValue() {
@@ -67,20 +79,22 @@ public abstract class Control {
 
 		protected Field field;
 
-		protected StringConverter converter;
+		protected View.Field annotation;
 
-		protected Factory(Class<T> class1, Field field, StringConverter converter) {
+		protected Factory(Class<T> class1, Field field, View.Field annotation) {
 			this.class1 = class1;
 			this.field = field;
-			this.converter = converter;
+			this.annotation = annotation;
 		}
 
 		public T control(Object object) {
 			T control = unsafeGet(() -> class1.getDeclaredConstructor().newInstance());
-			control.setItem(object);
-			control.setName(name());
-			control.setValues(values(object));
-			control.setPage(class1.getSimpleName().toLowerCase() + ".jsp");
+			Class<?> type = (Class<?>) listGet(getArgumentTypes(field.getGenericType()), 0);
+			control.entityView = (type != null) ? getViews().get(type.getName()) : null;
+			control.item = object;
+			control.name = name();
+			control.values = values(object);
+			control.page = nonEmptyString(annotation.controlPage(), class1.getSimpleName().toLowerCase() + ".jsp");
 			return control;
 		}
 
@@ -90,14 +104,33 @@ public abstract class Control {
 
 		@SuppressWarnings("unchecked")
 		protected List<String> values(Object object) {
+			logger.fine(() -> "object " + object);
+
 			Object value = getFieldValue(object);
 			Collection<?> collection = (value instanceof Collection) ? (Collection<?>) value
 					: ((value != null) ? singleton(value) : null);
-			return safeStream(collection).map(converter::convertToString).collect(toList());
+			StringConverter converter = converter(annotation);
+
+			List<String> list = safeStream(collection).map(converter::convertToString).collect(toList());
+			logger.fine(() -> "list " + list);
+
+			return list;
 		}
 
 		protected Object getFieldValue(Object object) {
 			return unsafeGet(() -> getGetter(field).invoke(object));
+		}
+
+		protected static StringConverter<?> converter(View.Field annotation) {
+			logger.fine(() -> "annotation " + annotation);
+
+			Class<? extends StringConverter<?>> class1 = nonNullInstance(
+					annotation != null ? annotation.converter() : null, ForString.class);
+			logger.fine(() -> "class1 " + class1);
+
+			StringConverter<?> converter = safeGet(
+					() -> (StringConverter<?>) class1.getDeclaredConstructor().newInstance());
+			return converter;
 		}
 	}
 }

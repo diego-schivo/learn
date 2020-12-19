@@ -11,12 +11,9 @@
     <tr>
       <c:forEach var="factory" items="${control.factories.values()}">
         <td>
-          <c:set var="uri0" value="${uri}" />
           <c:set var="control0" value="${control}" />
-          <c:set var="uri" value="${control.uri}" scope="request" />
           <c:set var="control" value="${factory.control(item)}" scope="request" />
           <jsp:include page="${control.page}" />
-          <c:set var="uri" value="${uri0}" scope="request" />
           <c:set var="control" value="${control0}" scope="request" />
         </td>
       </c:forEach>

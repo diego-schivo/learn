@@ -3,17 +3,21 @@ package com.backflipsource.petclinic;
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeRun;
+import static com.backflipsource.Helpers.safeStream;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.backflipsource.servlet.StringConverter.ForInteger;
 import com.backflipsource.servlet.StringConverter.ForLocalDate;
 import com.backflipsource.servlet.View;
 
 @View(uri = "/visits")
 public class Visit {
 
+	@View.Field(identifier = true, converter = ForInteger.class)
 	private Integer id;
 
 	@View.Field(converter = ForLocalDate.class)
@@ -22,6 +26,7 @@ public class Visit {
 	@View.Field
 	private String description;
 
+	// @View.Field
 	private Pet pet;
 
 	public Visit() {
@@ -79,7 +84,7 @@ public class Visit {
 		Visit visit2 = new Visit(2, LocalDate.parse("2013-01-02", formatter), "rabies shot", max);
 		Visit visit3 = new Visit(3, LocalDate.parse("2013-01-03", formatter), "neutered", max);
 		Visit visit4 = new Visit(4, LocalDate.parse("2013-01-04", formatter), "spayed", max);
-		list = safeList(new Visit[] { visit1, visit2, visit3, visit4 });
+		list = safeStream(new Visit[] { visit1, visit2, visit3, visit4 }).collect(toList());
 
 		safeRun(() -> samantha.setVisits(safeList(new Visit[] { visit1, visit4 })));
 		safeRun(() -> max.setVisits(safeList(new Visit[] { visit2, visit3 })));

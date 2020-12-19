@@ -22,11 +22,10 @@ public class DefaultTomcatHelper implements TomcatHelper {
 	private static final String TOMCAT_BASE_DIR = "tomcat-base-dir";
 	private static final String TOMCAT_DOC_BASE = "web";
 	private static final String TOMCAT_DOC_BASE_DEFAULT = "tomcat-doc-base";
-	private static final int TOMCAT_PORT_DEFAULT = 8080;
 	private static final String WEB_APP_MOUNT = "/WEB-INF/classes";
 
 	@Override
-	public void initTomcat(Tomcat tomcat, String root, String classes) {
+	public void initTomcat(Tomcat tomcat, int port, String root, String classes) {
 		Path tempPath;
 		try {
 			tempPath = createTempDirectory(TOMCAT_BASE_DIR);
@@ -36,12 +35,6 @@ public class DefaultTomcatHelper implements TomcatHelper {
 
 		tomcat.setBaseDir(tempPath.toString());
 
-		int port;
-		try {
-			port = Integer.valueOf(getenv("PORT"));
-		} catch (NumberFormatException e) {
-			port = TOMCAT_PORT_DEFAULT;
-		}
 		tomcat.setPort(port);
 
 		File rootDir = new File(Paths.get(root).toAbsolutePath().toString());

@@ -1,59 +1,45 @@
 package com.backflipsource.servlet;
 
-import static com.backflipsource.Helpers.getArgumentTypes;
-import static com.backflipsource.servlet.EntityContextListener.getViews;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 public class Table extends Control {
 
-	protected String uri;
-
 	protected List<?> items;
 
-	protected Map<String, Control.Factory> factories;
+	protected Class<?> view;
 
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+	@SuppressWarnings("rawtypes")
+	private Map<String, Control.Factory> factories;
 
 	public List<?> getItems() {
 		return items;
 	}
 
-	public void setItems(List<?> items) {
-		this.items = items;
-	}
-
-	public Map<String, Control.Factory> getFactories() {
-		return factories;
-	}
-
-	public void setFactories(Map<String, Control.Factory> factories) {
-		this.factories = factories;
+	public Class<?> getView() {
+		return view;
 	}
 
 	@SuppressWarnings("rawtypes")
+	public Map<String, Control.Factory> getFactories() {
+		if (factories == null) {
+			factories = getEntityView().controlFactories(getView());
+		}
+		return factories;
+	}
+
 	public static class Factory extends Control.Factory<Table> {
 
-		public Factory(Field field, StringConverter converter) {
-			super(Table.class, field, converter);
+		public Factory(Field field, View.Field annotation) {
+			super(Table.class, field, annotation);
 		}
 
 		@Override
 		public Table control(Object object) {
 			Table control = super.control(object);
-			Class<?> type = (Class<?>) getArgumentTypes(field.getGenericType()).get(0);
-			EntityView view = getViews().get(type.getName());
-			control.setUri(view.getUri());
-			control.setItems((List<?>) getFieldValue(object));
-			control.setFactories(view.controlFactories(View.List.class));
+			control.items = (List<?>) getFieldValue(object);
+			control.view = View.List.class;
 			return control;
 		}
 	}

@@ -30,7 +30,7 @@ public interface LangHelper {
 
 	<T> T nonNullInstance(T t1, Supplier<T> t2);
 
-	List<Field> getFields(Class<?> class1);
+	List<Field> classFields(Class<?> class1);
 
 	String getGetterName(String field);
 

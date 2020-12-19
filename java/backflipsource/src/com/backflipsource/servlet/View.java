@@ -31,6 +31,7 @@ public @interface View {
 	@Target(FIELD)
 	@Retention(RUNTIME)
 	@Repeatable(Fields.class)
+	@SuppressWarnings("rawtypes")
 	@interface Field {
 
 		boolean identifier() default false;
@@ -40,6 +41,8 @@ public @interface View {
 		Class<? extends Control.Factory> controlFactory() default Control.Factory.class;
 
 		Class<? extends StringConverter<?>> converter() default ForString.class;
+
+		String controlPage() default "";
 	}
 
 	interface List {

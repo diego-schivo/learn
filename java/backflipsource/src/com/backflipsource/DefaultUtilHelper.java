@@ -8,6 +8,8 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 import static java.util.Collections.emptyList;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
 
@@ -37,11 +39,20 @@ import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public class DefaultUtilHelper implements UtilHelper {
+
+	private static Logger logger = getLogger(DefaultUtilHelper.class.getName());
+
+	static {
+		// logger.setLevel(Level.ALL);
+		logger.setLevel(Level.INFO);
+	}
 
 	@Override
 	public boolean emptyCollection(Collection<?> collection) {
@@ -164,6 +175,7 @@ public class DefaultUtilHelper implements UtilHelper {
 		try {
 			runnable.run();
 		} catch (Exception e) {
+			logger.log(FINE, e.getMessage(), e);
 		}
 	}
 
@@ -182,7 +194,7 @@ public class DefaultUtilHelper implements UtilHelper {
 			T result = supplier.get();
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(FINE, e.getMessage(), e);
 			return null;
 		}
 	}
@@ -279,5 +291,41 @@ public class DefaultUtilHelper implements UtilHelper {
 		} catch (IOException e) {
 			// e.printStackTrace();
 		}
+	}
+
+	@Override
+	public <T> T arrayGet(T[] array, int index) {
+		int length = (array != null) ? array.length : 0;
+		if (index < 0 || index >= length) {
+			return null;
+		}
+		return array[index];
+	}
+
+	@Override
+	public <T> void arraySet(T[] array, int index, T value) {
+		int length = (array != null) ? array.length : 0;
+		if (index < 0 || index >= length) {
+			return;
+		}
+		array[index] = value;
+	}
+
+	@Override
+	public <T> T listGet(List<T> list, int index) {
+		int size = (list != null) ? list.size() : 0;
+		if (index < 0 || index >= size) {
+			return null;
+		}
+		return list.get(index);
+	}
+
+	@Override
+	public <T> T listSet(List<T> list, int index, T value) {
+		int size = (list != null) ? list.size() : 0;
+		if (index < 0 || index >= size) {
+			return null;
+		}
+		return list.set(index, value);
 	}
 }

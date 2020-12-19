@@ -6,6 +6,7 @@ import static com.backflipsource.Helpers.startExecutorService;
 import static com.backflipsource.Helpers.stopExecutorService;
 import static com.backflipsource.Helpers.watchDirectories;
 import static java.lang.Runtime.getRuntime;
+import static java.lang.System.getenv;
 import static java.lang.Thread.sleep;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
@@ -27,7 +28,8 @@ public class Server {
 	private static final String ROOT_DIR = "";
 	private static final String WATCH_EXTENSION = ".java";
 	private static final String WATCH_PATH = "src";
-
+	private static final int TOMCAT_PORT_DEFAULT = 8081;
+	
 	private Tomcat tomcat;
 
 	public Server() {
@@ -84,7 +86,15 @@ public class Server {
 
 	protected boolean serve() {
 		tomcat = new Tomcat();
-		initTomcat(tomcat, ROOT_DIR, COMPILE_DIR);
+
+		int port;
+		try {
+			port = Integer.valueOf(getenv("PORT"));
+		} catch (NumberFormatException e) {
+			port = TOMCAT_PORT_DEFAULT;
+		}
+
+		initTomcat(tomcat, port, ROOT_DIR, COMPILE_DIR);
 		try {
 			tomcat.start();
 		} catch (LifecycleException e) {

@@ -11,21 +11,16 @@ public class Span extends Control {
 		return multiple;
 	}
 
-	public void setMultiple(boolean multiple) {
-		this.multiple = multiple;
-	}
-
-	@SuppressWarnings("rawtypes")
 	public static class Factory extends Control.Factory<Span> {
 
-		public Factory(Field field, StringConverter converter) {
-			super(Span.class, field, converter);
+		public Factory(Field field, View.Field annotation) {
+			super(Span.class, field, annotation);
 		}
 
 		@Override
 		public Span control(Object object) {
 			Span control = super.control(object);
-			control.setMultiple(Collection.class.isAssignableFrom(field.getType()));
+			control.multiple = Collection.class.isAssignableFrom(field.getType());
 			return control;
 		}
 	}

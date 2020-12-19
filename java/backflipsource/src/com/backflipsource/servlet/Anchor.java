@@ -4,11 +4,10 @@ import java.lang.reflect.Field;
 
 public class Anchor extends Control {
 
-	@SuppressWarnings("rawtypes")
 	public static class Factory extends Control.Factory<Anchor> {
 
-		public Factory(Field field, StringConverter converter) {
-			super(Anchor.class, field, converter);
+		public Factory(Field field, View.Field annotation) {
+			super(Anchor.class, field, annotation);
 		}
 	}
 }

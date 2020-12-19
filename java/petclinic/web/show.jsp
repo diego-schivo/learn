@@ -11,6 +11,7 @@
 <h2>Petclinic</h2>
 
 <table>
+  <c:set var="controlFactories" value="${entityView.controlFactories(view)}" />
   <c:forEach var="entry" items="${controlFactories}">
     <tr>
       <td>

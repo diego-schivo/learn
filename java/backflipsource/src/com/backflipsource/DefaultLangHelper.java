@@ -123,7 +123,7 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
-	public List<Field> getFields(Class<?> class1) {
+	public List<Field> classFields(Class<?> class1) {
 		if (class1 == null) {
 			return emptyList();
 		}
@@ -170,7 +170,7 @@ public class DefaultLangHelper implements LangHelper {
 		if (class1 == null) {
 			return emptyMap();
 		}
-		List<Field> fields = getFields(class1);
+		List<Field> fields = classFields(class1);
 		return safeStream(fields).map(field -> {
 			String getterName = getGetterName(field.getName());
 			Method getter = safeGet(() -> class1.getMethod(getterName));
@@ -187,7 +187,7 @@ public class DefaultLangHelper implements LangHelper {
 		if (class1 == null) {
 			return emptyMap();
 		}
-		List<Field> fields = getFields(class1);
+		List<Field> fields = classFields(class1);
 		return safeStream(fields).map(field -> {
 			String setterName = getSetterName(field.getName());
 			Method setter = safeStream(class1.getMethods())

@@ -105,8 +105,8 @@ public class Helpers {
 		return getLangHelper().nonNullInstance(t1, t2);
 	}
 
-	public static List<Field> getFields(Class<?> class1) {
-		return getLangHelper().getFields(class1);
+	public static List<Field> classFields(Class<?> class1) {
+		return getLangHelper().classFields(class1);
 	}
 
 	public static String getGetterName(String field) {
@@ -234,11 +234,27 @@ public class Helpers {
 		getUtilHelper().watchDirectories(start, consumer);
 	}
 
+	public static <T> T arrayGet(T[] array, int index) {
+		return getUtilHelper().arrayGet(array, index);
+	}
+
+	public static <T> void arraySet(T[] array, int index, T value) {
+		getUtilHelper().arraySet(array, index, value);
+	}
+
+	public static <T> T listGet(List<T> list, int index) {
+		return getUtilHelper().listGet(list, index);
+	}
+
+	public <T> T listSet(List<T> list, int index, T value) {
+		return getUtilHelper().listSet(list, index, value);
+	}
+
 	public static void forwardServletRequest(String path, ServletRequest request, ServletResponse response) {
 		getServletHelper().forwardServletRequest(path, request, response);
 	}
 
-	public static void initTomcat(Tomcat tomcat, String root, String classes) {
-		getTomcatHelper().initTomcat(tomcat, root, classes);
+	public static void initTomcat(Tomcat tomcat, int port, String root, String classes) {
+		getTomcatHelper().initTomcat(tomcat, port, root, classes);
 	}
 }

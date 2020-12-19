@@ -64,6 +64,14 @@ public interface UtilHelper {
 
 	void watchDirectories(Path start, Consumer<Path[]> consumer);
 
+	<T> T arrayGet(T[] array, int index);
+
+	<T> void arraySet(T[] array, int index, T value);
+
+	<T> T listGet(List<T> list, int index);
+
+	<T> T listSet(List<T> list, int index, T value);
+
 	@FunctionalInterface
 	public interface RunnableThrowingException {
 

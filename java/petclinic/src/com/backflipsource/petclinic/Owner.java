@@ -1,6 +1,7 @@
 package com.backflipsource.petclinic;
 
-import static com.backflipsource.Helpers.safeList;
+import static com.backflipsource.Helpers.safeStream;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import com.backflipsource.servlet.View;
 @View(uri = "/owners")
 public class Owner {
 
-	@View.Field(identifier = true, view = View.List.class, controlFactory = OwnerIdAnchorFactory.class, converter = ForInteger.class)
+	@View.Field(identifier = true, view = View.List.class, converter = ForInteger.class, controlPage = "owner-id-anchor.jsp")
 	private Integer id;
 
 	@View.Field(view = { View.Show.class, View.Edit.class })
@@ -28,7 +29,7 @@ public class Owner {
 	@View.Field
 	private String telephone;
 
-	@View.Field(view = View.Show.class, controlFactory = OwnerPetsTableFactory.class, converter = PetStringConverter.class)
+	@View.Field(view = View.Show.class, converter = PetStringConverter.class, controlPage = "owner-pets-table.jsp")
 	private List<Pet> pets;
 
 	public Owner() {
@@ -114,6 +115,9 @@ public class Owner {
 		Owner maria = new Owner(8, "Maria", "Escobito", "345 Maple St.", "Madison", "6085557683", null);
 		Owner david = new Owner(9, "David", "Schroeder", "2749 Blackhawk Trail", "Madison", "6085559435", null);
 		Owner carlos = new Owner(10, "Carlos", "Estaban", "2335 Independence La.", "Waunakee", "6085555487", null);
-		list = safeList(new Owner[] { george, betty, eduardo, harold, peter, jean, jeff, maria, david, david });
+		// list = safeList(new Owner[] { george, betty, eduardo, harold, peter, jean,
+		// jeff, maria, david, david });
+		list = safeStream(new Owner[] { george, betty, eduardo, harold, peter, jean, jeff, maria, david, david })
+				.collect(toList());
 	}
 }

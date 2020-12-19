@@ -28,6 +28,7 @@ tr:nth-child(even) {
 
 <table>
   <tr>
+    <c:set var="controlFactories" value="${entityView.controlFactories(view)}" />
     <c:forEach var="field" items="${controlFactories.keySet()}">
       <th>${field}</th>
     </c:forEach>

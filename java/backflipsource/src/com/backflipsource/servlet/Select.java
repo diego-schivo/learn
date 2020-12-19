@@ -24,16 +24,8 @@ public class Select extends Control {
 		return multiple;
 	}
 
-	public void setMultiple(boolean multiple) {
-		this.multiple = multiple;
-	}
-
 	public List<String> getOptions() {
 		return options;
-	}
-
-	public void setOptions(List<String> options) {
-		this.options = options;
 	}
 
 	@Target(FIELD)
@@ -46,14 +38,14 @@ public class Select extends Control {
 	@SuppressWarnings("rawtypes")
 	public static class Factory extends Control.Factory<Select> {
 
-		public Factory(Field field, StringConverter converter) {
-			super(Select.class, field, converter);
+		public Factory(Field field, View.Field annotation) {
+			super(Select.class, field, annotation);
 		}
 
 		@Override
 		public Select control(Object object) {
 			Select control = super.control(object);
-			control.setMultiple(Collection.class.isAssignableFrom(field.getType()));
+			control.multiple = Collection.class.isAssignableFrom(field.getType());
 
 			List<String> options;
 			Options options2 = field.getAnnotation(Options.class);
@@ -67,7 +59,7 @@ public class Select extends Control {
 						.map(item -> safeGet(() -> (String) item.getClass().getMethod("getName").invoke(item)))
 						.collect(toList());
 			}
-			control.setOptions(options);
+			control.options = options;
 
 			return control;
 		}
