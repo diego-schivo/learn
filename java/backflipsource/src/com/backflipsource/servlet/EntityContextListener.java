@@ -57,7 +57,7 @@ public class EntityContextListener implements ServletContextListener {
 		logger.fine(() -> "classes " + classes);
 
 		views = safeStream(classes).map(class1 -> {
-			EntityView view = new EntityView(class1);
+			EntityView view = new DefaultEntityView(class1);
 			return new Object[] { class1.getName(), view };
 		}).collect(linkedHashMapCollector(objects -> (String) objects[0], objects -> (EntityView) objects[1]));
 		logger.fine(() -> "views " + views);

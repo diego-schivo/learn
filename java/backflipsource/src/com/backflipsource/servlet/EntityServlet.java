@@ -1,8 +1,8 @@
 package com.backflipsource.servlet;
 
+import static com.backflipsource.Helpers.classFields;
 import static com.backflipsource.Helpers.emptyString;
 import static com.backflipsource.Helpers.forwardServletRequest;
-import static com.backflipsource.Helpers.classFields;
 import static com.backflipsource.Helpers.getGetter;
 import static com.backflipsource.Helpers.getSetters;
 import static com.backflipsource.Helpers.nonEmptyString;
@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings({ "rawtypes", "serial" })
 public class EntityServlet extends HttpServlet {
+
+	public static String CONTROL_STACK = EntityServlet.class.getName() + ".controlStack";
 
 	private static Logger logger = getLogger(EntityServlet.class.getName());
 
@@ -58,8 +61,8 @@ public class EntityServlet extends HttpServlet {
 		logger.fine("EntityServlet init");
 
 		class1 = unsafeGet(() -> Class.forName(getServletName()));
-		fields = safeStream(classFields(class1)).filter(field -> field.getAnnotationsByType(View.Field.class).length > 0)
-				.collect(toList());
+		fields = safeStream(classFields(class1))
+				.filter(field -> field.getAnnotationsByType(View.Field.class).length > 0).collect(toList());
 		idField = safeStream(fields)
 				.filter(field -> safeStream(field.getAnnotationsByType(View.Field.class))
 						.anyMatch(View.Field::identifier))
@@ -80,7 +83,10 @@ public class EntityServlet extends HttpServlet {
 		if (request.getAttribute("requestURI") == null) {
 			request.setAttribute("requestURI", request.getRequestURI());
 		}
-		request.setAttribute("entityView", entityView);
+
+		// request.setAttribute("entityView", entityView);
+		Stack<Control> stack = new Stack<>();
+		request.setAttribute(CONTROL_STACK, stack);
 
 		String path = request.getRequestURI().substring(request.getContextPath().length());
 		Matcher matcher = pattern.matcher(path);
@@ -99,20 +105,21 @@ public class EntityServlet extends HttpServlet {
 			view = new1 || !emptyString(matcher.group(3)) ? View.Edit.class : View.Show.class;
 			Object item = new1 ? unsafeGet(() -> class1.getDeclaredConstructor().newInstance())
 					: item(matcher.group(2).substring(1));
-			request.setAttribute("item", item);
+			// request.setAttribute("item", item);
+			stack.push(new DescriptionList.Factory(entityView).control(item));
 		} else if (items != null) {
 			view = View.List.class;
-			request.setAttribute("items", items);
+			// request.setAttribute("items", items);
+			stack.push(new Table.Factory(entityView).control(items));
 		} else if (item0 != null) {
 			view = View.Show.class;
-			request.setAttribute("item", item0);
+			// request.setAttribute("item", item0);
+			stack.push(new DescriptionList.Factory(entityView).control(item0));
 		} else {
 			view = null;
 		}
 
-		// Map<String, Factory> controlFactories = entityView.controlFactories(view);
-		// request.setAttribute("controlFactories", controlFactories);
-		request.setAttribute("view", view);
+		// request.setAttribute("view", view);
 
 		View view2 = safeStream(class1.getAnnotationsByType(View.class))
 				.filter(item -> safeList(item.value()).contains(view)).findFirst().orElse(null);

@@ -11,21 +11,16 @@ import static java.util.stream.Collectors.toList;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.List;
 
-public class Select extends Control {
-
-	protected boolean multiple;
-
-	protected List<String> options;
+public class Select extends AbstractControl {
 
 	public boolean isMultiple() {
-		return multiple;
+		return ((Factory) factory).multiple;
 	}
 
 	public List<String> getOptions() {
-		return options;
+		return ((Factory) factory).options;
 	}
 
 	@Target(FIELD)
@@ -36,32 +31,27 @@ public class Select extends Control {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static class Factory extends Control.Factory<Select> {
+	public static class Factory extends AbstractFactory<Select> {
+
+		protected boolean multiple;
+
+		protected List<String> options;
 
 		public Factory(Field field, View.Field annotation) {
 			super(Select.class, field, annotation);
-		}
 
-		@Override
-		public Select control(Object object) {
-			Select control = super.control(object);
-			control.multiple = Collection.class.isAssignableFrom(field.getType());
+			multiple = Iterable.class.isAssignableFrom(field.getType());
 
-			List<String> options;
 			Options options2 = field.getAnnotation(Options.class);
 			if (options2 != null) {
 				options = safeList(options2.value());
 			} else {
-				Class<?> type = control.isMultiple() ? (Class<?>) getArgumentTypes(field.getGenericType()).get(0)
-						: field.getType();
+				Class<?> type = multiple ? (Class<?>) getArgumentTypes(field.getGenericType()).get(0) : field.getType();
 				List<?> list = safeGet(() -> (List) type.getDeclaredField("list").get(null));
 				options = safeStream(list)
 						.map(item -> safeGet(() -> (String) item.getClass().getMethod("getName").invoke(item)))
 						.collect(toList());
 			}
-			control.options = options;
-
-			return control;
 		}
 	}
 }

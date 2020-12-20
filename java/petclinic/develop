@@ -2,4 +2,10 @@
 if [ ! -d lib-src ]; then
   mkdir lib-src
   curl -s https://downloads.apache.org/tomcat/tomcat-8/v8.5.59/src/apache-tomcat-8.5.59-src.tar.gz | tar -xvz -C lib-src apache-tomcat-8.5.59-src/java --strip-components=2
+  TMPFILE=`mktemp`
+  PWD=`pwd`
+  wget https://downloads.apache.org/tomcat/taglibs/taglibs-standard-1.2.5/taglibs-standard-1.2.5-source-release.zip -O $TMPFILE
+  unzip -qq $TMPFILE "taglibs-standard-1.2.5/impl/src/main/java/*" -d lib-src
+  mv lib-src/taglibs-standard-1.2.5/impl/src/main/java/org lib-src
+  rm $TMPFILE
 fi

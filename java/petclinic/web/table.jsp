@@ -3,18 +3,17 @@
 
 <table>
   <tr>
-    <c:forEach var="field" items="${control.factories.keySet()}">
-      <th>${field}</th>
+    <c:forEach var="factory" items="${control.factories}">
+      <th>${factory.name}</th>
     </c:forEach>
   </tr>
-  <c:forEach var="item" items="${control.items}" varStatus="loop">
+  <c:forEach var="item" items="${control.items}">
     <tr>
-      <c:forEach var="factory" items="${control.factories.values()}">
+      <c:forEach var="factory" items="${control.factories}">
         <td>
-          <c:set var="control0" value="${control}" />
-          <c:set var="control" value="${factory.control(item)}" scope="request" />
-          <jsp:include page="${control.page}" />
-          <c:set var="control" value="${control0}" scope="request" />
+          <bfs:control var="control" control="${factory.control(item)}">
+            <jsp:include page="${control.page}" />
+          </bfs:control>
         </td>
       </c:forEach>
     </tr>

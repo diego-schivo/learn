@@ -10,22 +10,9 @@
 
 <h2>Petclinic</h2>
 
-<table>
-  <c:set var="controlFactories" value="${entityView.controlFactories(view)}" />
-  <c:forEach var="entry" items="${controlFactories}">
-    <tr>
-      <td>
-        <label>${entry.key}</label>
-      </td>
-      <td>
-        <c:set var="control" value="${entry.value.control(item)}" scope="request" />
-        <jsp:include page="${control.page}" />
-      </td>
-    </tr>
-  </c:forEach>
-</table>
-<a href="${requestURI}/edit">edit</a>
-<a href="${requestURI.substring(0, requestURI.lastIndexOf('/'))}">back</a>
+<bfs:control var="control">
+  <jsp:include page="${control.page}" />
+</bfs:control>
 
 </body>
 </html>

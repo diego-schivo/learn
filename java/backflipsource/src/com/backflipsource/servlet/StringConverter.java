@@ -20,6 +20,19 @@ public interface StringConverter<T> {
 //		return safeStream(splitString(string, ',')).map(item -> decode(item, UTF_8)).toArray(String[]::new);
 //	}
 
+	public class Null implements StringConverter<Object> {
+
+		@Override
+		public String convertToString(Object instance) {
+			return null;
+		}
+
+		@Override
+		public Object convertFromString(String string) {
+			return null;
+		}
+	}
+
 	public class ForString implements StringConverter<String> {
 
 		@Override

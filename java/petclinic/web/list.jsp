@@ -26,26 +26,9 @@ tr:nth-child(even) {
 
 <h2>Petclinic</h2>
 
-<table>
-  <tr>
-    <c:set var="controlFactories" value="${entityView.controlFactories(view)}" />
-    <c:forEach var="field" items="${controlFactories.keySet()}">
-      <th>${field}</th>
-    </c:forEach>
-  </tr>
-  <c:forEach var="item" items="${items}" varStatus="loop">
-    <tr>
-      <c:forEach var="factory" items="${controlFactories.values()}">
-        <td>
-          <c:set var="control" value="${factory.control(item)}" scope="request" />
-          <jsp:include page="${control.page}" />
-        </td>
-      </c:forEach>
-    </tr>
-  </c:forEach>
-</table>
-
-<a href="${requestURI.substring(0, requestURI.lastIndexOf('/'))}">back</a>
+<bfs:control var="control">
+  <jsp:include page="${control.page}" />
+</bfs:control>
 
 </body>
 </html>
