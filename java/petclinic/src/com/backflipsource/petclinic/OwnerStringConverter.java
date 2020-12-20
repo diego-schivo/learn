@@ -2,6 +2,7 @@ package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.emptyString;
 import static com.backflipsource.Helpers.safeStream;
+import static java.lang.Integer.parseInt;
 
 import java.util.Objects;
 
@@ -22,8 +23,8 @@ public class OwnerStringConverter implements StringConverter<Owner> {
 		if (emptyString(string)) {
 			return null;
 		}
-		int id = Integer.parseInt(string);
-		return safeStream(Owner.list).filter(item -> Objects.equals(item.getId(), id)).findFirst().orElse(null);
+		int id = parseInt(string);
+		return safeStream(Owner.data.list()).filter(item -> Objects.equals(item.getId(), id)).findFirst().orElse(null);
 	}
 
 }

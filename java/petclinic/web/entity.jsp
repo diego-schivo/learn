@@ -21,18 +21,12 @@
 </nav>
 
 <section>
-  <h2>Welcome</h2>
-</section>
+  <h2>Owners</h2>
 
-<%--
-<ul>
-  <c:forEach var="entry" items="${servlets}">
-    <li>
-      <a href="${pageContext.request.contextPath}${entry.value.mappings.iterator().next()}">${entry.key}</a>
-    </li>
-  </c:forEach>
-</ul>
---%>
+  <bfs:control var="control">
+    <jsp:include page="${control.page}" />
+  </bfs:control>
+</section>
 
 </body>
 </html>

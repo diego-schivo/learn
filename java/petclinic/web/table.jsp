@@ -19,3 +19,4 @@
     </tr>
   </c:forEach>
 </table>
+<a href="${requestURI}/new">New</a>

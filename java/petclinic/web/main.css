@@ -1,0 +1,41 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+nav ul {
+  display: flex;
+  justify-content: end;
+  list-style: none;
+}
+
+nav a {
+  display: block;
+  padding: 1rem;
+}
+
+nav ul,
+section {
+  margin: 0 auto;
+  width: 75rem;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}

@@ -1,30 +1,22 @@
 package com.backflipsource.servlet;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.List;
 
 public class Table extends AbstractControl {
 
 	protected List<?> items;
 
-	@SuppressWarnings("rawtypes")
-	private Collection<Control.Factory> factories;
-
 	public List<?> getItems() {
 		return items;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Collection<Control.Factory> getFactories() {
-		if (factories == null) {
-			factories = getEntityView().controlFactories(View.List.class).values();
-			factories.forEach(factory -> factory.setParent(this));
-		}
-		return factories;
+	@Override
+	protected Class<?> getView() {
+		return View.List.class;
 	}
 
-	public static class Factory extends AbstractFactory<Table> {
+	public static class Factory extends AbstractControl.Factory<Table> {
 
 		public Factory(Field field, View.Field annotation) {
 			super(Table.class, field, annotation);

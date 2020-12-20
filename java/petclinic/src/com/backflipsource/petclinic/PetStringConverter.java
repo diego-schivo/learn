@@ -22,7 +22,8 @@ public class PetStringConverter implements StringConverter<Pet> {
 		if (emptyString(string)) {
 			return null;
 		}
-		return safeStream(Pet.list).filter(item -> Objects.equals(item.getName(), string)).findFirst().orElse(null);
+		return safeStream(Pet.data.list()).filter(item -> Objects.equals(item.getName(), string)).findFirst()
+				.orElse(null);
 	}
 
 }

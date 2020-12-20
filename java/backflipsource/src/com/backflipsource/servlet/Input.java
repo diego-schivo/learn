@@ -15,7 +15,12 @@ public class Input extends AbstractControl {
 		return ((Factory) factory).type;
 	}
 
-	public static class Factory extends AbstractFactory<Input> {
+	@Override
+	protected Class<?> getView() {
+		return View.Edit.class;
+	}
+
+	public static class Factory extends AbstractControl.Factory<Input> {
 
 		protected String type;
 

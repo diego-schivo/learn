@@ -21,6 +21,8 @@ public @interface View {
 
 	String page() default "";
 
+	Class<? extends EntityHandler> handler() default EntityHandler.class;
+
 	@Target(FIELD)
 	@Retention(RUNTIME)
 	@interface Fields {

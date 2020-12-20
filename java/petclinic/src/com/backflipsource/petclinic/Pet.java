@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.backflipsource.servlet.EntityData;
 import com.backflipsource.servlet.Select;
 import com.backflipsource.servlet.Select.Options;
 import com.backflipsource.servlet.StringConverter.ForInteger;
@@ -98,21 +99,42 @@ public class Pet {
 		this.visits = visits;
 	}
 
-	public static List<Pet> list;
+	public static EntityData<Pet> data = new Data();
 
-	static {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	protected static class Data implements EntityData<Pet> {
 
-		Owner george = safeGet(() -> Owner.list.get(0));
-		Owner jean = safeGet(() -> Owner.list.get(5));
+		protected List<Pet> list;
 
-		Pet leo = new Pet(1, "Leo", LocalDate.parse("2010-09-07", formatter), "cat", george);
-		Pet samantha = new Pet(7, "Samantha", LocalDate.parse("2012-09-04", formatter), "cat", jean);
-		Pet max = new Pet(8, "Max", LocalDate.parse("2012-09-04", formatter), "cat", jean);
-		// list = safeList(new Pet[] { leo, samantha, max });
-		list = safeStream(new Pet[] { leo, samantha, max }).collect(toList());
+		protected Integer nextId;
 
-		safeRun(() -> george.setPets(safeList(new Pet[] { leo })));
-		safeRun(() -> jean.setPets(safeList(new Pet[] { samantha, max })));
+		protected Data() {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			Owner george = safeGet(() -> Owner.data.list().get(0));
+			Owner jean = safeGet(() -> Owner.data.list().get(5));
+
+			Pet leo = new Pet(1, "Leo", LocalDate.parse("2010-09-07", formatter), "cat", george);
+			Pet samantha = new Pet(7, "Samantha", LocalDate.parse("2012-09-04", formatter), "cat", jean);
+			Pet max = new Pet(8, "Max", LocalDate.parse("2012-09-04", formatter), "cat", jean);
+			// list = safeList(new Pet[] { leo, samantha, max });
+			list = safeStream(new Pet[] { leo, samantha, max }).collect(toList());
+
+			safeRun(() -> george.setPets(safeList(new Pet[] { leo })));
+			safeRun(() -> jean.setPets(safeList(new Pet[] { samantha, max })));
+		}
+
+		@Override
+		public List<Pet> list() {
+			return list;
+		}
+
+		@Override
+		public void save(Pet t) {
+			if (t.getId() != null) {
+				return;
+			}
+			t.setId(nextId++);
+			list.add(t);
+		}
 	}
 }

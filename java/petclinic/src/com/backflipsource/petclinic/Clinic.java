@@ -29,6 +29,6 @@ public class Clinic {
 	public static Clinic instance;
 
 	static {
-		instance = new Clinic(Owner.list);
+		instance = new Clinic(Owner.data.list());
 	}
 }

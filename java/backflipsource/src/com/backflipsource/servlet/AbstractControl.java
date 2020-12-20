@@ -36,7 +36,7 @@ public abstract class AbstractControl implements Control {
 		logger.addHandler(handler);
 	}
 
-	protected AbstractFactory<?> factory;
+	protected Factory<?> factory;
 
 	// TODO target
 	protected Object item;
@@ -82,7 +82,21 @@ public abstract class AbstractControl implements Control {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static abstract class AbstractFactory<T extends AbstractControl> implements Factory {
+	private Collection<Control.Factory> factories;
+
+	@SuppressWarnings("rawtypes")
+	public Collection<Control.Factory> getFactories() {
+		if (factories == null) {
+			factories = getEntityView().controlFactories(getView()).values();
+			factories.forEach(factory -> factory.setParent(this));
+		}
+		return factories;
+	}
+
+	protected abstract Class<?> getView();
+
+	@SuppressWarnings("rawtypes")
+	public static abstract class Factory<T extends AbstractControl> implements Control.Factory {
 
 		protected Class<T> class1;
 
@@ -98,15 +112,15 @@ public abstract class AbstractControl implements Control {
 
 		protected Control parent;
 
-		protected AbstractFactory(Class<T> class1, Field field, View.Field annotation) {
+		protected Factory(Class<T> class1, Field field, View.Field annotation) {
 			this(class1, safeGet(
 					() -> getViews().get(((Class<?>) listGet(getArgumentTypes(field.getGenericType()), 0)).getName())),
 					field.getName(), object -> unsafeGet(() -> object != null ? getGetter(field).invoke(object) : null),
 					converter(annotation), annotation.controlPage());
 		}
 
-		protected AbstractFactory(Class<T> class1, EntityView entityView, String name,
-				Function<Object, Object> getValue, StringConverter valueConverter, String page) {
+		protected Factory(Class<T> class1, EntityView entityView, String name, Function<Object, Object> getValue,
+				StringConverter valueConverter, String page) {
 			this.class1 = class1;
 			this.entityView = entityView;
 			this.name = name;
@@ -115,7 +129,7 @@ public abstract class AbstractControl implements Control {
 			this.page = nonEmptyString(page, class1.getSimpleName().toLowerCase() + ".jsp");
 		}
 
-		protected AbstractFactory(Class<T> class1, EntityView entityView) {
+		protected Factory(Class<T> class1, EntityView entityView) {
 			this(class1, entityView, null, null, null, null);
 		}
 

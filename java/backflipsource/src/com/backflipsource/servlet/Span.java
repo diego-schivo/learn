@@ -8,7 +8,12 @@ public class Span extends AbstractControl {
 		return ((Factory) factory).multiple;
 	}
 
-	public static class Factory extends AbstractFactory<Span> {
+	@Override
+	protected Class<?> getView() {
+		return View.Show.class;
+	}
+
+	public static class Factory extends AbstractControl.Factory<Span> {
 
 		protected boolean multiple;
 

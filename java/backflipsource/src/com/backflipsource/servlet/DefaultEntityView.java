@@ -5,7 +5,7 @@ import static com.backflipsource.Helpers.linkedHashMapCollector;
 import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.servlet.AbstractControl.AbstractFactory.converter;
+import static com.backflipsource.servlet.AbstractControl.Factory.converter;
 import static java.util.function.Predicate.not;
 import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toList;
@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.backflipsource.Helpers;
-import com.backflipsource.servlet.AbstractControl.AbstractFactory;
+import com.backflipsource.servlet.AbstractControl.Factory;
 
 public class DefaultEntityView implements EntityView {
 
@@ -45,14 +45,6 @@ public class DefaultEntityView implements EntityView {
 		fields = safeStream(classFields(class1))
 				.filter(field -> field.getAnnotationsByType(View.Field.class).length > 0).collect(toList());
 		this.uri = uri(class1);
-	}
-
-	public Class<?> getClass1() {
-		return class1;
-	}
-
-	public List<Field> getFields() {
-		return fields;
 	}
 
 	@Override
@@ -94,7 +86,7 @@ public class DefaultEntityView implements EntityView {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected Class<? extends AbstractFactory> defaultControlFactoryClass(Field field, View.Field annotation,
+	protected Class<? extends Factory> defaultControlFactoryClass(Field field, View.Field annotation,
 			Class<?> view) {
 		boolean identifier = annotation.identifier();
 		boolean edit = Objects.equals(view, View.Edit.class);

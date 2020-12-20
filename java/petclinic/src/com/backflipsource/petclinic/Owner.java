@@ -1,14 +1,16 @@
 package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.safeStream;
+import static com.backflipsource.Helpers.safeString;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
+import com.backflipsource.servlet.EntityData;
 import com.backflipsource.servlet.StringConverter.ForInteger;
 import com.backflipsource.servlet.View;
 
-@View(uri = "/owners")
+@View(uri = "/owners", handler = OwnerHandler.class)
 public class Owner {
 
 	@View.Field(identifier = true, view = View.List.class, converter = ForInteger.class, controlPage = "owner-id-anchor.jsp")
@@ -102,22 +104,49 @@ public class Owner {
 		this.pets = pets;
 	}
 
-	public static List<Owner> list;
+	public static EntityData<Owner> data = new Data();
 
-	static {
-		Owner george = new Owner(1, "George", "Franklin", "110 W. Liberty St.", "Madison", "6085551023", null);
-		Owner betty = new Owner(2, "Betty", "Davis", "638 Cardinal Ave.", "Sun Prairie", "6085551749", null);
-		Owner eduardo = new Owner(3, "Eduardo", "Rodriquez", "2693 Commerce St.", "McFarland", "6085558763", null);
-		Owner harold = new Owner(4, "Harold", "Davis", "563 Friendly St.", "Windsor", "6085553198", null);
-		Owner peter = new Owner(5, "Peter", "McTavish", "2387 S. Fair Way", "Madison", "6085552765", null);
-		Owner jean = new Owner(6, "Jean", "Coleman", "105 N. Lake St.", "Monona", "6085552654", null);
-		Owner jeff = new Owner(7, "Jeff", "Black", "1450 Oak Blvd.", "Monona", "6085555387", null);
-		Owner maria = new Owner(8, "Maria", "Escobito", "345 Maple St.", "Madison", "6085557683", null);
-		Owner david = new Owner(9, "David", "Schroeder", "2749 Blackhawk Trail", "Madison", "6085559435", null);
-		Owner carlos = new Owner(10, "Carlos", "Estaban", "2335 Independence La.", "Waunakee", "6085555487", null);
-		// list = safeList(new Owner[] { george, betty, eduardo, harold, peter, jean,
-		// jeff, maria, david, david });
-		list = safeStream(new Owner[] { george, betty, eduardo, harold, peter, jean, jeff, maria, david, david })
-				.collect(toList());
+	protected static class Data implements EntityData<Owner> {
+
+		protected List<Owner> list;
+
+		protected Integer nextId;
+
+		protected Data() {
+			Owner george = new Owner(1, "George", "Franklin", "110 W. Liberty St.", "Madison", "6085551023", null);
+			Owner betty = new Owner(2, "Betty", "Davis", "638 Cardinal Ave.", "Sun Prairie", "6085551749", null);
+			Owner eduardo = new Owner(3, "Eduardo", "Rodriquez", "2693 Commerce St.", "McFarland", "6085558763", null);
+			Owner harold = new Owner(4, "Harold", "Davis", "563 Friendly St.", "Windsor", "6085553198", null);
+			Owner peter = new Owner(5, "Peter", "McTavish", "2387 S. Fair Way", "Madison", "6085552765", null);
+			Owner jean = new Owner(6, "Jean", "Coleman", "105 N. Lake St.", "Monona", "6085552654", null);
+			Owner jeff = new Owner(7, "Jeff", "Black", "1450 Oak Blvd.", "Monona", "6085555387", null);
+			Owner maria = new Owner(8, "Maria", "Escobito", "345 Maple St.", "Madison", "6085557683", null);
+			Owner david = new Owner(9, "David", "Schroeder", "2749 Blackhawk Trail", "Madison", "6085559435", null);
+			Owner carlos = new Owner(10, "Carlos", "Estaban", "2335 Independence La.", "Waunakee", "6085555487", null);
+			list = safeStream(new Owner[] { george, betty, eduardo, harold, peter, jean, jeff, maria, david, carlos })
+					.collect(toList());
+
+			nextId = 11;
+		}
+
+		@Override
+		public List<Owner> list() {
+			return list;
+		}
+
+		@Override
+		public void save(Owner t) {
+			if (t.getId() != null) {
+				return;
+			}
+			t.setId(nextId++);
+			list.add(t);
+		}
+
+		public List<Owner> find(String lastName) {
+			String prefix = safeString(lastName).toLowerCase();
+			return safeStream(list).filter(item -> safeString(item.getLastName()).toLowerCase().startsWith(prefix))
+					.collect(toList());
+		}
 	}
 }

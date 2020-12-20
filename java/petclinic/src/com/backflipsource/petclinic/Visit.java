@@ -77,8 +77,8 @@ public class Visit {
 	static {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		Pet samantha = safeGet(() -> Pet.list.get(1));
-		Pet max = safeGet(() -> Pet.list.get(2));
+		Pet samantha = safeGet(() -> Pet.data.list().get(1));
+		Pet max = safeGet(() -> Pet.data.list().get(2));
 
 		Visit visit1 = new Visit(1, LocalDate.parse("2013-01-01", formatter), "rabies shot", samantha);
 		Visit visit2 = new Visit(2, LocalDate.parse("2013-01-02", formatter), "rabies shot", max);

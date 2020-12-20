@@ -23,6 +23,11 @@ public class Select extends AbstractControl {
 		return ((Factory) factory).options;
 	}
 
+	@Override
+	protected Class<?> getView() {
+		return View.Edit.class;
+	}
+
 	@Target(FIELD)
 	@Retention(RUNTIME)
 	public @interface Options {
@@ -31,7 +36,7 @@ public class Select extends AbstractControl {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static class Factory extends AbstractFactory<Select> {
+	public static class Factory extends AbstractControl.Factory<Select> {
 
 		protected boolean multiple;
 
