@@ -1,17 +1,11 @@
 package com.backflipsource.servlet;
 
-import static com.backflipsource.Helpers.emptyString;
-import static com.backflipsource.Helpers.forwardServletRequest;
-import static com.backflipsource.Helpers.nonEmptyString;
-import static com.backflipsource.Helpers.safeList;
-import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
 import static java.lang.Class.forName;
 import static java.util.logging.Logger.getLogger;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Stack;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,22 +56,7 @@ public class EntityServlet extends HttpServlet {
 			request.setAttribute("requestURI", requestURI);
 		}
 
-		EntityHandler.Result result = handler.handle(request);
-
-		if (!emptyString(result.getPath())) {
-			forwardServletRequest(result.getPath(), request, response);
-			return;
-		}
-
-		Stack<Control> stack = new Stack<>();
-		stack.push(result.getControl());
-		request.setAttribute(CONTROL_STACK, stack);
-
-		View view2 = safeStream(class1.getAnnotationsByType(View.class))
-				.filter(item -> safeList(item.value()).contains(result.getView())).findFirst().orElse(null);
-
-		String path2 = nonEmptyString(view2 != null ? view2.page() : null, "/entity.jsp");
-		forwardServletRequest(path2, request, response);
+		handler.handle(request, response);
 	}
 
 	@Override
@@ -91,13 +70,6 @@ public class EntityServlet extends HttpServlet {
 			request.setAttribute("requestURI", requestURI);
 		}
 
-		EntityHandler.Result result = handler.handle(request);
-
-		if ((result != null) && !emptyString(result.getPath())) {
-			forwardServletRequest(result.getPath(), request, response);
-			return;
-		}
-
-		response.sendRedirect((String) request.getAttribute("requestURI"));
+		handler.handle(request, response);
 	}
 }

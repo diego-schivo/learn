@@ -1,17 +1,20 @@
 package com.backflipsource.servlet;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface EntityHandler {
 
-	Result handle(HttpServletRequest request);
+	void handle(HttpServletRequest request, HttpServletResponse response);
 
 	interface Result {
-
-		String getPath();
 
 		Class<?> getView();
 
 		Control getControl();
+
+		String getForward();
+
+		String getRedirect();
 	}
 }

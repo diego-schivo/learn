@@ -3,13 +3,17 @@ package com.backflipsource.servlet;
 import static com.backflipsource.Helpers.arrayGet;
 import static com.backflipsource.Helpers.classFields;
 import static com.backflipsource.Helpers.emptyString;
+import static com.backflipsource.Helpers.forwardServletRequest;
 import static com.backflipsource.Helpers.getGetter;
 import static com.backflipsource.Helpers.getSetters;
+import static com.backflipsource.Helpers.nonEmptyString;
 import static com.backflipsource.Helpers.safeGet;
+import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
 import static com.backflipsource.Helpers.unsafeRun;
 import static com.backflipsource.servlet.EntityContextListener.getViews;
+import static com.backflipsource.servlet.EntityServlet.CONTROL_STACK;
 import static java.util.logging.Logger.getLogger;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
@@ -19,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +31,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.backflipsource.Helpers;
 
 public class DefaultEntityHandler implements EntityHandler {
 
@@ -65,16 +73,37 @@ public class DefaultEntityHandler implements EntityHandler {
 	}
 
 	@Override
-	public EntityHandler.Result handle(HttpServletRequest request) {
+	public void handle(HttpServletRequest request, HttpServletResponse response) {
 		String path = request.getRequestURI().substring(request.getContextPath().length());
 		Matcher matcher = pattern.matcher(path);
 
-		boolean matches = matcher.matches();
-		if (!matches) {
-			return subpath(path);
+		EntityHandler.Result result = matcher.matches() ? handleMatch(matcher, request) : subpath(path);
+
+		if (!emptyString(result.getForward())) {
+			forwardServletRequest(result.getForward(), request, response);
+			return;
 		}
 
-		return handleMatch(matcher, request);
+		if (!emptyString(result.getRedirect())) {
+			Helpers.unsafeRun(() -> response.sendRedirect(result.getRedirect()));
+			return;
+		}
+
+		if ("get".equalsIgnoreCase(request.getMethod())) {
+			Stack<Control> stack = new Stack<>();
+			stack.push(result.getControl());
+			request.setAttribute(CONTROL_STACK, stack);
+
+			View view2 = safeStream(class1.getAnnotationsByType(View.class))
+					.filter(item -> safeList(item.value()).contains(result.getView())).findFirst().orElse(null);
+
+			String path2 = nonEmptyString(view2 != null ? view2.page() : null, "/entity.jsp");
+			forwardServletRequest(path2, request, response);
+		}
+
+		if ("post".equalsIgnoreCase(request.getMethod())) {
+			unsafeRun(() -> response.sendRedirect((String) request.getAttribute("requestURI")));
+		}
 	}
 
 	protected EntityHandler.Result handleMatch(Matcher matcher, HttpServletRequest request) {
@@ -108,7 +137,7 @@ public class DefaultEntityHandler implements EntityHandler {
 		logger.fine(() -> "path2 " + path2);
 
 		Result result = new Result();
-		result.path = path2;
+		result.forward = path2;
 		return result;
 	}
 
@@ -195,20 +224,13 @@ public class DefaultEntityHandler implements EntityHandler {
 
 	public static class Result implements EntityHandler.Result {
 
-		protected String path;
-
 		protected Class<?> view;
 
 		protected Control control;
 
-		@Override
-		public String getPath() {
-			return path;
-		}
+		protected String forward;
 
-		public void setPath(String path) {
-			this.path = path;
-		}
+		protected String redirect;
 
 		@Override
 		public Class<?> getView() {
@@ -226,6 +248,24 @@ public class DefaultEntityHandler implements EntityHandler {
 
 		public void setControl(Control control) {
 			this.control = control;
+		}
+
+		@Override
+		public String getForward() {
+			return forward;
+		}
+
+		public void setForward(String forward) {
+			this.forward = forward;
+		}
+
+		@Override
+		public String getRedirect() {
+			return redirect;
+		}
+
+		public void setRedirect(String redirect) {
+			this.redirect = redirect;
 		}
 	}
 }

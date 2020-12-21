@@ -2,6 +2,7 @@ package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.emptyString;
 
+import java.util.List;
 import java.util.regex.Matcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,8 +42,13 @@ public class OwnerHandler extends DefaultEntityHandler {
 			return super.base(request);
 		}
 		Result result = new Result();
-		result.setView(View.List.class);
-		result.setControl(new Table.Factory(entityView).control(((Owner.Data) entityData).find(lastName)));
+		List<Owner> find = ((Owner.Data) entityData).find(lastName);
+		if (find.size() == 1) {
+			result.setRedirect(request.getAttribute("requestURI") + "/" + find.get(0).getId());
+		} else {
+			result.setView(View.List.class);
+			result.setControl(new Table.Factory(entityView).control(find));
+		}
 		return result;
 	}
 }
