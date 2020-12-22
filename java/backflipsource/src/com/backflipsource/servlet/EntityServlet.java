@@ -32,7 +32,7 @@ public class EntityServlet extends HttpServlet {
 
 	protected Class<?> class1;
 
-	protected EntityHandler handler;
+	protected HttpHandler handler;
 
 	@Override
 	public void init() throws ServletException {
@@ -40,9 +40,9 @@ public class EntityServlet extends HttpServlet {
 
 		class1 = unsafeGet(() -> forName(getServletName()));
 
-		Class<? extends EntityHandler> handlerClass = class1.getAnnotation(View.class).handler();
-		handler = Objects.equals(handlerClass, EntityHandler.class) ? new DefaultEntityHandler(class1)
-				: (EntityHandler) unsafeGet(() -> handlerClass.getDeclaredConstructor().newInstance());
+		Class<? extends HttpHandler> handlerClass = class1.getAnnotation(View.class).handler();
+		handler = Objects.equals(handlerClass, HttpHandler.class) ? new DefaultEntityHandler(class1)
+				: (HttpHandler) unsafeGet(() -> handlerClass.getDeclaredConstructor().newInstance());
 	}
 
 	@Override
