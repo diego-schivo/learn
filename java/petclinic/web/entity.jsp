@@ -21,7 +21,9 @@
 </nav>
 
 <section>
-  <h2>Owners</h2>
+  <bfs:context var="context">
+    <h2>${context.servlet.class1.simpleName} ${context.handler.getClass().simpleName}</h2>
+  </bfs:context>
 
   <bfs:control var="control">
     <jsp:include page="${control.page}" />

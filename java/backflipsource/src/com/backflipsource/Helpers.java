@@ -97,6 +97,14 @@ public class Helpers {
 		return getLangHelper().splitString(string, character);
 	}
 
+	public static String stringWithoutPrefix(String string, String prefix) {
+		return getLangHelper().stringWithoutPrefix(string, prefix);
+	}
+
+	public static String stringWithoutSuffix(String string, String suffix) {
+		return getLangHelper().stringWithoutSuffix(string, suffix);
+	}
+
 	public static <T> T nonNullInstance(T t1, T t2) {
 		return getLangHelper().nonNullInstance(t1, t2);
 	}

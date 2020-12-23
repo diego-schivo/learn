@@ -2,19 +2,15 @@ package com.backflipsource.servlet;
 
 import static com.backflipsource.servlet.EntityServlet.CONTEXT;
 
-import java.util.Stack;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import com.backflipsource.servlet.EntityServlet.EntityContext;
 
 @SuppressWarnings("serial")
-public class ControlTag extends TagSupport {
+public class ContextTag extends TagSupport {
 
 	protected String var;
-
-	protected Control control;
 
 	protected Object object;
 
@@ -22,28 +18,16 @@ public class ControlTag extends TagSupport {
 		this.var = var;
 	}
 
-	public void setControl(Control control) {
-		this.control = control;
-	}
-
 	@Override
 	public int doStartTag() throws JspException {
-		Control control = this.control;
-		Stack<Control> stack = stack();
-		if (control == null) {
-			control = stack.peek();
-		} else {
-			stack.push(control);
-		}
 		object = pageContext.getRequest().getAttribute(var);
-		pageContext.getRequest().setAttribute(var, control);
+		pageContext.getRequest().setAttribute(var, ((EntityContext) pageContext.getRequest().getAttribute(CONTEXT)));
 		return EVAL_BODY_INCLUDE;
 	}
 
 	@Override
 	public int doEndTag() throws JspException {
 		pageContext.getRequest().setAttribute(var, object);
-		stack().pop();
 		return EVAL_PAGE;
 	}
 
@@ -51,11 +35,6 @@ public class ControlTag extends TagSupport {
 	public void release() {
 		super.release();
 		var = null;
-		control = null;
 		object = null;
-	}
-
-	protected Stack<Control> stack() {
-		return ((EntityContext) pageContext.getRequest().getAttribute(CONTEXT)).getControls();
 	}
 }

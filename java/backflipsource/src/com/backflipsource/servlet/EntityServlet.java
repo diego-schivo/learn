@@ -6,6 +6,7 @@ import static java.util.logging.Logger.getLogger;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings({ "serial" })
 public class EntityServlet extends HttpServlet {
 
-	public static String CONTROL_STACK = EntityServlet.class.getName() + ".controlStack";
+	// public static String CONTROL_STACK = EntityServlet.class.getName() +
+	// ".controlStack";
+	public static String CONTEXT = EntityServlet.class.getName() + ".context";
 
 	private static Logger logger = getLogger(EntityServlet.class.getName());
 
@@ -32,7 +35,11 @@ public class EntityServlet extends HttpServlet {
 
 	protected Class<?> class1;
 
-	protected HttpHandler handler;
+	protected HttpHandler.Resolver handlerResolver;
+
+	public Class<?> getClass1() {
+		return class1;
+	}
 
 	@Override
 	public void init() throws ServletException {
@@ -40,13 +47,13 @@ public class EntityServlet extends HttpServlet {
 
 		class1 = unsafeGet(() -> forName(getServletName()));
 
-		Class<? extends HttpHandler> handlerClass = class1.getAnnotation(View.class).handler();
-		handler = Objects.equals(handlerClass, HttpHandler.class) ? new DefaultEntityHandler(class1)
-				: (HttpHandler) unsafeGet(() -> handlerClass.getDeclaredConstructor().newInstance());
+		Class<? extends HttpHandler.Resolver> handlerClass = class1.getAnnotation(View.class).handlerResolver();
+		handlerResolver = Objects.equals(handlerClass, HttpHandler.Resolver.class) ? new DefaultEntityHandler(class1)
+				: (HttpHandler.Resolver) unsafeGet(() -> handlerClass.getDeclaredConstructor().newInstance());
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		String requestURI = request.getRequestURI();
@@ -56,20 +63,35 @@ public class EntityServlet extends HttpServlet {
 			request.setAttribute("requestURI", requestURI);
 		}
 
+		EntityContext context = new EntityContext();
+		context.servlet = this;
+
+		HttpHandler handler = handlerResolver.handler(request);
+		context.handler = handler;
+
+		request.setAttribute(CONTEXT, context);
+
 		handler.handle(request, response);
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public static class EntityContext {
 
-		String requestURI = request.getRequestURI();
-		logger.fine(() -> "requestURI " + requestURI);
+		protected EntityServlet servlet;
 
-		if (request.getAttribute("requestURI") == null) {
-			request.setAttribute("requestURI", requestURI);
+		protected HttpHandler handler;
+
+		protected Stack<Control> controls = new Stack<>();
+
+		public EntityServlet getServlet() {
+			return servlet;
 		}
 
-		handler.handle(request, response);
+		public HttpHandler getHandler() {
+			return handler;
+		}
+
+		public Stack<Control> getControls() {
+			return controls;
+		}
 	}
 }

@@ -43,7 +43,7 @@ public class OwnerHandler extends DefaultEntityHandler {
 		public int vote(HttpServletRequest request) {
 			String path = request.getRequestURI().substring(request.getContextPath().length());
 			Matcher matcher = pattern.matcher(path);
-			return matcher.matches() ? 1 : -1;
+			return matcher.matches() ? 2 : -1;
 		}
 	}
 

@@ -26,6 +26,10 @@ public interface LangHelper {
 
 	String[] splitString(String string, int character);
 
+	String stringWithoutPrefix(String string, String prefix);
+
+	String stringWithoutSuffix(String string, String suffix);
+
 	<T> T nonNullInstance(T t1, T t2);
 
 	<T> T nonNullInstance(T t1, Supplier<T> t2);

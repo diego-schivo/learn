@@ -6,4 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 public interface HttpHandler {
 
 	void handle(HttpServletRequest request, HttpServletResponse response);
+
+	interface Resolver {
+
+		HttpHandler handler(HttpServletRequest request);
+	}
 }

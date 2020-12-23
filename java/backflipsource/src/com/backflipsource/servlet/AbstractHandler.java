@@ -11,7 +11,7 @@ import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeRun;
 import static com.backflipsource.servlet.EntityContextListener.getViews;
-import static com.backflipsource.servlet.EntityServlet.CONTROL_STACK;
+import static com.backflipsource.servlet.EntityServlet.CONTEXT;
 import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toList;
 
@@ -20,13 +20,14 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Stack;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.backflipsource.servlet.EntityServlet.EntityContext;
 
 public abstract class AbstractHandler implements VotingHttpHandler {
 
@@ -67,9 +68,8 @@ public abstract class AbstractHandler implements VotingHttpHandler {
 	}
 
 	protected void render(Control control, Class<?> view, HttpServletRequest request, HttpServletResponse response) {
-		Stack<Control> stack = new Stack<>();
-		stack.push(control);
-		request.setAttribute(CONTROL_STACK, stack);
+		EntityContext context = (EntityContext) request.getAttribute(CONTEXT);
+		context.getControls().push(control);
 
 		View view2 = safeStream(class1.getAnnotationsByType(View.class))
 				.filter(item -> safeList(item.value()).contains(view)).findFirst().orElse(null);

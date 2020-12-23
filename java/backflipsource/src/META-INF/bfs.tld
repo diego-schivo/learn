@@ -28,4 +28,17 @@
 	  <type>com.backflipsource.servlet.Control</type>
     </attribute>
   </tag>
+  <tag>
+    <description></description>
+    <name>context</name>
+    <tag-class>com.backflipsource.servlet.ContextTag</tag-class>
+    <tei-class></tei-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description></description>
+      <name>var</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
 </taglib>

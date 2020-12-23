@@ -107,6 +107,22 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
+	public String stringWithoutPrefix(String string, String prefix) {
+		if (emptyString(string) || emptyString(prefix) || !string.startsWith(prefix)) {
+			return string;
+		}
+		return string.substring(prefix.length());
+	}
+
+	@Override
+	public String stringWithoutSuffix(String string, String suffix) {
+		if (emptyString(string) || emptyString(suffix) || !string.endsWith(suffix)) {
+			return string;
+		}
+		return string.substring(0, string.length() - suffix.length());
+	}
+
+	@Override
 	public <T> T nonNullInstance(T t1, T t2) {
 		if (t1 != null) {
 			return t1;
