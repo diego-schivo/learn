@@ -13,5 +13,3 @@
     </dd>
   </c:forEach>
 </dl>
-<a href="${requestURI.substring(0, requestURI.lastIndexOf(context.control.entityView.uri))}${context.control.entityView.uri}">back</a>
-<a href="${requestURI}/edit">Edit</a>

@@ -8,8 +8,9 @@ public interface EntityView {
 
 	String getUri();
 
-	@SuppressWarnings("rawtypes")
-	public Map<String, Control.Factory> controlFactories(Class<?> view);
+	Class<?> entity(Class<?> view);
 
-	public Map<String, StringConverter<?>> converters(Class<?> view);
+	Map<String, Control.Factory<?>> controlFactories(Class<?> view);
+
+	Map<String, StringConverter<?>> converters(Class<?> view);
 }

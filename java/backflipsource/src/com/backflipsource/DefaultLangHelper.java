@@ -144,7 +144,31 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
-	public String stringBeforeLast(String string, String substr) {
+	public String substringBeforeFirst(String string, String substr) {
+		if (emptyString(string) || emptyString(substr)) {
+			return string;
+		}
+		int index = string.indexOf(substr);
+		if (index == -1) {
+			return null;
+		}
+		return string.substring(0, index);
+	}
+
+	@Override
+	public String substringAfterFirst(String string, String substr) {
+		if (emptyString(string) || emptyString(substr)) {
+			return string;
+		}
+		int index = string.indexOf(substr);
+		if (index == -1) {
+			return null;
+		}
+		return string.substring(index + substr.length());
+	}
+
+	@Override
+	public String substringBeforeLast(String string, String substr) {
 		if (emptyString(string) || emptyString(substr)) {
 			return string;
 		}
@@ -156,7 +180,7 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
-	public String stringAfterLast(String string, String substr) {
+	public String substringAfterLast(String string, String substr) {
 		if (emptyString(string) || emptyString(substr)) {
 			return string;
 		}
@@ -255,7 +279,8 @@ public class DefaultLangHelper implements LangHelper {
 			return null;
 		}
 		String name = getSetterName(field.getName());
-		return safeGet(() -> field.getDeclaringClass().getMethod(name));
+		return safeGet(() -> safeStream(field.getDeclaringClass().getMethods())
+				.filter(method -> Objects.equals(method.getName(), name)).findFirst().orElse(null));
 	}
 
 	@Override

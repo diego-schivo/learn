@@ -1,5 +1,7 @@
 package com.backflipsource.servlet;
 
+import static com.backflipsource.Helpers.nonEmptyString;
+
 import java.lang.reflect.Field;
 
 public class DescriptionList extends AbstractControl {
@@ -11,12 +13,16 @@ public class DescriptionList extends AbstractControl {
 
 	public static class Factory extends AbstractControl.Factory<DescriptionList> {
 
-		public Factory(Field field, View.Field annotation) {
-			super(DescriptionList.class, field, annotation);
+		public Factory(Field field, Class<?> view) {
+			super(DescriptionList.class, field, view);
+		}
+
+		public Factory(EntityView entityView, String page) {
+			super(DescriptionList.class, entityView, null, null, null, nonEmptyString(page, "description-list.jsp"));
 		}
 
 		public Factory(EntityView entityView) {
-			super(DescriptionList.class, entityView, null, null, null, "description-list.jsp");
+			this(entityView, null);
 		}
 	}
 }

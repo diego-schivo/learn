@@ -42,8 +42,8 @@ public class Select extends AbstractControl {
 
 		protected List<String> options;
 
-		public Factory(Field field, View.Field annotation) {
-			super(Select.class, field, annotation);
+		public Factory(Field field, Class<?> view) {
+			super(Select.class, field, view);
 
 			multiple = Iterable.class.isAssignableFrom(field.getType());
 

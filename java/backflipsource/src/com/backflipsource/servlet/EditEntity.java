@@ -1,6 +1,6 @@
 package com.backflipsource.servlet;
 
-import static com.backflipsource.Helpers.stringAfterLast;
+import static com.backflipsource.Helpers.substringAfterLast;
 import static com.backflipsource.Helpers.stringWithoutSuffix;
 import static com.backflipsource.Helpers.unsafeRun;
 import static com.backflipsource.servlet.EntityContextListener.logger;
@@ -25,7 +25,7 @@ public class EditEntity extends EntityRequestHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) {
 		String path = request.getRequestURI().substring(request.getContextPath().length());
-		String id = stringAfterLast(stringWithoutSuffix(path, "/edit"), "/");
+		String id = substringAfterLast(stringWithoutSuffix(path, "/edit"), "/");
 		Object item = item(id);
 		logger.fine(() -> "id " + id + " item " + item);
 

@@ -8,6 +8,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.backflipsource.Converter;
 import com.backflipsource.servlet.StringConverter.ForString;
 
 @Target(TYPE)
@@ -40,11 +41,9 @@ public @interface View {
 
 		Class<?>[] view() default {};
 
-		Class<? extends Control.Factory> controlFactory() default Control.Factory.class;
-
 		Class<? extends StringConverter<?>> converter() default ForString.class;
 
-		String controlPage() default "";
+		Class<? extends Converter> converter2() default Converter.class;
 	}
 
 	interface List {
@@ -55,4 +54,6 @@ public @interface View {
 
 	interface Edit {
 	}
+
+	Class<?>[] ALL = { List.class, Show.class, Edit.class };
 }

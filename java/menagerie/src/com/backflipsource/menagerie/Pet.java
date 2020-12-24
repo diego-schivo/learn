@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.backflipsource.entity.annotation.Render;
 import com.backflipsource.servlet.Select;
 import com.backflipsource.servlet.Select.Options;
 import com.backflipsource.servlet.StringConverter;
@@ -18,11 +19,13 @@ public class Pet {
 
 	private String owner;
 
-	@View.Field(controlFactory = Select.Factory.class)
+	@View.Field
+	@Render(controlFactory = Select.Factory.class)
 	@Options({ "bird", "cat", "dog", "hamster", "snake" })
 	private String species;
 
-	@View.Field(controlFactory = Select.Factory.class)
+	@View.Field
+	@Render(controlFactory = Select.Factory.class)
 	@Options({ "f", "m" })
 	private String sex;
 

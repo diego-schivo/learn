@@ -34,9 +34,13 @@ public interface LangHelper {
 
 	String stringWithoutSuffix(String string, String suffix);
 
-	String stringBeforeLast(String string, String substr);
+	String substringBeforeFirst(String string, String substr);
 
-	String stringAfterLast(String string, String substr);
+	String substringAfterFirst(String string, String substr);
+
+	String substringBeforeLast(String string, String substr);
+
+	String substringAfterLast(String string, String substr);
 
 	String camelCaseString(String[] words);
 

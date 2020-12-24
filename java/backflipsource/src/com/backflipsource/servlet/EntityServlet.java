@@ -52,7 +52,7 @@ public class EntityServlet extends HttpServlet {
 		Class<? extends RequestHandler.Provider> class1 = entity.getAnnotation(View.class).handlerProvider();
 		handlerProvider = Objects.equals(class1, RequestHandler.Provider.class)
 				? new DefaultRequestHandlerProvider(view)
-				: (RequestHandler.Provider) unsafeGet(() -> class1.getDeclaredConstructor().newInstance());
+				: (RequestHandler.Provider) unsafeGet(() -> class1.getConstructor().newInstance());
 		logger.fine(() -> "handlerProvider " + handlerProvider);
 	}
 

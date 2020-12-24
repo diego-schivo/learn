@@ -6,14 +6,17 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
+import com.backflipsource.entity.annotation.Render;
 import com.backflipsource.servlet.EntityData;
 import com.backflipsource.servlet.StringConverter.ForInteger;
 import com.backflipsource.servlet.View;
 
 @View(uri = "/owners")
+@Render(view = View.Show.class, controlPage = "/owner/description-list.jsp", presentation = Owner2.class)
 public class Owner {
 
-	@View.Field(identifier = true, view = View.List.class, converter = ForInteger.class, controlPage = "owner-id-anchor.jsp")
+	@View.Field(identifier = true, view = View.List.class, converter = ForInteger.class)
+	@Render(view = View.List.class, controlPage = "/owner-id-anchor.jsp")
 	private Integer id;
 
 	@View.Field(view = { View.Show.class, View.Edit.class })
@@ -31,7 +34,8 @@ public class Owner {
 	@View.Field
 	private String telephone;
 
-	@View.Field(view = View.Show.class, converter = PetStringConverter.class, controlPage = "owner-pets-table.jsp")
+	@View.Field(view = View.Show.class, converter = PetStringConverter.class)
+	@Render(view = View.Show.class, controlPage = "/owner-pets-table.jsp")
 	private List<Pet> pets;
 
 	public Owner() {

@@ -113,12 +113,20 @@ public class Helpers {
 		return getLangHelper().stringWithoutSuffix(string, suffix);
 	}
 
-	public static String stringBeforeLast(String string, String substr) {
-		return getLangHelper().stringBeforeLast(string, substr);
+	public static String substringBeforeFirst(String string, String substr) {
+		return getLangHelper().substringBeforeFirst(string, substr);
 	}
 
-	public static String stringAfterLast(String string, String substr) {
-		return getLangHelper().stringAfterLast(string, substr);
+	public static String substringAfterFirst(String string, String substr) {
+		return getLangHelper().substringAfterFirst(string, substr);
+	}
+
+	public static String substringBeforeLast(String string, String substr) {
+		return getLangHelper().substringBeforeLast(string, substr);
+	}
+
+	public static String substringAfterLast(String string, String substr) {
+		return getLangHelper().substringAfterLast(string, substr);
 	}
 
 	public static String camelCaseString(String[] words) {

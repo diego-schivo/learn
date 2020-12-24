@@ -21,7 +21,7 @@ public class NewEntity extends EntityRequestHandler {
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) {
-		Object item = unsafeGet(() -> entityView.getEntity().getDeclaredConstructor().newInstance());
+		Object item = unsafeGet(() -> entityView.getEntity().getConstructor().newInstance());
 
 		if ("post".equalsIgnoreCase(request.getMethod())) {
 			save(item, request);

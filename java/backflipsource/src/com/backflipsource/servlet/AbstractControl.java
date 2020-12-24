@@ -5,10 +5,11 @@ import static com.backflipsource.Helpers.getArgumentTypes;
 import static com.backflipsource.Helpers.getGetter;
 import static com.backflipsource.Helpers.listGet;
 import static com.backflipsource.Helpers.nonEmptyString;
-import static com.backflipsource.Helpers.nonNullInstance;
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.servlet.DefaultEntityView.converter;
+import static com.backflipsource.servlet.DefaultEntityView.fieldAnnotation;
 import static com.backflipsource.servlet.EntityContextListener.logger;
 import static com.backflipsource.servlet.EntityServlet.CONTEXT_LISTENER;
 import static com.backflipsource.servlet.EntityServlet.getContextListener;
@@ -23,7 +24,7 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import com.backflipsource.servlet.StringConverter.ForString;
+import com.backflipsource.entity.annotation.Render;
 
 public abstract class AbstractControl implements Control {
 
@@ -78,14 +79,12 @@ public abstract class AbstractControl implements Control {
 	public String getHeading() {
 		ResourceBundle resourceBundle = CONTEXT_LISTENER.get().getResourceBundle();
 		String key = (getEntityView().getEntity().getSimpleName() + "." + getView().getSimpleName()).toLowerCase();
-		return resourceBundle.getString(key);
+		return safeGet(() -> resourceBundle.getString(key));
 	}
 
-	@SuppressWarnings("rawtypes")
-	private Collection<Control.Factory> factories;
+	private Collection<Control.Factory<?>> factories;
 
-	@SuppressWarnings("rawtypes")
-	public Collection<Control.Factory> getFactories() {
+	public Collection<Control.Factory<?>> getFactories() {
 		if (factories == null) {
 			factories = getEntityView().controlFactories(getView()).values();
 			factories.forEach(factory -> factory.setParent(this));
@@ -112,12 +111,12 @@ public abstract class AbstractControl implements Control {
 
 		protected Control parent;
 
-		protected Factory(Class<T> class1, Field field, View.Field annotation) {
+		protected Factory(Class<T> class1, Field field, Class<?> view) {
 			this(class1,
 					safeGet(() -> getContextListener().getViews()
 							.get(((Class<?>) listGet(getArgumentTypes(field.getGenericType()), 0)))),
 					field.getName(), object -> unsafeGet(() -> object != null ? getGetter(field).invoke(object) : null),
-					converter(annotation), annotation.controlPage());
+					converter(field, view), controlPage(field, view));
 		}
 
 		protected Factory(Class<T> class1, EntityView entityView, String name, Function<Object, Object> getValue,
@@ -127,7 +126,7 @@ public abstract class AbstractControl implements Control {
 			this.name = name;
 			this.getValue = getValue;
 			this.converter = valueConverter;
-			this.page = nonEmptyString(page, class1.getSimpleName().toLowerCase() + ".jsp");
+			this.page = nonEmptyString(page, "/" + class1.getSimpleName().toLowerCase() + ".jsp");
 		}
 
 		protected Factory(Class<T> class1, EntityView entityView) {
@@ -145,7 +144,7 @@ public abstract class AbstractControl implements Control {
 
 		@Override
 		public T create(Object target) {
-			T control = unsafeGet(() -> class1.getDeclaredConstructor().newInstance());
+			T control = unsafeGet(() -> class1.getConstructor().newInstance());
 			control.factory = this;
 			control.item = target;
 			control.values = (converter != null) ? values(target) : null;
@@ -166,16 +165,15 @@ public abstract class AbstractControl implements Control {
 			return list;
 		}
 
-		protected static StringConverter<?> converter(View.Field annotation) {
+		protected static String controlPage(Field field, Class<?> view) {
+			Render annotation = fieldAnnotation(field, view, Render.class);
 			logger.fine(() -> "annotation " + annotation);
 
-			Class<? extends StringConverter<?>> class1 = nonNullInstance(
-					annotation != null ? annotation.converter() : null, ForString.class);
-			logger.fine(() -> "class1 " + class1);
+			if (annotation == null) {
+				return null;
+			}
 
-			StringConverter<?> converter = safeGet(
-					() -> (StringConverter<?>) class1.getDeclaredConstructor().newInstance());
-			return converter;
+			return annotation.controlPage();
 		}
 	}
 }

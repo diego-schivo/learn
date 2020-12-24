@@ -17,8 +17,8 @@ public class Span extends AbstractControl {
 
 		protected boolean multiple;
 
-		public Factory(Field field, View.Field annotation) {
-			super(Span.class, field, annotation);
+		public Factory(Field field, Class<?> view) {
+			super(Span.class, field, view);
 
 			multiple = Iterable.class.isAssignableFrom(field.getType());
 		}

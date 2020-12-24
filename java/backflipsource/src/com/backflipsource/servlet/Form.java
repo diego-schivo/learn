@@ -11,8 +11,8 @@ public class Form extends AbstractControl {
 
 	public static class Factory extends AbstractControl.Factory<Form> {
 
-		public Factory(Field field, View.Field annotation) {
-			super(Form.class, field, annotation);
+		public Factory(Field field, Class<?> view) {
+			super(Form.class, field, view);
 		}
 
 		public Factory(EntityView entityView) {

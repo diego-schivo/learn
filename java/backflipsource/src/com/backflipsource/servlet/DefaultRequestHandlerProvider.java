@@ -34,7 +34,7 @@ public class DefaultRequestHandlerProvider implements RequestHandler.Provider {
 					return matcher;
 				}, class2 -> {
 					RequestHandler handler = (RequestHandler) unsafeGet(
-							() -> class2.getDeclaredConstructor(EntityView.class).newInstance(entityView));
+							() -> class2.getConstructor(EntityView.class).newInstance(entityView));
 					return handler;
 				}));
 	}

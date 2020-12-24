@@ -18,8 +18,8 @@ public class Table extends AbstractControl {
 
 	public static class Factory extends AbstractControl.Factory<Table> {
 
-		public Factory(Field field, View.Field annotation) {
-			super(Table.class, field, annotation);
+		public Factory(Field field, Class<?> view) {
+			super(Table.class, field, view);
 		}
 
 		public Factory(EntityView entityView) {

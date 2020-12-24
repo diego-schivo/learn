@@ -24,16 +24,16 @@ public class Input extends AbstractControl {
 
 		protected String type;
 
-		public Factory(Field field, View.Field annotation) {
-			super(Input.class, field, annotation);
+		public Factory(Field field, Class<?> view) {
+			super(Input.class, field, view);
 
-			if (getContextListener().getViews().containsKey(field.getType())) {
-				type = TYPE_HIDDEN;
-			} else if (LocalDate.class.isAssignableFrom(field.getType())) {
-				type = TYPE_DATE;
-			} else {
-				type = TYPE_TEXT;
-			}
+//			if (getContextListener().getViews().containsKey(field.getType())) {
+//				type = TYPE_HIDDEN;
+//			} else if (LocalDate.class.isAssignableFrom(field.getType())) {
+//				type = TYPE_DATE;
+//			} else {
+//				type = TYPE_TEXT;
+//			}
 		}
 	}
 }

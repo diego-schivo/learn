@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.backflipsource.entity.annotation.Render;
 import com.backflipsource.servlet.EntityData;
 import com.backflipsource.servlet.Select;
 import com.backflipsource.servlet.Select.Options;
@@ -30,14 +31,15 @@ public class Pet {
 	private LocalDate birthDate;
 
 	@View.Field
-	@View.Field(view = View.Edit.class, controlFactory = Select.Factory.class)
+	@Render(view = View.Edit.class, controlFactory = Select.Factory.class)
 	@Options({ "cat", "dog", "lizard", "snake", "bird", "hamster" })
 	private String type;
 
 	// @View.Field
 	private Owner owner;
 
-	@View.Field(converter = VisitStringConverter.class, controlPage = "pet-visits-table.jsp")
+	@View.Field(converter = VisitStringConverter.class)
+	@Render(controlPage = "/pet-visits-table.jsp")
 	private List<Visit> visits;
 
 	public Pet() {

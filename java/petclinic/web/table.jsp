@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ include file="taglibs.jsp" %>
+<%@ include file="/taglibs.jsp" %>
 
 <h2>${context.text(context.control)}</h2>
 
