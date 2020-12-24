@@ -7,7 +7,6 @@ import static java.util.logging.Level.ALL;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -18,74 +17,79 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings({ "serial" })
 public class EntityServlet extends HttpServlet {
 
-	// public static String CONTROL_STACK = EntityServlet.class.getName() +
-	// ".controlStack";
 	public static String CONTEXT = EntityServlet.class.getName() + ".context";
+
+	protected static ThreadLocal<EntityContextListener> CONTEXT_LISTENER = new ThreadLocal<>();
 
 	private static Logger logger = logger(EntityServlet.class, ALL);
 
-	protected Class<?> class1;
+	public static EntityContextListener getContextListener() {
+		return CONTEXT_LISTENER.get();
+	}
+
+	protected EntityContextListener contextListener;
+
+	protected EntityView view;
 
 	protected RequestHandler.Provider handlerProvider;
 
-	public Class<?> getClass1() {
-		return class1;
+	public EntityView getView() {
+		return view;
 	}
 
 	@Override
 	public void init() throws ServletException {
-		logger.fine("EntityServlet init");
+		Class<?> entity = unsafeGet(() -> forName(getServletName()));
+		logger.fine(() -> "entity " + entity);
 
-		class1 = unsafeGet(() -> forName(getServletName()));
+		String className = getInitParameter(EntityContextListener.class.getName());
+		contextListener = EntityContextListener.getInstance(className);
+		logger.fine(() -> "contextListener " + contextListener);
 
-		Class<? extends RequestHandler.Provider> class2 = class1.getAnnotation(View.class).handlerProvider();
-		handlerProvider = Objects.equals(class2, RequestHandler.Provider.class)
-				? new DefaultRequestHandlerProvider(class1)
-				: (RequestHandler.Provider) unsafeGet(() -> class2.getDeclaredConstructor().newInstance());
+		view = contextListener.getViews().get(entity);
+		logger.fine(() -> "view " + view);
+
+		Class<? extends RequestHandler.Provider> class1 = entity.getAnnotation(View.class).handlerProvider();
+		handlerProvider = Objects.equals(class1, RequestHandler.Provider.class)
+				? new DefaultRequestHandlerProvider(view)
+				: (RequestHandler.Provider) unsafeGet(() -> class1.getDeclaredConstructor().newInstance());
+		logger.fine(() -> "handlerProvider " + handlerProvider);
 	}
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String requestURI = request.getRequestURI();
-		logger.fine(() -> "requestURI " + requestURI);
-
-		if (request.getAttribute("requestURI") == null) {
-			request.setAttribute("requestURI", requestURI);
+		boolean first = CONTEXT_LISTENER.get() == null;
+		if (first) {
+			CONTEXT_LISTENER.set(contextListener);
 		}
 
-		RequestHandler handler = handlerProvider.provide(request);
-		if (handler == null) {
-			return;
-		}
+		try {
+			String requestURI = request.getRequestURI();
+			logger.fine(() -> "requestURI " + requestURI);
 
-		EntityContext context = new EntityContext();
-		context.servlet = this;
-		context.handler = handler;
-		request.setAttribute(CONTEXT, context);
+			if (request.getAttribute("requestURI") == null) {
+				request.setAttribute("requestURI", requestURI);
+			}
 
-		handler.handle(request, response);
-	}
+			RequestHandler handler = handlerProvider.provide(request);
+			logger.fine(() -> "handler " + handler);
 
-	public static class EntityContext {
+			if (handler == null) {
+				return;
+			}
 
-		protected EntityServlet servlet;
+			EntityContext context = new EntityContext();
+			context.servlet = this;
+			context.handler = handler;
+			request.setAttribute(CONTEXT, context);
 
-		protected RequestHandler handler;
-
-		protected Stack<Control> controls = new Stack<>();
-
-		public EntityServlet getServlet() {
-			return servlet;
-		}
-
-		public RequestHandler getHandler() {
-			return handler;
-		}
-
-		public Stack<Control> getControls() {
-			return controls;
+			handler.handle(request, response);
+		} finally {
+			if (first) {
+				CONTEXT_LISTENER.remove();
+			}
 		}
 	}
 }

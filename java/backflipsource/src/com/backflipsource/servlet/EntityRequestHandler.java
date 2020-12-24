@@ -10,7 +10,6 @@ import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeRun;
-import static com.backflipsource.servlet.EntityContextListener.getViews;
 import static com.backflipsource.servlet.EntityContextListener.logger;
 import static com.backflipsource.servlet.EntityServlet.CONTEXT;
 import static java.util.logging.Level.ALL;
@@ -26,13 +25,9 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.backflipsource.servlet.EntityServlet.EntityContext;
+public abstract class EntityRequestHandler implements RequestHandler {
 
-public abstract class AbstractHandler implements RequestHandler {
-
-	private static Logger logger = logger(AbstractHandler.class, ALL);
-
-	protected Class<?> class1;
+	private static Logger logger = logger(EntityRequestHandler.class, ALL);
 
 	protected EntityView entityView;
 
@@ -44,25 +39,26 @@ public abstract class AbstractHandler implements RequestHandler {
 
 	protected Object item0;
 
-	public AbstractHandler(Class<?> class1) {
-		this.class1 = class1;
-		entityView = getViews().get(class1.getName());
-		fields = safeStream(classFields(class1))
+	public EntityRequestHandler(EntityView entityView) {
+		this.entityView = entityView;
+		fields = safeStream(classFields(entityView.getEntity()))
 				.filter(field -> field.getAnnotationsByType(View.Field.class).length > 0).collect(toList());
 		idField = safeStream(fields).filter(
 				field -> safeStream(field.getAnnotationsByType(View.Field.class)).anyMatch(View.Field::identifier))
 				.findFirst().orElse(null);
 		// pattern = compile(entityView.getUri() + "(" + (idField != null ? "(/[^/]+)" :
 		// "") + "(/edit)?)?");
-		entityData = safeGet(() -> (EntityData) class1.getDeclaredField("data").get(null));
-		item0 = safeGet(() -> class1.getDeclaredField("instance").get(null));
+		entityData = safeGet(() -> (EntityData) entityView.getEntity().getDeclaredField("data").get(null));
+		item0 = safeGet(() -> entityView.getEntity().getDeclaredField("instance").get(null));
 	}
 
 	protected void render(Control control, Class<?> view, HttpServletRequest request, HttpServletResponse response) {
+		logger.fine(() -> "control " + control + " view " + view);
+
 		EntityContext context = (EntityContext) request.getAttribute(CONTEXT);
 		context.getControls().push(control);
 
-		View view2 = safeStream(class1.getAnnotationsByType(View.class))
+		View view2 = safeStream(entityView.getEntity().getAnnotationsByType(View.class))
 				.filter(item -> safeList(item.value()).contains(view)).findFirst().orElse(null);
 
 		String path2 = nonEmptyString(view2 != null ? view2.page() : null, "/entity.jsp");
@@ -71,7 +67,7 @@ public abstract class AbstractHandler implements RequestHandler {
 
 	protected void save(Object item, HttpServletRequest request) {
 		Map<String, StringConverter<?>> converters = entityView.converters(View.Edit.class);
-		Map<String, Method> setters = getSetters(class1);
+		Map<String, Method> setters = getSetters(entityView.getEntity());
 
 		safeStream(fields).filter(field -> !Objects.equals(field, idField)).forEach(field -> {
 			StringConverter<?> converter = converters.get(field.getName());

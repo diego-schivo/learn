@@ -9,6 +9,8 @@ import static java.lang.Thread.currentThread;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Field;
@@ -21,11 +23,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class DefaultLangHelper implements LangHelper {
@@ -88,14 +93,22 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
-	public String[] splitString(String string, int character) {
+	public String uncapitalizeString(String string) {
+		if (emptyString(string)) {
+			return string;
+		}
+		return string.substring(0, 1).toLowerCase() + string.substring(1);
+	}
+
+	@Override
+	public String[] splitString(String string, String delimiter) {
 		if (string == null) {
 			return null;
 		}
 		List<String> list = new ArrayList<>();
 		int index0 = 0;
 		for (;;) {
-			int index = string.indexOf(character, index0);
+			int index = string.indexOf(delimiter, index0);
 			if (index == -1) {
 				list.add(string.substring(index0));
 				break;
@@ -104,6 +117,14 @@ public class DefaultLangHelper implements LangHelper {
 			index0 = index + 1;
 		}
 		return list.toArray(String[]::new);
+	}
+
+	@Override
+	public String joinStrings(Stream<String> strings, String delimiter) {
+		if (strings == null) {
+			return null;
+		}
+		return strings.collect(joining(delimiter));
 	}
 
 	@Override
@@ -120,6 +141,62 @@ public class DefaultLangHelper implements LangHelper {
 			return string;
 		}
 		return string.substring(0, string.length() - suffix.length());
+	}
+
+	@Override
+	public String stringBeforeLast(String string, String substr) {
+		if (emptyString(string) || emptyString(substr)) {
+			return string;
+		}
+		int index = string.lastIndexOf(substr);
+		if (index == -1) {
+			return null;
+		}
+		return string.substring(0, index);
+	}
+
+	@Override
+	public String stringAfterLast(String string, String substr) {
+		if (emptyString(string) || emptyString(substr)) {
+			return string;
+		}
+		int index = string.lastIndexOf(substr);
+		if (index == -1) {
+			return null;
+		}
+		return string.substring(index + substr.length());
+	}
+
+	@Override
+	public String camelCaseString(String[] words) {
+		if (words == null) {
+			return null;
+		}
+		return Arrays.stream(words).filter(not(this::emptyString)).map(word -> capitalizeString(word.toLowerCase()))
+				.collect(joining());
+	}
+
+	private static Pattern capitalizedLetterOrEnd = Pattern.compile("[A-Z]|$");
+
+	@Override
+	public String[] camelCaseWords(String string) {
+		if (string == null) {
+			return null;
+		}
+		Matcher matcher = capitalizedLetterOrEnd.matcher(string);
+		List<String> list = new ArrayList<>();
+		int index = 0;
+		int length = string.length();
+		while (index < length && matcher.find(index + 1)) {
+			int index2 = matcher.start();
+			String substring = string.substring(index, index2);
+			if (index != 0) {
+				substring = uncapitalizeString(substring);
+			}
+			list.add(substring);
+			index = index2;
+		}
+		return list.toArray(new String[list.size()]);
 	}
 
 	@Override

@@ -93,8 +93,16 @@ public class Helpers {
 		return getLangHelper().capitalizeString(string);
 	}
 
-	public static String[] splitString(String string, int character) {
-		return getLangHelper().splitString(string, character);
+	public static String uncapitalizeString(String string) {
+		return getLangHelper().uncapitalizeString(string);
+	}
+
+	public static String[] splitString(String string, String delimiter) {
+		return getLangHelper().splitString(string, delimiter);
+	}
+
+	public static String joinStrings(Stream<String> strings, String delimiter) {
+		return getLangHelper().joinStrings(strings, delimiter);
 	}
 
 	public static String stringWithoutPrefix(String string, String prefix) {
@@ -103,6 +111,22 @@ public class Helpers {
 
 	public static String stringWithoutSuffix(String string, String suffix) {
 		return getLangHelper().stringWithoutSuffix(string, suffix);
+	}
+
+	public static String stringBeforeLast(String string, String substr) {
+		return getLangHelper().stringBeforeLast(string, substr);
+	}
+
+	public static String stringAfterLast(String string, String substr) {
+		return getLangHelper().stringAfterLast(string, substr);
+	}
+
+	public static String camelCaseString(String[] words) {
+		return getLangHelper().camelCaseString(words);
+	}
+
+	public static String[] camelCaseWords(String string) {
+		return getLangHelper().camelCaseWords(string);
 	}
 
 	public static <T> T nonNullInstance(T t1, T t2) {
@@ -147,6 +171,10 @@ public class Helpers {
 
 	public static List<Type> getArgumentTypes(Type type) {
 		return getLangHelper().getArgumentTypes(type);
+	}
+
+	public static <T> boolean emptyArray(T[] array) {
+		return getUtilHelper().emptyArray(array);
 	}
 
 	public static boolean emptyCollection(Collection<?> collection) {

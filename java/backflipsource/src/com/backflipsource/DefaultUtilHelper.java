@@ -9,8 +9,8 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 import static java.util.Collections.emptyList;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static java.util.logging.Level.ALL;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.FINER;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
 
@@ -47,7 +47,15 @@ import java.util.stream.Stream;
 @SuppressWarnings("unchecked")
 public class DefaultUtilHelper implements UtilHelper {
 
-	private static Logger logger = logger(DefaultUtilHelper.class, ALL);
+	private static Logger logger = logger(DefaultUtilHelper.class, FINE);
+
+	@Override
+	public <T> boolean emptyArray(T[] array) {
+		if (array == null) {
+			return true;
+		}
+		return array.length == 0;
+	}
 
 	@Override
 	public boolean emptyCollection(Collection<?> collection) {
@@ -170,7 +178,7 @@ public class DefaultUtilHelper implements UtilHelper {
 		try {
 			runnable.run();
 		} catch (Exception e) {
-			logger.log(FINE, e.getMessage(), e);
+			logger.log(FINER, e.getMessage(), e);
 		}
 	}
 
@@ -189,7 +197,7 @@ public class DefaultUtilHelper implements UtilHelper {
 			T result = supplier.get();
 			return result;
 		} catch (Exception e) {
-			logger.log(FINE, e.getMessage(), e);
+			logger.log(FINER, e.getMessage(), e);
 			return null;
 		}
 	}

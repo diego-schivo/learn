@@ -1,6 +1,7 @@
 package com.backflipsource.menagerie;
 
 import static com.backflipsource.Helpers.forwardServletRequest;
+import static com.backflipsource.menagerie.App.getApp;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class Index extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.setAttribute("servlets", App.getServlets());
+		request.setAttribute("servlets", getApp().getServlets());
 		forwardServletRequest("/index.jsp", request, response);
 	}
 }

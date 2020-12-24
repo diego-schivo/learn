@@ -5,8 +5,6 @@ import static com.backflipsource.servlet.EntityServlet.CONTEXT;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import com.backflipsource.servlet.EntityServlet.EntityContext;
-
 @SuppressWarnings("serial")
 public class ContextTag extends TagSupport {
 

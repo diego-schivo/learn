@@ -18,6 +18,8 @@ public interface Control {
 
 	Control getParent();
 
+	String getHeading();
+
 	public interface Factory<T extends Control> {
 
 		void setParent(Control parent);

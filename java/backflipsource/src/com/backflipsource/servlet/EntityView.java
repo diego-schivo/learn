@@ -4,6 +4,8 @@ import java.util.Map;
 
 public interface EntityView {
 
+	Class<?> getEntity();
+
 	String getUri();
 
 	@SuppressWarnings("rawtypes")

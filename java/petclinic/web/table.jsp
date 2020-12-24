@@ -1,15 +1,17 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ include file="taglibs.jsp" %>
 
+<h2>${context.text(context.control)}</h2>
+
 <table>
   <tr>
-    <c:forEach var="factory" items="${control.factories}">
+    <c:forEach var="factory" items="${context.control.factories}">
       <th>${factory.name}</th>
     </c:forEach>
   </tr>
-  <c:forEach var="item" items="${control.items}">
+  <c:forEach var="item" items="${context.control.items}">
     <tr>
-      <c:forEach var="factory" items="${control.factories}">
+      <c:forEach var="factory" items="${context.control.factories}">
         <td>
           <bfs:control var="control" control="${factory.create(item)}">
             <jsp:include page="${control.page}" />
@@ -19,4 +21,5 @@
     </tr>
   </c:forEach>
 </table>
+
 <a href="${requestURI}/new">New</a>

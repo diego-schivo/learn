@@ -25,15 +25,16 @@ public class DefaultRequestHandlerProvider implements RequestHandler.Provider {
 
 	protected Map<RequestMatcher, RequestHandler> handlers;
 
-	public DefaultRequestHandlerProvider(Class<?> class1) {
+	public DefaultRequestHandlerProvider(EntityView entityView) {
 		String[] packageNames = { "com.backflipsource.servlet", "com.backflipsource.petclinic" };
 		handlers = Arrays.stream(packageNames).flatMap(Helpers::getClasses)
 				.filter(class2 -> class2.getAnnotation(Controller.class) != null).collect(toMap(class2 -> {
 					Controller annotation = class2.getAnnotation(Controller.class);
-					RequestMatcher matcher = new Regex(class1, annotation.score(), annotation.regex());
+					RequestMatcher matcher = new Regex(entityView.getEntity(), annotation.score(), annotation.regex());
 					return matcher;
 				}, class2 -> {
-					RequestHandler handler = (RequestHandler) unsafeGet(() -> class2.getDeclaredConstructor(Class.class).newInstance(class1));
+					RequestHandler handler = (RequestHandler) unsafeGet(
+							() -> class2.getDeclaredConstructor(EntityView.class).newInstance(entityView));
 					return handler;
 				}));
 	}

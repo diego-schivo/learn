@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller(regex = "/_uri_/.+")
-public class SubpathHandler extends AbstractHandler {
+public class DispatchSubpath extends EntityRequestHandler {
 
-	private static Logger logger = logger(SubpathHandler.class, ALL);
+	private static Logger logger = logger(DispatchSubpath.class, ALL);
 
-	public SubpathHandler(Class<?> class1) {
-		super(class1);
+	public DispatchSubpath(EntityView entityView) {
+		super(entityView);
 	}
 
 	@Override
@@ -31,9 +31,4 @@ public class SubpathHandler extends AbstractHandler {
 
 		forwardServletRequest(path2, request, response);
 	}
-
-//	@Override
-//	public int vote(HttpServletRequest request) {
-//		return 0;
-//	}
 }

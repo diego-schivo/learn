@@ -22,12 +22,8 @@
 
 <section>
   <bfs:context var="context">
-    <h2>${context.servlet.class1.simpleName} ${context.handler.getClass().simpleName}</h2>
+    <jsp:include page="${context.control.page}" />
   </bfs:context>
-
-  <bfs:control var="control">
-    <jsp:include page="${control.page}" />
-  </bfs:control>
 </section>
 
 </body>

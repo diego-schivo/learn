@@ -25,17 +25,22 @@ public class DefaultEntityView implements EntityView {
 
 	private static Logger logger = logger(DefaultEntityView.class, ALL);
 
-	protected Class<?> class1;
+	protected Class<?> entity;
 
 	protected List<Field> fields;
 
 	protected String uri;
 
-	public DefaultEntityView(Class<?> class1) {
-		this.class1 = class1;
-		fields = safeStream(classFields(class1))
+	public DefaultEntityView(Class<?> entity) {
+		this.entity = entity;
+		fields = safeStream(classFields(entity))
 				.filter(field -> field.getAnnotationsByType(View.Field.class).length > 0).collect(toList());
-		this.uri = uri(class1);
+		this.uri = uri(entity);
+	}
+
+	@Override
+	public Class<?> getEntity() {
+		return entity;
 	}
 
 	@Override
@@ -46,14 +51,14 @@ public class DefaultEntityView implements EntityView {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Map<String, Control.Factory> controlFactories(Class<?> view) {
-		logger.fine("EntityView controlFactories");
+		logger.fine(() -> "view " + view);
 
 		return viewFieldMap(view, (field, annotation) -> controlFactory(field, annotation, view));
 	}
 
 	@Override
 	public Map<String, StringConverter<?>> converters(Class<?> view) {
-		logger.fine("EntityView converters");
+		logger.fine(() -> "view " + view);
 
 		return viewFieldMap(view, (field, annotation) -> converter(annotation));
 	}
@@ -77,8 +82,7 @@ public class DefaultEntityView implements EntityView {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected Class<? extends Factory> defaultControlFactoryClass(Field field, View.Field annotation,
-			Class<?> view) {
+	protected Class<? extends Factory> defaultControlFactoryClass(Field field, View.Field annotation, Class<?> view) {
 		boolean identifier = annotation.identifier();
 		boolean edit = Objects.equals(view, View.Edit.class);
 
@@ -94,18 +98,16 @@ public class DefaultEntityView implements EntityView {
 	}
 
 	protected String uri(Class<?> class1) {
-		logger.fine("EntityView uri");
-
-		String urlPattern1 = safeStream(class1.getAnnotationsByType(View.class)).map(View::uri)
+		String uri = safeStream(class1.getAnnotationsByType(View.class)).map(View::uri)
 				.filter(not(Helpers::emptyString)).findFirst().orElse("/" + class1.getSimpleName().toLowerCase());
-		return urlPattern1;
+		logger.fine(() -> "uri " + uri);
+		return uri;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected <T> Map<String, T> viewFieldMap(Class<?> view, BiFunction<Field, View.Field, T> function) {
-		logger.fine("EntityView viewFieldMap");
 
-		return safeStream(fields).map(field -> {
+		Map<String, T> map = safeStream(fields).map(field -> {
 			logger.fine(() -> "field " + field);
 
 			View.Field[] annotations = field.getAnnotationsByType(View.Field.class);
@@ -123,5 +125,7 @@ public class DefaultEntityView implements EntityView {
 
 			return new Object[] { field.getName(), t };
 		}).filter(Objects::nonNull).collect(linkedHashMapCollector(array -> (String) array[0], array -> (T) array[1]));
+		logger.fine(() -> "map " + map);
+		return map;
 	}
 }

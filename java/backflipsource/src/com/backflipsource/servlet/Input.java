@@ -1,6 +1,6 @@
 package com.backflipsource.servlet;
 
-import static com.backflipsource.servlet.EntityContextListener.getViews;
+import static com.backflipsource.servlet.EntityServlet.getContextListener;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -27,7 +27,7 @@ public class Input extends AbstractControl {
 		public Factory(Field field, View.Field annotation) {
 			super(Input.class, field, annotation);
 
-			if (getViews().containsKey(field.getType().getName())) {
+			if (getContextListener().getViews().containsKey(field.getType())) {
 				type = TYPE_HIDDEN;
 			} else if (LocalDate.class.isAssignableFrom(field.getType())) {
 				type = TYPE_DATE;

@@ -24,11 +24,23 @@ public interface LangHelper {
 
 	String capitalizeString(String string);
 
-	String[] splitString(String string, int character);
+	String uncapitalizeString(String string);
+
+	String[] splitString(String string, String delimiter);
+
+	String joinStrings(Stream<String> strings, String delimiter);
 
 	String stringWithoutPrefix(String string, String prefix);
 
 	String stringWithoutSuffix(String string, String suffix);
+
+	String stringBeforeLast(String string, String substr);
+
+	String stringAfterLast(String string, String substr);
+
+	String camelCaseString(String[] words);
+
+	String[] camelCaseWords(String string);
 
 	<T> T nonNullInstance(T t1, T t2);
 

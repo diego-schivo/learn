@@ -9,8 +9,9 @@ import static com.backflipsource.Helpers.nonNullInstance;
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.servlet.EntityContextListener.getViews;
 import static com.backflipsource.servlet.EntityContextListener.logger;
+import static com.backflipsource.servlet.EntityServlet.CONTEXT_LISTENER;
+import static com.backflipsource.servlet.EntityServlet.getContextListener;
 import static java.util.Collections.singleton;
 import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;
@@ -18,6 +19,7 @@ import static java.util.stream.Collectors.toList;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -72,6 +74,13 @@ public abstract class AbstractControl implements Control {
 		return factory.parent;
 	}
 
+	@Override
+	public String getHeading() {
+		ResourceBundle resourceBundle = CONTEXT_LISTENER.get().getResourceBundle();
+		String key = (getEntityView().getEntity().getSimpleName() + "." + getView().getSimpleName()).toLowerCase();
+		return resourceBundle.getString(key);
+	}
+
 	@SuppressWarnings("rawtypes")
 	private Collection<Control.Factory> factories;
 
@@ -104,8 +113,9 @@ public abstract class AbstractControl implements Control {
 		protected Control parent;
 
 		protected Factory(Class<T> class1, Field field, View.Field annotation) {
-			this(class1, safeGet(
-					() -> getViews().get(((Class<?>) listGet(getArgumentTypes(field.getGenericType()), 0)).getName())),
+			this(class1,
+					safeGet(() -> getContextListener().getViews()
+							.get(((Class<?>) listGet(getArgumentTypes(field.getGenericType()), 0)))),
 					field.getName(), object -> unsafeGet(() -> object != null ? getGetter(field).invoke(object) : null),
 					converter(annotation), annotation.controlPage());
 		}

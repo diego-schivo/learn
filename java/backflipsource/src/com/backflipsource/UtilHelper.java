@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 
 public interface UtilHelper {
 
+	<T> boolean emptyArray(T[] array);
+
 	boolean emptyCollection(Collection<?> collection);
 
 	<T> T[] safeArray(Collection<T> collection, Class<T> class1);

@@ -1,6 +1,5 @@
 package com.backflipsource.petclinic;
 
-import static com.backflipsource.Helpers.emptyString;
 import static com.backflipsource.Helpers.unsafeRun;
 
 import java.util.List;
@@ -8,16 +7,17 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.backflipsource.servlet.BaseHandler;
 import com.backflipsource.servlet.Controller;
+import com.backflipsource.servlet.EntityView;
+import com.backflipsource.servlet.ListEntities;
 import com.backflipsource.servlet.Table;
 import com.backflipsource.servlet.View;
 
-@Controller(regex = "/_uri_", parameter = "lastName", score = 1)
-public class LastNameHandler extends BaseHandler {
+@Controller(regex = "/_uri_", parameter = "lastName", score = 2)
+public class FilterOwnersByLastName extends ListEntities {
 
-	public LastNameHandler(Class<?> class1) {
-		super(class1);
+	public FilterOwnersByLastName(EntityView entityView) {
+		super(entityView);
 	}
 
 	@Override
@@ -31,10 +31,4 @@ public class LastNameHandler extends BaseHandler {
 		}
 		render(new Table.Factory(entityView).create(find), View.List.class, request, response);
 	}
-
-//	@Override
-//	public int vote(HttpServletRequest request) {
-//		int vote = super.vote(request);
-//		return (vote > 0 && !emptyString(request.getParameter("lastName"))) ? (vote + 1) : -1;
-//	}
 }
