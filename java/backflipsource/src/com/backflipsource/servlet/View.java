@@ -21,7 +21,7 @@ public @interface View {
 
 	String page() default "";
 
-	Class<? extends HttpHandler.Resolver> handlerResolver() default HttpHandler.Resolver.class;
+	Class<? extends RequestHandler.Provider> handlerProvider() default RequestHandler.Provider.class;
 
 	@Target(FIELD)
 	@Retention(RUNTIME)

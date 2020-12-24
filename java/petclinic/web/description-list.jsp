@@ -5,7 +5,7 @@
   <c:forEach var="factory" items="${control.factories}">
     <dt>${factory.name}</dt>
     <dd>
-      <bfs:control var="control" control="${factory.control(control.item)}">
+      <bfs:control var="control" control="${factory.create(control.item)}">
         <jsp:include page="${control.page}" />
       </bfs:control>
     </dd>

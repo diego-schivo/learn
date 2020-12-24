@@ -10,31 +10,22 @@ import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
 import static com.backflipsource.servlet.EntityContextListener.getViews;
+import static com.backflipsource.servlet.EntityContextListener.logger;
 import static java.util.Collections.singleton;
-import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.backflipsource.servlet.StringConverter.ForString;
 
 public abstract class AbstractControl implements Control {
 
-	private static Logger logger = getLogger(AbstractControl.class.getName());
-
-	static {
-		logger.setLevel(Level.ALL);
-
-		ConsoleHandler handler = new ConsoleHandler();
-		handler.setLevel(Level.ALL);
-		logger.addHandler(handler);
-	}
+	private static Logger logger = logger(AbstractControl.class, ALL);
 
 	protected Factory<?> factory;
 
@@ -143,7 +134,7 @@ public abstract class AbstractControl implements Control {
 		}
 
 		@Override
-		public T control(Object target) {
+		public T create(Object target) {
 			T control = unsafeGet(() -> class1.getDeclaredConstructor().newInstance());
 			control.factory = this;
 			control.item = target;

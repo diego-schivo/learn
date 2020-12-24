@@ -6,8 +6,9 @@ import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
 import static com.backflipsource.servlet.AbstractControl.Factory.converter;
+import static com.backflipsource.servlet.EntityContextListener.logger;
 import static java.util.function.Predicate.not;
-import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Field;
@@ -15,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.backflipsource.Helpers;
@@ -24,15 +23,7 @@ import com.backflipsource.servlet.AbstractControl.Factory;
 
 public class DefaultEntityView implements EntityView {
 
-	private static Logger logger = getLogger(DefaultEntityView.class.getName());
-
-	static {
-		logger.setLevel(Level.ALL);
-
-		ConsoleHandler handler = new ConsoleHandler();
-		handler.setLevel(Level.ALL);
-		logger.addHandler(handler);
-	}
+	private static Logger logger = logger(DefaultEntityView.class, ALL);
 
 	protected Class<?> class1;
 

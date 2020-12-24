@@ -11,7 +11,7 @@
     <tr>
       <c:forEach var="factory" items="${control.factories}">
         <td>
-          <bfs:control var="control" control="${factory.control(item)}">
+          <bfs:control var="control" control="${factory.create(item)}">
             <jsp:include page="${control.page}" />
           </bfs:control>
         </td>

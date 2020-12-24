@@ -8,7 +8,7 @@
         <label>${factory.name}</label>
       </dt>
       <dd>
-        <bfs:control var="control" control="${factory.control(control.item)}">
+        <bfs:control var="control" control="${factory.create(control.item)}">
           <jsp:include page="${control.page}" />
         </bfs:control>
       </dd>

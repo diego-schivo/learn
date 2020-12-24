@@ -27,8 +27,8 @@ public class Table extends AbstractControl {
 		}
 
 		@Override
-		public Table control(Object target) {
-			Table control = super.control(target);
+		public Table create(Object target) {
+			Table control = super.create(target);
 			control.items = (List<?>) ((getValue != null) ? getValue.apply(target) : target);
 			return control;
 		}

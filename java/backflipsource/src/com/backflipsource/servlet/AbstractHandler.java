@@ -11,8 +11,9 @@ import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeRun;
 import static com.backflipsource.servlet.EntityContextListener.getViews;
+import static com.backflipsource.servlet.EntityContextListener.logger;
 import static com.backflipsource.servlet.EntityServlet.CONTEXT;
-import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Field;
@@ -20,8 +21,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,17 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.backflipsource.servlet.EntityServlet.EntityContext;
 
-public abstract class AbstractHandler implements VotingHttpHandler {
+public abstract class AbstractHandler implements RequestHandler {
 
-	private static Logger logger = getLogger(AbstractHandler.class.getName());
-
-	static {
-		logger.setLevel(Level.ALL);
-
-		ConsoleHandler handler = new ConsoleHandler();
-		handler.setLevel(Level.ALL);
-		logger.addHandler(handler);
-	}
+	private static Logger logger = logger(AbstractHandler.class, ALL);
 
 	protected Class<?> class1;
 

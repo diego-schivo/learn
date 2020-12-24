@@ -3,12 +3,12 @@ package com.backflipsource.servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public interface HttpHandler {
+public interface RequestHandler {
 
 	void handle(HttpServletRequest request, HttpServletResponse response);
 
-	interface Resolver {
+	interface Provider {
 
-		HttpHandler handler(HttpServletRequest request);
+		RequestHandler provide(HttpServletRequest request);
 	}
 }

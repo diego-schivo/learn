@@ -10,7 +10,7 @@ import com.backflipsource.servlet.EntityData;
 import com.backflipsource.servlet.StringConverter.ForInteger;
 import com.backflipsource.servlet.View;
 
-@View(uri = "/owners", handlerResolver = OwnerHandler.class)
+@View(uri = "/owners")
 public class Owner {
 
 	@View.Field(identifier = true, view = View.List.class, converter = ForInteger.class, controlPage = "owner-id-anchor.jsp")

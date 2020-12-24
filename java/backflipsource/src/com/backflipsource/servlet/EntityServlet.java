@@ -1,14 +1,13 @@
 package com.backflipsource.servlet;
 
 import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.servlet.EntityContextListener.logger;
 import static java.lang.Class.forName;
-import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Level.ALL;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Stack;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -23,19 +22,11 @@ public class EntityServlet extends HttpServlet {
 	// ".controlStack";
 	public static String CONTEXT = EntityServlet.class.getName() + ".context";
 
-	private static Logger logger = getLogger(EntityServlet.class.getName());
-
-	static {
-		logger.setLevel(Level.ALL);
-
-		ConsoleHandler handler = new ConsoleHandler();
-		handler.setLevel(Level.ALL);
-		logger.addHandler(handler);
-	}
+	private static Logger logger = logger(EntityServlet.class, ALL);
 
 	protected Class<?> class1;
 
-	protected HttpHandler.Resolver handlerResolver;
+	protected RequestHandler.Provider handlerProvider;
 
 	public Class<?> getClass1() {
 		return class1;
@@ -47,9 +38,10 @@ public class EntityServlet extends HttpServlet {
 
 		class1 = unsafeGet(() -> forName(getServletName()));
 
-		Class<? extends HttpHandler.Resolver> handlerClass = class1.getAnnotation(View.class).handlerResolver();
-		handlerResolver = Objects.equals(handlerClass, HttpHandler.Resolver.class) ? new DefaultEntityHandler(class1)
-				: (HttpHandler.Resolver) unsafeGet(() -> handlerClass.getDeclaredConstructor().newInstance());
+		Class<? extends RequestHandler.Provider> class2 = class1.getAnnotation(View.class).handlerProvider();
+		handlerProvider = Objects.equals(class2, RequestHandler.Provider.class)
+				? new DefaultRequestHandlerProvider(class1)
+				: (RequestHandler.Provider) unsafeGet(() -> class2.getDeclaredConstructor().newInstance());
 	}
 
 	@Override
@@ -63,12 +55,14 @@ public class EntityServlet extends HttpServlet {
 			request.setAttribute("requestURI", requestURI);
 		}
 
+		RequestHandler handler = handlerProvider.provide(request);
+		if (handler == null) {
+			return;
+		}
+
 		EntityContext context = new EntityContext();
 		context.servlet = this;
-
-		HttpHandler handler = handlerResolver.handler(request);
 		context.handler = handler;
-
 		request.setAttribute(CONTEXT, context);
 
 		handler.handle(request, response);
@@ -78,7 +72,7 @@ public class EntityServlet extends HttpServlet {
 
 		protected EntityServlet servlet;
 
-		protected HttpHandler handler;
+		protected RequestHandler handler;
 
 		protected Stack<Control> controls = new Stack<>();
 
@@ -86,7 +80,7 @@ public class EntityServlet extends HttpServlet {
 			return servlet;
 		}
 
-		public HttpHandler getHandler() {
+		public RequestHandler getHandler() {
 			return handler;
 		}
 

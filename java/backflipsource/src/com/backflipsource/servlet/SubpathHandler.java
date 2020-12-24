@@ -1,26 +1,18 @@
 package com.backflipsource.servlet;
 
 import static com.backflipsource.Helpers.forwardServletRequest;
-import static java.util.logging.Logger.getLogger;
+import static com.backflipsource.servlet.EntityContextListener.logger;
+import static java.util.logging.Level.ALL;
 
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Controller(regex = "/_uri_/.+")
 public class SubpathHandler extends AbstractHandler {
 
-	private static Logger logger = getLogger(SubpathHandler.class.getName());
-
-	static {
-		logger.setLevel(Level.ALL);
-
-		ConsoleHandler handler = new ConsoleHandler();
-		handler.setLevel(Level.ALL);
-		logger.addHandler(handler);
-	}
+	private static Logger logger = logger(SubpathHandler.class, ALL);
 
 	public SubpathHandler(Class<?> class1) {
 		super(class1);
@@ -40,8 +32,8 @@ public class SubpathHandler extends AbstractHandler {
 		forwardServletRequest(path2, request, response);
 	}
 
-	@Override
-	public int vote(HttpServletRequest request) {
-		return 0;
-	}
+//	@Override
+//	public int vote(HttpServletRequest request) {
+//		return 0;
+//	}
 }

@@ -3,6 +3,7 @@ package com.backflipsource.servlet;
 import static com.backflipsource.Helpers.getClasses;
 import static com.backflipsource.Helpers.linkedHashMapCollector;
 import static com.backflipsource.Helpers.safeStream;
+import static java.util.logging.Level.ALL;
 import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toCollection;
 
@@ -19,15 +20,19 @@ import javax.servlet.ServletRegistration.Dynamic;
 
 public class EntityContextListener implements ServletContextListener {
 
-	private static Logger logger = getLogger(EntityContextListener.class.getName());
-
-	static {
-		logger.setLevel(Level.ALL);
+	public static Logger logger(Class<?> class1, Level level) {
+		Logger logger = getLogger(class1.getName());
 
 		ConsoleHandler handler = new ConsoleHandler();
-		handler.setLevel(Level.ALL);
 		logger.addHandler(handler);
+
+		logger.setLevel(level);
+		handler.setLevel(level);
+
+		return logger;
 	}
+
+	private static Logger logger = logger(EntityContextListener.class, ALL);
 
 	protected String packageName;
 

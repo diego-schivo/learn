@@ -22,6 +22,6 @@ public interface Control {
 
 		void setParent(Control parent);
 
-		T control(Object target);
+		T create(Object target);
 	}
 }

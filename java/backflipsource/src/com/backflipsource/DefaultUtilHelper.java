@@ -2,14 +2,15 @@ package com.backflipsource;
 
 import static com.backflipsource.Helpers.getGetters;
 import static com.backflipsource.Helpers.getSetters;
+import static com.backflipsource.servlet.EntityContextListener.logger;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 import static java.util.Collections.emptyList;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.logging.Level.ALL;
 import static java.util.logging.Level.FINE;
-import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
 
@@ -39,7 +40,6 @@ import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -47,12 +47,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unchecked")
 public class DefaultUtilHelper implements UtilHelper {
 
-	private static Logger logger = getLogger(DefaultUtilHelper.class.getName());
-
-	static {
-		// logger.setLevel(Level.ALL);
-		logger.setLevel(Level.INFO);
-	}
+	private static Logger logger = logger(DefaultUtilHelper.class, ALL);
 
 	@Override
 	public boolean emptyCollection(Collection<?> collection) {

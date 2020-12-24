@@ -8,7 +8,7 @@
         <table>
           <c:forEach var="factory" items="${control.factories}">
             <c:if test="${factory.name ne 'visits'}">
-              <bfs:control var="control" control="${factory.control(item)}">
+              <bfs:control var="control" control="${factory.create(item)}">
                 <tr>
                   <th align="right">${control.name}</th>
                   <td>
@@ -23,7 +23,7 @@
       <td>
         <c:forEach var="factory" items="${control.factories}">
           <c:if test="${factory.name eq 'visits'}">
-            <bfs:control var="control" control="${factory.control(item)}">
+            <bfs:control var="control" control="${factory.create(item)}">
               <jsp:include page="${control.page}" />
             </bfs:control>
           </c:if>

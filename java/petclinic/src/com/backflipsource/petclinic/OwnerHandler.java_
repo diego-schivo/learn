@@ -1,53 +1,12 @@
 package com.backflipsource.petclinic;
 
-import static com.backflipsource.Helpers.emptyString;
+import com.backflipsource.servlet.DefaultRequestHandlerProvider;
 
-import java.util.List;
-import java.util.regex.Matcher;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.backflipsource.servlet.DefaultEntityHandler;
-import com.backflipsource.servlet.Table;
-import com.backflipsource.servlet.View;
-
-public class OwnerHandler extends DefaultEntityHandler {
+public class OwnerHandler extends DefaultRequestHandlerProvider {
 
 	public OwnerHandler() {
 		super(Owner.class);
-	}
-
-	@Override
-	protected Result handleMatch(Matcher matcher, HttpServletRequest request) {
-		boolean find = "/find".equals(matcher.group(1));
-		if (find) {
-			return find(request);
-		}
-
-		return super.handleMatch(matcher, request);
-	}
-
-	protected Result find(HttpServletRequest request) {
-		Result result = new Result();
-		result.setView(View.Edit.class);
-		result.setControl(new OwnerFind.Factory(entityView).control(null));
-		return result;
-	}
-
-	@Override
-	protected Result base(HttpServletRequest request) {
-		String lastName = request.getParameter("lastName");
-		if (emptyString(lastName)) {
-			return super.base(request);
-		}
-		Result result = new Result();
-		List<Owner> find = ((Owner.Data) entityData).find(lastName);
-		if (find.size() == 1) {
-			result.setRedirect(request.getAttribute("requestURI") + "/" + find.get(0).getId());
-		} else {
-			result.setView(View.List.class);
-			result.setControl(new Table.Factory(entityView).control(find));
-		}
-		return result;
+		handlers.add(new FindHandler(Owner.class));
+		handlers.add(new LastNameHandler(Owner.class));
 	}
 }
