@@ -12,18 +12,18 @@ import java.util.List;
 
 import com.backflipsource.servlet.StringConverter.ForInteger;
 import com.backflipsource.servlet.StringConverter.ForLocalDate;
-import com.backflipsource.servlet.View;
+import com.backflipsource.ui.Entity;
 
-@View(uri = "/visits")
+@Entity(uri = "/visits")
 public class Visit {
 
-	@View.Field(identifier = true, converter = ForInteger.class)
+	@Entity.Field(identifier = true, converter = ForInteger.class)
 	private Integer id;
 
-	@View.Field(converter = ForLocalDate.class)
+	@Entity.Field(converter = ForLocalDate.class)
 	private LocalDate date;
 
-	@View.Field
+	@Entity.Field
 	private String description;
 
 	// @View.Field

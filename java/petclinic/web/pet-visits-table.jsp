@@ -20,10 +20,10 @@
   </c:forEach>
   <tr>
     <%--
-    <td><a href="${requestURI}${uri}/${control.item.id}/edit">Edit pet</a></td>
-    <td><a href="${requestURI}${uri}/${control.item.id}${control.uri}/new">Add visit</a></td>
+    <td><a href="${requestURI}${uri}/${control.target.id}/edit">Edit pet</a></td>
+    <td><a href="${requestURI}${uri}/${control.target.id}${control.uri}/new">Add visit</a></td>
     --%>
-    <td><a href="${requestURI}${control.parent.entityView.uri}/${control.item.id}/edit">Edit pet</a></td>
+    <td><a href="${requestURI}${control.parent.entityView.uri}/${control.target.id}/edit">Edit pet</a></td>
     <td><a href="${requestURI}/new">Add visit</a></td>
   </tr>
 </table>

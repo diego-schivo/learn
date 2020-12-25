@@ -1,4 +1,4 @@
-package com.backflipsource.entity.annotation;
+package com.backflipsource.ui;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -8,26 +8,29 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.backflipsource.entity.annotation.Render.Repeat;
-import com.backflipsource.servlet.Control;
+import com.backflipsource.Control;
+import com.backflipsource.ui.Render.Repeated;
+import com.backflipsource.ui.spec.EntityUI.Mode;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
-@Repeatable(Repeat.class)
+@Repeatable(Repeated.class)
 public @interface Render {
 
-	Class<?>[] view() default {};
+	Class<? extends Mode>[] mode() default {};
 
 	@SuppressWarnings("rawtypes")
 	Class<? extends Control.Factory> controlFactory() default Control.Factory.class;
 
 	String controlPage() default "";
 
-	Class<?> presentation() default Object.class;
+	Class<?> entity() default Object.class;
+
+	String heading() default "";
 
 	@Target({ FIELD, TYPE })
 	@Retention(RUNTIME)
-	@interface Repeat {
+	@interface Repeated {
 
 		Render[] value();
 	}

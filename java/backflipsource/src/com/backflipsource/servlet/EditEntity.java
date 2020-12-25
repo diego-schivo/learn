@@ -1,9 +1,9 @@
 package com.backflipsource.servlet;
 
-import static com.backflipsource.Helpers.substringAfterLast;
+import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.stringWithoutSuffix;
+import static com.backflipsource.Helpers.substringAfterLast;
 import static com.backflipsource.Helpers.unsafeRun;
-import static com.backflipsource.servlet.EntityContextListener.logger;
 import static java.util.logging.Level.ALL;
 
 import java.util.logging.Logger;
@@ -11,14 +11,15 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.backflipsource.servlet.View.Edit;
+import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.spec.EntityResource;
 
-@Controller(regex = "/_uri_/([^/]+)/edit", score = 1)
+@Entity.Controller(regex = "_uri_/([^/]+)/edit", score = 1)
 public class EditEntity extends EntityRequestHandler {
 
 	private static Logger logger = logger(EditEntity.class, ALL);
 
-	public EditEntity(EntityView entityView) {
+	public EditEntity(EntityResource entityView) {
 		super(entityView);
 	}
 
@@ -35,6 +36,6 @@ public class EditEntity extends EntityRequestHandler {
 			return;
 		}
 
-		render(new Form.Factory(entityView).create(item), Edit.class, request, response);
+		// render(new Form.Factory(entityView).create(item), com.backflipsource.ui.EntityForm.class, request, response);
 	}
 }

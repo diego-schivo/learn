@@ -2,15 +2,18 @@ package com.backflipsource;
 
 import static com.backflipsource.Helpers.getGetters;
 import static com.backflipsource.Helpers.getSetters;
-import static com.backflipsource.servlet.EntityContextListener.logger;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Spliterator.ORDERED;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
+import static java.util.logging.Logger.getLogger;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
 
@@ -29,17 +32,21 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Spliterator;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -47,7 +54,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unchecked")
 public class DefaultUtilHelper implements UtilHelper {
 
-	private static Logger logger = logger(DefaultUtilHelper.class, FINE);
+	private static Logger logger = Helpers.logger(DefaultUtilHelper.class, FINE);
 
 	@Override
 	public <T> boolean emptyArray(T[] array) {
@@ -147,7 +154,41 @@ public class DefaultUtilHelper implements UtilHelper {
 		if (enumeration == null) {
 			return null;
 		}
-		return stream(spliteratorUnknownSize(enumeration.asIterator(), Spliterator.ORDERED), false);
+		return stream(spliteratorUnknownSize(enumeration.asIterator(), ORDERED), false);
+	}
+
+	@Override
+	public <T> Stream<T> safeStream(Iterable<T> iterable) {
+		Stream<T> stream = unsafeStream(iterable);
+		if (stream == null) {
+			return Stream.empty();
+		}
+		return stream;
+	}
+
+	@Override
+	public <T> Stream<T> unsafeStream(Iterable<T> iterable) {
+		if (iterable == null) {
+			return null;
+		}
+		return stream(spliteratorUnknownSize(iterable.iterator(), ORDERED), false);
+	}
+
+	@Override
+	public <T> Stream<T> safeStream(Iterator<T> iterator) {
+		Stream<T> stream = unsafeStream(iterator);
+		if (stream == null) {
+			return Stream.empty();
+		}
+		return stream;
+	}
+
+	@Override
+	public <T> Stream<T> unsafeStream(Iterator<T> iterator) {
+		if (iterator == null) {
+			return null;
+		}
+		return stream(spliteratorUnknownSize(iterator, ORDERED), false);
 	}
 
 	@Override
@@ -165,6 +206,19 @@ public class DefaultUtilHelper implements UtilHelper {
 			return null;
 		}
 		return safeStream(map.entrySet());
+	}
+
+	@Override
+	public <T> Collector<T, ?, Set<T>> linkedHashSetCollector() {
+		return toCollection(LinkedHashSet::new);
+	}
+
+	@Override
+	public <K, V> Map<K, V> safeMap(Map<K, V> map) {
+		if (map == null) {
+			return emptyMap();
+		}
+		return map;
 	}
 
 	@Override
@@ -330,5 +384,18 @@ public class DefaultUtilHelper implements UtilHelper {
 			return null;
 		}
 		return list.set(index, value);
+	}
+
+	@Override
+	public Logger logger(Class<?> class1, Level level) {
+		Logger logger = getLogger(class1.getName());
+
+		ConsoleHandler handler = new ConsoleHandler();
+		logger.addHandler(handler);
+
+		logger.setLevel(level);
+		handler.setLevel(level);
+
+		return logger;
 	}
 }

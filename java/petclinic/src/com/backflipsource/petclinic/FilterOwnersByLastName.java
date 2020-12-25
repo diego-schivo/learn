@@ -7,16 +7,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.backflipsource.servlet.Controller;
-import com.backflipsource.servlet.EntityView;
-import com.backflipsource.servlet.ListEntities;
-import com.backflipsource.servlet.Table;
-import com.backflipsource.servlet.View;
+import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.ListEntities;
+import com.backflipsource.ui.Table;
+import com.backflipsource.ui.spec.EntityResource;
 
-@Controller(regex = "/_uri_", parameter = "lastName", score = 2)
+@Entity.Controller(regex = "_uri_", parameter = "lastName", score = 2)
 public class FilterOwnersByLastName extends ListEntities {
 
-	public FilterOwnersByLastName(EntityView entityView) {
+	public FilterOwnersByLastName(EntityResource entityView) {
 		super(entityView);
 	}
 
@@ -29,6 +28,6 @@ public class FilterOwnersByLastName extends ListEntities {
 					.sendRedirect((String) request.getAttribute("requestURI") + "/" + find.get(0).getId()));
 			return;
 		}
-		render(new Table.Factory(entityView).create(find), View.List.class, request, response);
+		// render(new Table.Factory(entityView).create(find), List.class, request, response);
 	}
 }

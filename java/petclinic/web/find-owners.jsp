@@ -11,7 +11,7 @@
           <label>Last name</label>
         </dt>
         <dd>
-          <bfs:control var="control" control="${factory.create(control.item)}">
+          <bfs:control var="control" control="${factory.create(control.target)}">
             <jsp:include page="${control.page}" />
           </bfs:control>
         </dd>
@@ -21,5 +21,5 @@
   <button>Find Owner</button>
 </form>
 <bfs:context var="context">
-  <a href="${context.servlet.view.uri}/new">Add Owner</a>
+  <a href="${context.resource.uri}/new">Add Owner</a>
 </bfs:context>

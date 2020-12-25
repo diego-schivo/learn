@@ -1,12 +1,12 @@
 package com.backflipsource.servlet;
 
+import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.servlet.EntityContextListener.logger;
+import static com.backflipsource.ui.spec.EntityUI.entityUI;
 import static java.lang.Class.forName;
 import static java.util.logging.Level.ALL;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -14,27 +14,32 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.backflipsource.RequestHandler;
+import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.spec.EntityResource;
+import com.backflipsource.ui.spec.EntityUI;
+
 @SuppressWarnings({ "serial" })
 public class EntityServlet extends HttpServlet {
 
-	public static String CONTEXT = EntityServlet.class.getName() + ".context";
+	public static String CONTEXT = EntityServlet.class.getName() + ".CONTEXT";
 
-	protected static ThreadLocal<EntityContextListener> CONTEXT_LISTENER = new ThreadLocal<>();
+	protected static ThreadLocal<EntityUI> threadUI = new ThreadLocal<>();
 
 	private static Logger logger = logger(EntityServlet.class, ALL);
 
-	public static EntityContextListener getContextListener() {
-		return CONTEXT_LISTENER.get();
+	public static EntityUI getEntityUI() {
+		return threadUI.get();
 	}
 
-	protected EntityContextListener contextListener;
+	protected EntityUI ui;
 
-	protected EntityView view;
+	protected EntityResource resource;
 
 	protected RequestHandler.Provider handlerProvider;
 
-	public EntityView getView() {
-		return view;
+	public EntityResource getResource() {
+		return resource;
 	}
 
 	@Override
@@ -42,17 +47,16 @@ public class EntityServlet extends HttpServlet {
 		Class<?> entity = unsafeGet(() -> forName(getServletName()));
 		logger.fine(() -> "entity " + entity);
 
-		String className = getInitParameter(EntityContextListener.class.getName());
-		contextListener = EntityContextListener.getInstance(className);
-		logger.fine(() -> "contextListener " + contextListener);
+		Class<?> uiClass = unsafeGet(() -> forName(getInitParameter(EntityUI.class.getName())));
+		ui = entityUI(uiClass);
+		logger.fine(() -> "ui " + ui);
 
-		view = contextListener.getViews().get(entity);
-		logger.fine(() -> "view " + view);
+		resource = ui.getResources().get(entity);
+		logger.fine(() -> "resource " + resource);
 
-		Class<? extends RequestHandler.Provider> class1 = entity.getAnnotation(View.class).handlerProvider();
-		handlerProvider = Objects.equals(class1, RequestHandler.Provider.class)
-				? new DefaultRequestHandlerProvider(view)
-				: (RequestHandler.Provider) unsafeGet(() -> class1.getConstructor().newInstance());
+		Class<? extends RequestHandler.Provider> providerClass = entity.getAnnotation(Entity.class).handlerProvider();
+		handlerProvider = unsafeGet(() -> (RequestHandler.Provider) providerClass
+				.getConstructor(EntityResource.class, EntityUI.class).newInstance(resource, ui));
 		logger.fine(() -> "handlerProvider " + handlerProvider);
 	}
 
@@ -60,9 +64,9 @@ public class EntityServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		boolean first = CONTEXT_LISTENER.get() == null;
+		boolean first = (threadUI.get() == null);
 		if (first) {
-			CONTEXT_LISTENER.set(contextListener);
+			threadUI.set(ui);
 		}
 
 		try {
@@ -80,7 +84,7 @@ public class EntityServlet extends HttpServlet {
 				return;
 			}
 
-			EntityContext context = new EntityContext();
+			DefaultEntityContext context = new DefaultEntityContext();
 			context.servlet = this;
 			context.handler = handler;
 			request.setAttribute(CONTEXT, context);
@@ -88,7 +92,7 @@ public class EntityServlet extends HttpServlet {
 			handler.handle(request, response);
 		} finally {
 			if (first) {
-				CONTEXT_LISTENER.remove();
+				threadUI.remove();
 			}
 		}
 	}

@@ -18,7 +18,7 @@ public class Index extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.setAttribute("servlets", getApp().getServlets());
+		request.setAttribute("servlets", getApp().getEntityUI().getServlets());
 		forwardServletRequest("/index.jsp", request, response);
 	}
 }

@@ -6,33 +6,33 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.backflipsource.entity.annotation.Render;
-import com.backflipsource.servlet.Select;
-import com.backflipsource.servlet.Select.Options;
+import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.Render;
+import com.backflipsource.ui.Select;
+import com.backflipsource.ui.Select.Options;
 import com.backflipsource.servlet.StringConverter;
-import com.backflipsource.servlet.View;
 
-@View
+@Entity
 public class Pet {
 
 	private String name;
 
 	private String owner;
 
-	@View.Field
+	@Entity.Field
 	@Render(controlFactory = Select.Factory.class)
 	@Options({ "bird", "cat", "dog", "hamster", "snake" })
 	private String species;
 
-	@View.Field
+	@Entity.Field
 	@Render(controlFactory = Select.Factory.class)
 	@Options({ "f", "m" })
 	private String sex;
 
-	@View.Field(converter = StringConverter.ForLocalDate.class)
+	@Entity.Field(converter = StringConverter.ForLocalDate.class)
 	private LocalDate birth;
 
-	@View.Field(converter = StringConverter.ForLocalDate.class)
+	@Entity.Field(converter = StringConverter.ForLocalDate.class)
 	private LocalDate death;
 
 	public Pet() {

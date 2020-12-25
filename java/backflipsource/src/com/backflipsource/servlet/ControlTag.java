@@ -7,6 +7,8 @@ import java.util.Stack;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import com.backflipsource.Control;
+
 @SuppressWarnings("serial")
 public class ControlTag extends TagSupport {
 
@@ -58,6 +60,6 @@ public class ControlTag extends TagSupport {
 	}
 
 	protected Stack<Control> stack() {
-		return ((EntityContext) pageContext.getRequest().getAttribute(CONTEXT)).getControls();
+		return ((DefaultEntityContext) pageContext.getRequest().getAttribute(CONTEXT)).getControls();
 	}
 }

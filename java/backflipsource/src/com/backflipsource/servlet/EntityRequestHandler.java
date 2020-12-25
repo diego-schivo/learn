@@ -5,12 +5,10 @@ import static com.backflipsource.Helpers.classFields;
 import static com.backflipsource.Helpers.forwardServletRequest;
 import static com.backflipsource.Helpers.getGetter;
 import static com.backflipsource.Helpers.getSetters;
-import static com.backflipsource.Helpers.nonEmptyString;
+import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.safeGet;
-import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeRun;
-import static com.backflipsource.servlet.EntityContextListener.logger;
 import static com.backflipsource.servlet.EntityServlet.CONTEXT;
 import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;
@@ -25,11 +23,19 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.backflipsource.Control;
+import com.backflipsource.RequestHandler;
+import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.EntityForm;
+import com.backflipsource.ui.spec.EntityResource;
+import com.backflipsource.ui.spec.EntityUI;
+import com.backflipsource.ui.spec.EntityUI.Mode;
+
 public abstract class EntityRequestHandler implements RequestHandler {
 
 	private static Logger logger = logger(EntityRequestHandler.class, ALL);
 
-	protected EntityView entityView;
+	protected EntityResource resource;
 
 	protected List<Field> fields;
 
@@ -39,35 +45,34 @@ public abstract class EntityRequestHandler implements RequestHandler {
 
 	protected Object item0;
 
-	public EntityRequestHandler(EntityView entityView) {
-		this.entityView = entityView;
-		fields = safeStream(classFields(entityView.getEntity()))
-				.filter(field -> field.getAnnotationsByType(View.Field.class).length > 0).collect(toList());
+	public EntityRequestHandler(EntityResource resource) {
+		this.resource = resource;
+		fields = safeStream(classFields(resource.getEntity()))
+				.filter(field -> field.getAnnotationsByType(Entity.Field.class).length > 0).collect(toList());
 		idField = safeStream(fields).filter(
-				field -> safeStream(field.getAnnotationsByType(View.Field.class)).anyMatch(View.Field::identifier))
+				field -> safeStream(field.getAnnotationsByType(Entity.Field.class)).anyMatch(Entity.Field::identifier))
 				.findFirst().orElse(null);
-		// pattern = compile(entityView.getUri() + "(" + (idField != null ? "(/[^/]+)" :
-		// "") + "(/edit)?)?");
-		entityData = safeGet(() -> (EntityData) entityView.getEntity().getDeclaredField("data").get(null));
-		item0 = safeGet(() -> entityView.getEntity().getDeclaredField("instance").get(null));
+		entityData = safeGet(() -> (EntityData) resource.getEntity().getDeclaredField("data").get(null));
+		item0 = safeGet(() -> resource.getEntity().getDeclaredField("instance").get(null));
 	}
 
-	protected void render(Control control, Class<?> view, HttpServletRequest request, HttpServletResponse response) {
-		logger.fine(() -> "control " + control + " view " + view);
+	protected void render(Control control, Class<? extends Mode> mode, HttpServletRequest request, HttpServletResponse response) {
+		logger.fine(() -> "control " + control + " view " + mode);
 
-		EntityContext context = (EntityContext) request.getAttribute(CONTEXT);
-		context.getControls().push(control);
+		EntityUI.Context context = (EntityUI.Context) request.getAttribute(CONTEXT);
+		((DefaultEntityContext) context).getControls().push(control);
 
-		View view2 = safeStream(entityView.getEntity().getAnnotationsByType(View.class))
-				.filter(item -> safeList(item.value()).contains(view)).findFirst().orElse(null);
-
-		String path2 = nonEmptyString(view2 != null ? view2.page() : null, "/entity.jsp");
+//		Entity view2 = safeStream(entityView.getEntity().getAnnotationsByType(Entity.class))
+//				.filter(item -> safeList(item.value()).contains(view)).findFirst().orElse(null);
+//
+//		String path2 = nonEmptyString(view2 != null ? view2.page() : null, "/entity.jsp");
+		String path2 = "/entity.jsp";
 		forwardServletRequest(path2, request, response);
 	}
 
 	protected void save(Object item, HttpServletRequest request) {
-		Map<String, StringConverter<?>> converters = entityView.converters(View.Edit.class);
-		Map<String, Method> setters = getSetters(entityView.getEntity());
+		Map<String, StringConverter<?>> converters = resource.converters(EntityForm.class);
+		Map<String, Method> setters = getSetters(resource.getEntity());
 
 		safeStream(fields).filter(field -> !Objects.equals(field, idField)).forEach(field -> {
 			StringConverter<?> converter = converters.get(field.getName());

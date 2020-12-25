@@ -1,4 +1,4 @@
-package com.backflipsource.servlet;
+package com.backflipsource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,6 +1,7 @@
 package com.backflipsource.test;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.backflipsource.DefaultLangHelper;
 
@@ -17,26 +18,29 @@ public class Tests {
 	}
 
 	protected static void camelCaseWords1() {
-		String[] words = langHelper.camelCaseWords(null);
-		assert words == null;
+		Stream<String> stream = langHelper.camelCaseWords(null);
+		assert stream == null;
 	}
 
 	protected static void camelCaseWords2() {
-		String[] words = langHelper.camelCaseWords("");
-		assert words != null;
+		Stream<String> stream = langHelper.camelCaseWords("");
+		assert stream != null;
+		String[] words = stream.toArray(String[]::new);
 		assert words.length == 0;
 	}
 
 	protected static void camelCaseWords3() {
-		String[] words = langHelper.camelCaseWords("foo");
-		assert words != null;
+		Stream<String> stream = langHelper.camelCaseWords("foo");
+		assert stream != null;
+		String[] words = stream.toArray(String[]::new);
 		assert words.length == 1;
 		assert Objects.equals(words[0], "foo");
 	}
 
 	protected static void camelCaseWords4() {
-		String[] words = langHelper.camelCaseWords("fooBarBaz");
-		assert words != null;
+		Stream<String> stream = langHelper.camelCaseWords("fooBarBaz");
+		assert stream != null;
+		String[] words = stream.toArray(String[]::new);
 		assert words.length == 3;
 		assert Objects.equals(words[0], "foo");
 		assert Objects.equals(words[1], "bar");
@@ -44,8 +48,9 @@ public class Tests {
 	}
 
 	protected static void camelCaseWords5() {
-		String[] words = langHelper.camelCaseWords("FooBarBaz");
-		assert words != null;
+		Stream<String> stream = langHelper.camelCaseWords("FooBarBaz");
+		assert stream != null;
+		String[] words = stream.toArray(String[]::new);
 		assert words.length == 3;
 		assert Objects.equals(words[0], "Foo");
 		assert Objects.equals(words[1], "bar");

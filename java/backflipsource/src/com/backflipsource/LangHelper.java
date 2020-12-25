@@ -20,6 +20,8 @@ public interface LangHelper {
 
 	String nonEmptyString(String string1, String string2);
 
+	String nonEmptyString(String string1, Supplier<String> string2);
+
 	String trimString(String string);
 
 	String capitalizeString(String string);
@@ -44,7 +46,7 @@ public interface LangHelper {
 
 	String camelCaseString(String[] words);
 
-	String[] camelCaseWords(String string);
+	Stream<String> camelCaseWords(String string);
 
 	<T> T nonNullInstance(T t1, T t2);
 

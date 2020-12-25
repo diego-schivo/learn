@@ -6,36 +6,43 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import com.backflipsource.entity.annotation.Render;
 import com.backflipsource.servlet.EntityData;
 import com.backflipsource.servlet.StringConverter.ForInteger;
-import com.backflipsource.servlet.View;
+import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.EntityDetail;
+import com.backflipsource.ui.EntityForm;
+import com.backflipsource.ui.EntityList;
+import com.backflipsource.ui.Render;
 
-@View(uri = "/owners")
-@Render(view = View.Show.class, controlPage = "/owner/description-list.jsp", presentation = Owner2.class)
+@Entity(uri = "/owners")
+@Render(mode = EntityDetail.class, controlPage = "/owner/description-list.jsp", entity = Owner2.class)
+@Render(mode = EntityList.class, heading = "Owners")
 public class Owner {
 
-	@View.Field(identifier = true, view = View.List.class, converter = ForInteger.class)
-	@Render(view = View.List.class, controlPage = "/owner-id-anchor.jsp")
+	@Entity.Field(identifier = true, mode = List.class, converter = ForInteger.class)
+	@Render(mode = EntityList.class, controlPage = "/owner-id-anchor.jsp", heading = "Name")
 	private Integer id;
 
-	@View.Field(view = { View.Show.class, View.Edit.class })
+	@Render(mode = { EntityDetail.class, EntityForm.class })
 	private String firstName;
 
-	@View.Field(view = { View.Show.class, View.Edit.class })
+	@Render(mode = { EntityDetail.class, EntityForm.class })
 	private String lastName;
 
-	@View.Field
+	@Entity.Field
+	@Render
 	private String address;
 
-	@View.Field
+	@Entity.Field
+	@Render
 	private String city;
 
-	@View.Field
+	@Entity.Field
+	@Render
 	private String telephone;
 
-	@View.Field(view = View.Show.class, converter = PetStringConverter.class)
-	@Render(view = View.Show.class, controlPage = "/owner-pets-table.jsp")
+	@Entity.Field(mode = EntityDetail.class, converter = PetStringConverter.class)
+	@Render(mode = EntityDetail.class, controlPage = "/owner-pets-table.jsp")
 	private List<Pet> pets;
 
 	public Owner() {

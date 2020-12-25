@@ -10,7 +10,7 @@
           <label>${context.text(factory)}</label>
         </dt>
         <dd>
-          <bfs:control var="control" control="${factory.create(control.item)}">
+          <bfs:control var="control" control="${factory.create(control.target)}">
             <jsp:include page="${control.page}" />
           </bfs:control>
         </dd>

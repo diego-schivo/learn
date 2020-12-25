@@ -10,35 +10,36 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.backflipsource.entity.annotation.Render;
 import com.backflipsource.servlet.EntityData;
-import com.backflipsource.servlet.Select;
-import com.backflipsource.servlet.Select.Options;
 import com.backflipsource.servlet.StringConverter.ForInteger;
 import com.backflipsource.servlet.StringConverter.ForLocalDate;
-import com.backflipsource.servlet.View;
+import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.EntityForm;
+import com.backflipsource.ui.Render;
+import com.backflipsource.ui.Select;
+import com.backflipsource.ui.Select.Options;
 
-@View(uri = "/pets")
+@Entity(uri = "/pets")
 public class Pet {
 
-	@View.Field(identifier = true, converter = ForInteger.class)
+	@Entity.Field(identifier = true, converter = ForInteger.class)
 	private Integer id;
 
-	@View.Field
+	@Entity.Field
 	private String name;
 
-	@View.Field(converter = ForLocalDate.class)
+	@Entity.Field(converter = ForLocalDate.class)
 	private LocalDate birthDate;
 
-	@View.Field
-	@Render(view = View.Edit.class, controlFactory = Select.Factory.class)
+	@Entity.Field
+	@Render(mode = EntityForm.class, controlFactory = Select.Factory.class)
 	@Options({ "cat", "dog", "lizard", "snake", "bird", "hamster" })
 	private String type;
 
 	// @View.Field
 	private Owner owner;
 
-	@View.Field(converter = VisitStringConverter.class)
+	@Entity.Field(converter = VisitStringConverter.class)
 	@Render(controlPage = "/pet-visits-table.jsp")
 	private List<Visit> visits;
 

@@ -4,25 +4,25 @@ import static com.backflipsource.Helpers.substringAfterLast;
 import static com.backflipsource.Helpers.substringBeforeFirst;
 
 import com.backflipsource.Converter;
-import com.backflipsource.servlet.View;
+import com.backflipsource.ui.Entity;
 
 // @Presentation
 public class Owner2 {
 
 	// @Presentation.Field(converter = Name.class)
-	@View.Field(converter2 = Name.class)
+	@Entity.Field(converter2 = Name.class)
 	private String name;
 
 	// @Presentation.Field
-	@View.Field
+	@Entity.Field
 	private String address;
 
 	// @Presentation.Field
-	@View.Field
+	@Entity.Field
 	private String city;
 
 	// @Presentation.Field
-	@View.Field
+	@Entity.Field
 	private String telephone;
 
 	public String getName() {

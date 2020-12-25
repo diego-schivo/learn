@@ -3,15 +3,19 @@ package com.backflipsource;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -41,9 +45,21 @@ public interface UtilHelper {
 
 	<T> Stream<T> unsafeStream(Enumeration<T> enumeration);
 
+	<T> Stream<T> safeStream(Iterable<T> iterable);
+
+	<T> Stream<T> unsafeStream(Iterable<T> iterable);
+
+	<T> Stream<T> safeStream(Iterator<T> iterator);
+
+	<T> Stream<T> unsafeStream(Iterator<T> iterator);
+
 	<K, V> Stream<Entry<K, V>> safeStream(Map<K, V> map);
 
 	<K, V> Stream<Entry<K, V>> unsafeStream(Map<K, V> map);
+
+	<T> Collector<T, ?, Set<T>> linkedHashSetCollector();
+
+	<K, V> Map<K, V> safeMap(Map<K, V> map);
 
 	<T, K, U> Collector<T, ?, Map<K, U>> linkedHashMapCollector(Function<? super T, ? extends K> keyMapper,
 			Function<? super T, ? extends U> valueMapper);
@@ -73,6 +89,8 @@ public interface UtilHelper {
 	<T> T listGet(List<T> list, int index);
 
 	<T> T listSet(List<T> list, int index, T value);
+
+	Logger logger(Class<?> class1, Level level);
 
 	@FunctionalInterface
 	public interface RunnableThrowingException {

@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -74,6 +75,14 @@ public class DefaultLangHelper implements LangHelper {
 			return string1;
 		}
 		return string2;
+	}
+
+	@Override
+	public String nonEmptyString(String string1, Supplier<String> string2) {
+		if (!emptyString(string1)) {
+			return string1;
+		}
+		return string2.get();
 	}
 
 	@Override
@@ -203,24 +212,46 @@ public class DefaultLangHelper implements LangHelper {
 	private static Pattern capitalizedLetterOrEnd = Pattern.compile("[A-Z]|$");
 
 	@Override
-	public String[] camelCaseWords(String string) {
+	public Stream<String> camelCaseWords(String string) {
 		if (string == null) {
 			return null;
 		}
 		Matcher matcher = capitalizedLetterOrEnd.matcher(string);
-		List<String> list = new ArrayList<>();
-		int index = 0;
-		int length = string.length();
-		while (index < length && matcher.find(index + 1)) {
-			int index2 = matcher.start();
-			String substring = string.substring(index, index2);
-			if (index != 0) {
-				substring = uncapitalizeString(substring);
+//		List<String> list = new ArrayList<>();
+//		int index = 0;
+//		int length = string.length();
+//		while (index < length && matcher.find(index + 1)) {
+//			int index2 = matcher.start();
+//			String substring = string.substring(index, index2);
+//			if (index != 0) {
+//				substring = uncapitalizeString(substring);
+//			}
+//			list.add(substring);
+//			index = index2;
+//		}
+//		return list.toArray(new String[list.size()]);
+		return safeStream(new Iterator<String>() {
+
+			int index = 0;
+
+			int length = string.length();
+
+			@Override
+			public boolean hasNext() {
+				return (index < length && matcher.find(index + 1));
 			}
-			list.add(substring);
-			index = index2;
-		}
-		return list.toArray(new String[list.size()]);
+
+			@Override
+			public String next() {
+				int index2 = matcher.start();
+				String substring = string.substring(index, index2);
+				if (index != 0) {
+					substring = uncapitalizeString(substring);
+				}
+				index = index2;
+				return substring;
+			}
+		});
 	}
 
 	@Override

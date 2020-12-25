@@ -3,10 +3,10 @@ package com.backflipsource.petclinic;
 import javax.servlet.annotation.WebListener;
 
 import com.backflipsource.Server;
-import com.backflipsource.servlet.EntityContextListener;
+import com.backflipsource.ui.EntityUIWebListener;
 
 @WebListener
-public class App extends EntityContextListener {
+public class App extends EntityUIWebListener {
 
 	protected static App app;
 

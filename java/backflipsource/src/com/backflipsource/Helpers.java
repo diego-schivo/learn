@@ -6,9 +6,11 @@ import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -16,6 +18,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -85,6 +89,10 @@ public class Helpers {
 		return getLangHelper().nonEmptyString(string1, string2);
 	}
 
+	public static String nonEmptyString(String string1, Supplier<String> string2) {
+		return getLangHelper().nonEmptyString(string1, string2);
+	}
+
 	public static String trimString(String string) {
 		return getLangHelper().trimString(string);
 	}
@@ -133,7 +141,7 @@ public class Helpers {
 		return getLangHelper().camelCaseString(words);
 	}
 
-	public static String[] camelCaseWords(String string) {
+	public static Stream<String> camelCaseWords(String string) {
 		return getLangHelper().camelCaseWords(string);
 	}
 
@@ -229,12 +237,36 @@ public class Helpers {
 		return getUtilHelper().unsafeStream(enumeration);
 	}
 
+	public static <T> Stream<T> safeStream(Iterable<T> iterable) {
+		return getUtilHelper().safeStream(iterable);
+	}
+
+	public <T> Stream<T> unsafeStream(Iterable<T> iterable) {
+		return getUtilHelper().unsafeStream(iterable);
+	}
+
+	public static <T> Stream<T> safeStream(Iterator<T> iterator) {
+		return getUtilHelper().safeStream(iterator);
+	}
+
+	public static <T> Stream<T> unsafeStream(Iterator<T> iterator) {
+		return getUtilHelper().unsafeStream(iterator);
+	}
+
 	public static <K, V> Stream<Entry<K, V>> safeStream(Map<K, V> map) {
 		return getUtilHelper().safeStream(map);
 	}
 
 	public static <K, V> Stream<Entry<K, V>> unsafeStream(Map<K, V> map) {
 		return getUtilHelper().unsafeStream(map);
+	}
+
+	public static <T> Collector<T, ?, Set<T>> linkedHashSetCollector() {
+		return getUtilHelper().linkedHashSetCollector();
+	}
+
+	public static <K, V> Map<K, V> safeMap(Map<K, V> map) {
+		return getUtilHelper().safeMap(map);
 	}
 
 	public static <T, K, U> Collector<T, ?, Map<K, U>> linkedHashMapCollector(
@@ -292,6 +324,10 @@ public class Helpers {
 
 	public <T> T listSet(List<T> list, int index, T value) {
 		return getUtilHelper().listSet(list, index, value);
+	}
+
+	public static Logger logger(Class<?> class1, Level level) {
+		return getUtilHelper().logger(class1, level);
 	}
 
 	public static void forwardServletRequest(String path, ServletRequest request, ServletResponse response) {

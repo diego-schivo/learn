@@ -1,12 +1,11 @@
-package com.backflipsource.servlet;
+package com.backflipsource;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface Control {
 
-	EntityView getEntityView();
-
-	Object getItem();
+	Object getTarget();
 
 	String getName();
 
@@ -20,7 +19,15 @@ public interface Control {
 
 	String getHeading();
 
+	String getTextKey();
+
+	String text(String key);
+
+	Collection<Control.Factory<?>> getFactories();
+
 	public interface Factory<T extends Control> {
+
+		String getHeading();
 
 		void setParent(Control parent);
 

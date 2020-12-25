@@ -2,15 +2,16 @@ package com.backflipsource.petclinic;
 
 import java.util.List;
 
-import com.backflipsource.entity.annotation.Render;
-import com.backflipsource.servlet.Table;
-import com.backflipsource.servlet.View;
+import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.EntityDetail;
+import com.backflipsource.ui.Render;
+import com.backflipsource.ui.Table;
 
-@View
+@Entity
 public class Clinic {
 
-	@View.Field(view = View.Show.class, converter = OwnerStringConverter.class)
-	@Render(view = View.Show.class, controlFactory = Table.Factory.class)
+	@Entity.Field(mode = EntityDetail.class, converter = OwnerStringConverter.class)
+	@Render(mode = EntityDetail.class, controlFactory = Table.Factory.class)
 	private List<Owner> owners;
 
 	public Clinic() {
