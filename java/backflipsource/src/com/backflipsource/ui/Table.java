@@ -21,8 +21,8 @@ public class Table extends AbstractEntityControl<Factory> {
 
 	public static class Factory extends AbstractEntityControl.Factory<Table> {
 
-		public Factory(AnnotatedElement annotated, Class<? extends Mode> mode) {
-			super(Table.class, annotated, mode);
+		public Factory() {
+			setControl(Table.class);
 		}
 
 		@Override

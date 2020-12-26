@@ -1,19 +1,13 @@
 package com.backflipsource;
 
-import static com.backflipsource.Helpers.camelCaseWords;
 import static com.backflipsource.Helpers.emptyCollection;
-import static com.backflipsource.Helpers.joinStrings;
 import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.nonEmptyString;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.ui.DefaultEntityResource.modeRender;
 import static java.util.Collections.singleton;
 import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -21,8 +15,6 @@ import java.util.logging.Logger;
 
 import com.backflipsource.AbstractControl.Factory;
 import com.backflipsource.servlet.StringConverter;
-import com.backflipsource.ui.Render;
-import com.backflipsource.ui.spec.EntityUI.Mode;
 
 public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
@@ -41,7 +33,7 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
 	@Override
 	public String getName() {
-		return factory.name;
+		return factory.getName();
 	}
 
 	@Override
@@ -51,7 +43,7 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
 	@Override
 	public String getPage() {
-		return factory.page;
+		return factory.getPage();
 	}
 
 	@Override
@@ -64,12 +56,12 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
 	@Override
 	public Control getParent() {
-		return factory.parent;
+		return factory.getParent();
 	}
 
 	@Override
 	public String getHeading() {
-		return factory.heading;
+		return factory.getHeading();
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -89,32 +81,70 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
 		protected String heading;
 
-		protected Factory(Class<T> control, String name, Function<Object, Object> getValue,
-				StringConverter valueConverter, String page, String heading) {
-			this.control = control;
-			this.name = name;
-			this.getValue = getValue;
-			this.converter = valueConverter;
-			this.page = nonEmptyString(page, "/" + control.getSimpleName().toLowerCase() + ".jsp");
-			this.heading = heading;
+//		protected Factory(Class<T> control, String name, Function<Object, Object> getValue,
+//				StringConverter valueConverter, String page, String heading) {
+//			this.control = control;
+//			this.name = name;
+//			this.getValue = getValue;
+//			this.converter = valueConverter;
+//			this.page = nonEmptyString(page, "/" + control.getSimpleName().toLowerCase() + ".jsp");
+//			this.heading = heading;
+//		}
+
+		public Class<T> getControl() {
+			return control;
 		}
 
-		protected Factory(Class<T> class1) {
-			this(class1, null, null, null, null, null);
+		public void setControl(Class<T> control) {
+			this.control = control;
 		}
 
 		public String getName() {
 			return name;
 		}
 
-		@Override
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getPage() {
+			return page;
+		}
+
+		public void setPage(String page) {
+			this.page = page;
+		}
+
+		public StringConverter getConverter() {
+			return converter;
+		}
+
+		public void setConverter(StringConverter converter) {
+			this.converter = converter;
+		}
+
+		public Function<Object, Object> getGetValue() {
+			return getValue;
+		}
+
+		public void setGetValue(Function<Object, Object> getValue) {
+			this.getValue = getValue;
+		}
+
+		public Control getParent() {
+			return parent;
+		}
+
+		public void setParent(Control parent) {
+			this.parent = parent;
+		}
+
 		public String getHeading() {
 			return heading;
 		}
 
-		@Override
-		public void setParent(Control parent) {
-			this.parent = parent;
+		public void setHeading(String heading) {
+			this.heading = heading;
 		}
 
 		@Override
@@ -138,16 +168,6 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 			logger.fine(() -> "list " + list);
 
 			return list;
-		}
-
-		public static String name(AnnotatedElement annotated) {
-			if (annotated instanceof Class) {
-				return ((Class) annotated).getSimpleName();
-			}
-			if (annotated instanceof Field) {
-				return ((Field) annotated).getName();
-			}
-			return null;
 		}
 	}
 }

@@ -7,9 +7,10 @@ import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
 import static com.backflipsource.Helpers.unsafeRun;
 import static java.lang.Thread.currentThread;
+import static java.nio.file.Files.isDirectory;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
-import static java.util.function.Function.identity;
+import static java.util.Map.entry;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 
@@ -29,6 +30,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -350,25 +352,30 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
-	public Stream<Class<?>> getClasses(String packageName) {
-		ClassLoader classLoader = currentThread().getContextClassLoader();
-		Enumeration<URL> resources = unsafeGet(() -> classLoader.getResources(packageName.replace('.', '/')));
-		Stream<Path> paths = safeStream(resources).map(resource -> unsafeGet(() -> resource.toURI())).map(Paths::get);
-		return paths.map(path -> getClasses(path, packageName)).flatMap(identity());
+	public Stream<Class<?>> packageClasses(String package1) {
+		return packageClasses(package1, false);
 	}
 
-	private static Stream<Class<?>> getClasses(Path path, String packageName) {
-		if (!Files.isDirectory(path)) {
+	@Override
+	public Stream<Class<?>> packageClasses(String package1, boolean subpackages) {
+		ClassLoader classLoader = currentThread().getContextClassLoader();
+		Enumeration<URL> resources = unsafeGet(() -> classLoader.getResources(package1.replace('.', '/')));
+		Stream<Path> paths = safeStream(resources).map(resource -> unsafeGet(() -> resource.toURI())).map(Paths::get);
+		return paths.flatMap(path -> packageClasses(path, package1, subpackages));
+	}
+
+	private static Stream<Class<?>> packageClasses(Path path, String package1, boolean subpackages) {
+		if (!isDirectory(path)) {
 			return Stream.empty();
 		}
 		Stream<Path> entries = unsafeGet(() -> Files.list(path));
-		return entries.map(entry -> {
-			String name = packageName + "." + entry.getFileName();
+		return entries.flatMap(entry -> {
+			String name = package1 + "." + entry.getFileName();
 			if (name.endsWith(".class")) {
 				return Stream.of(unsafeGet(() -> Class.forName(name.substring(0, name.lastIndexOf('.')))));
 			}
-			return getClasses(entry, name);
-		}).flatMap(identity());
+			return subpackages ? packageClasses(entry, name, true) : Stream.empty();
+		});
 	}
 
 	@Override
@@ -381,6 +388,35 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
+	public Object getFieldValue(Object instance, String field, Class<?> class1) {
+		return unsafeGet(() -> {
+			Field field2 = class1.getDeclaredField(field);
+			field2.setAccessible(true);
+			return field2.get(instance);
+		});
+	}
+
+	@Override
+	public void setFieldValue(Object instance, String field, Object value, Class<?> class1) {
+		unsafeRun(() -> {
+			Field field2 = class1.getDeclaredField(field);
+			field2.setAccessible(true);
+			field2.set(instance, value);
+		});
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <A extends Annotation> Stream<Entry<String, Object>> annotationEntries(A annotation) {
+		Class<? extends Annotation> annotationType = annotation.annotationType();
+		Object annotationType2 = getFieldValue(annotationType, "annotationType", annotationType.getClass());
+		Map<String, Method> members = (Map<String, Method>) getFieldValue(annotationType2, "members",
+				annotationType2.getClass());
+		return safeStream(members)
+				.map(entry -> entry(entry.getKey(), safeGet(() -> entry.getValue().invoke(annotation))));
+	}
+
+	@Override
 	public <A extends Annotation, T> T annotationTypeInstance(A annotation, Function<A, Class<? extends T>> getClass,
 			Class<? extends T> defaultClass) {
 		Class<? extends T> class1 = getClass.apply(annotation);
@@ -389,15 +425,5 @@ public class DefaultLangHelper implements LangHelper {
 		}
 		Class<? extends T> class2 = class1;
 		return safeGet(() -> (T) class2.getConstructor().newInstance());
-	}
-
-	@Override
-	public Object getFieldValue(Object instance, String field, Class<?> class1) {
-		return unsafeGet(() -> class1.getDeclaredField(field).get(instance));
-	}
-
-	@Override
-	public void setFieldValue(Object instance, String field, Object value, Class<?> class1) {
-		unsafeRun(() -> class1.getDeclaredField(field).set(instance, value));
 	}
 }

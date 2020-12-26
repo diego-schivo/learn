@@ -20,12 +20,12 @@ public class Span extends AbstractEntityControl {
 
 		protected boolean multiple;
 
-		public Factory(AnnotatedElement annotated, Class<? extends Mode> mode) {
-			super(Span.class, annotated, mode);
+		public Factory() {
+			setControl(Span.class);
 
-			if (annotated instanceof Field) {
-				multiple = Iterable.class.isAssignableFrom(((Field) annotated).getType());
-			}
+//			if (annotated instanceof Field) {
+//				multiple = Iterable.class.isAssignableFrom(((Field) annotated).getType());
+//			}
 		}
 	}
 }

@@ -182,17 +182,16 @@ public class Helpers {
 		return getLangHelper().getSetters(class1);
 	}
 
-	public static Stream<Class<?>> getClasses(String packageName) {
-		return getLangHelper().getClasses(packageName);
+	public static Stream<Class<?>> packageClasses(String package1) {
+		return getLangHelper().packageClasses(package1);
+	}
+
+	public static Stream<Class<?>> packageClasses(String package1, boolean subpackages) {
+		return getLangHelper().packageClasses(package1, subpackages);
 	}
 
 	public static List<Type> getArgumentTypes(Type type) {
 		return getLangHelper().getArgumentTypes(type);
-	}
-
-	public static <A extends Annotation, T> T annotationTypeInstance(A annotation,
-			Function<A, Class<? extends T>> getClass, Class<? extends T> defaultClass) {
-		return getLangHelper().annotationTypeInstance(annotation, getClass, defaultClass);
 	}
 
 	public static Object getFieldValue(Object instance, String field, Class<?> class1) {
@@ -201,6 +200,15 @@ public class Helpers {
 
 	public static void setFieldValue(Object instance, String field, Object value, Class<?> class1) {
 		getLangHelper().setFieldValue(instance, field, value, class1);
+	}
+
+	public static <A extends Annotation> Stream<Entry<String, Object>> annotationEntries(A annotation) {
+		return getLangHelper().annotationEntries(annotation);
+	}
+
+	public static <A extends Annotation, T> T annotationTypeInstance(A annotation,
+			Function<A, Class<? extends T>> getClass, Class<? extends T> defaultClass) {
+		return getLangHelper().annotationTypeInstance(annotation, getClass, defaultClass);
 	}
 
 	public static <T> boolean emptyArray(T[] array) {
@@ -338,6 +346,14 @@ public class Helpers {
 
 	public <T> T listSet(List<T> list, int index, T value) {
 		return getUtilHelper().listSet(list, index, value);
+	}
+
+	public static <T> void collectionFill(Collection<T> collection, Stream<T> stream) {
+		getUtilHelper().collectionFill(collection, stream);
+	}
+
+	public static <K, V> void mapFill(Map<K, V> map, Stream<Entry<K, V>> stream) {
+		getUtilHelper().mapFill(map, stream);
 	}
 
 	public static Logger logger(Class<?> class1, Level level) {

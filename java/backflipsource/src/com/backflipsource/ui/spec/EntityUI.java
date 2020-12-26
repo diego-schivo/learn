@@ -9,20 +9,21 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.servlet.ServletRegistration.Dynamic;
+import javax.servlet.ServletRegistration;
 
 import com.backflipsource.Control;
 import com.backflipsource.RequestHandler;
+import com.backflipsource.dynamic.DynamicClass;
 
 public interface EntityUI {
 
-	Set<Class<?>> getEntities();
+	Map<String, DynamicClass> getEntities();
 
 	Set<Class<? extends Mode>> getModes();
 
-	Map<Class<?>, EntityResource> getResources();
+	Map<String, EntityResource> getResources();
 
-	Map<Class<?>, Dynamic> getServlets();
+	Map<String, ServletRegistration.Dynamic> getServlets();
 
 	Set<Class<? extends RequestHandler>> getControllers();
 

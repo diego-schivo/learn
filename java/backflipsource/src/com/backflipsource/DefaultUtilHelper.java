@@ -387,6 +387,32 @@ public class DefaultUtilHelper implements UtilHelper {
 	}
 
 	@Override
+	public <T> void collectionFill(Collection<T> collection, Stream<T> stream) {
+		if (collection == null) {
+			return;
+		}
+		collection.clear();
+
+		if (stream == null) {
+			return;
+		}
+		stream.forEach(collection::add);
+	}
+
+	@Override
+	public <K, V> void mapFill(Map<K, V> map, Stream<Entry<K, V>> stream) {
+		if (map == null) {
+			return;
+		}
+		map.clear();
+
+		if (stream == null) {
+			return;
+		}
+		stream.forEach(entry -> map.put(entry.getKey(), entry.getValue()));
+	}
+
+	@Override
 	public Logger logger(Class<?> class1, Level level) {
 		Logger logger = getLogger(class1.getName());
 

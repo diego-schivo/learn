@@ -20,7 +20,9 @@ public class FindOwners extends EntityRequestHandler {
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) {
-		render(new Control.Factory(resource).create(null), EntityForm.class, request, response);
+		Control.Factory factory = new Control.Factory();
+		factory.setResource(resource);
+		render(factory.create(null), EntityForm.class, request, response);
 	}
 
 	public static class Control extends AbstractEntityControl<Factory> {
@@ -32,8 +34,9 @@ public class FindOwners extends EntityRequestHandler {
 
 		public static class Factory extends AbstractEntityControl.Factory<Control> {
 
-			protected Factory(EntityResource entityView) {
-				super(Control.class, null, null, null, "find-owners.jsp", null, entityView);
+			public Factory() {
+				setControl(Control.class);
+				setPage("find-owners.jsp");
 			}
 		}
 	}

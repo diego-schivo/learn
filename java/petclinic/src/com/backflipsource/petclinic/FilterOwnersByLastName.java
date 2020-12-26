@@ -30,6 +30,6 @@ public class FilterOwnersByLastName extends ListEntities {
 			return;
 		}
 		Class<EntityList> mode = EntityList.class;
-		render(new Table.Factory(resource.getEntity(), mode).create(find), mode, request, response);
+		render(new Table.Factory(/*resource.getEntity(), mode*/).create(find), mode, request, response);
 	}
 }

@@ -11,6 +11,7 @@ import static java.util.logging.Level.ALL;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -18,10 +19,13 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 import javax.servlet.ServletRegistration.Dynamic;
 
+import com.backflipsource.DefaultDynamicClass;
 import com.backflipsource.Helpers;
 import com.backflipsource.RequestHandler;
+import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.servlet.EntityServlet;
 import com.backflipsource.ui.Entity.Controller;
 import com.backflipsource.ui.spec.EntityResource;
@@ -41,13 +45,13 @@ public class DefaultEntityUI implements EntityUI {
 
 	protected Set<String> packages;
 
-	protected Set<Class<?>> entities;
+	protected Map<String, DynamicClass> entities;
 
 	protected Set<Class<? extends Mode>> modes;
 
-	protected Map<Class<?>, EntityResource> resources;
+	protected Map<String, EntityResource> resources;
 
-	protected Map<Class<?>, Dynamic> servlets;
+	protected Map<String, ServletRegistration.Dynamic> servlets;
 
 	protected Set<Class<? extends RequestHandler>> controllers;
 
@@ -69,10 +73,13 @@ public class DefaultEntityUI implements EntityUI {
 	}
 
 	@Override
-	public Set<Class<?>> getEntities() {
+	public Map<String, DynamicClass> getEntities() {
 		if (entities == null) {
-			entities = safeStream(packages).flatMap(Helpers::getClasses)
-					.filter(class1 -> class1.getAnnotation(Entity.class) != null).collect(linkedHashSetCollector());
+			Set<Class<?>> uniqueClasses = safeStream(packages).flatMap(Helpers::packageClasses)
+					.collect(linkedHashSetCollector());
+			entities = safeStream(uniqueClasses).filter(class1 -> class1.getAnnotation(Entity.class) != null)
+					.map(DefaultDynamicClass::new)
+					.collect(linkedHashMapCollector(DynamicClass::getFullName, identity()));
 			logger.fine(() -> "entities " + entities);
 		}
 		return entities;
@@ -82,7 +89,7 @@ public class DefaultEntityUI implements EntityUI {
 	@SuppressWarnings("unchecked")
 	public Set<Class<? extends Mode>> getModes() {
 		if (modes == null) {
-			modes = safeStream(packages).flatMap(Helpers::getClasses)
+			modes = safeStream(packages).flatMap(Helpers::packageClasses)
 					.filter(class1 -> Mode.class.isAssignableFrom(class1)).map(class1 -> (Class<? extends Mode>) class1)
 					.collect(linkedHashSetCollector());
 			logger.fine(() -> "modes " + modes);
@@ -91,26 +98,26 @@ public class DefaultEntityUI implements EntityUI {
 	}
 
 	@Override
-	public Map<Class<?>, EntityResource> getResources() {
+	public Map<String, EntityResource> getResources() {
 		if (resources == null) {
-			resources = safeStream(getEntities())
-					.collect(linkedHashMapCollector(identity(), class1 -> new DefaultEntityResource(class1, this)));
+			resources = safeStream(getEntities()).collect(
+					linkedHashMapCollector(Entry::getKey, entry -> new DefaultEntityResource(entry.getValue(), this)));
 			logger.fine(() -> "resources " + resources);
 		}
 		return resources;
 	}
 
 	@Override
-	public Map<Class<?>, Dynamic> getServlets() {
+	public Map<String, ServletRegistration.Dynamic> getServlets() {
 		if (servlets == null) {
 			ServletContext servletContext2 = servletContext.get();
-			servlets = safeStream(getEntities()).collect(linkedHashMapCollector(identity(), entity -> {
-				String servletName = entity.getName();
+			servlets = safeStream(getResources()).collect(linkedHashMapCollector(Entry::getKey, entry -> {
+				String servletName = entry.getKey();
 
 				Dynamic servlet = servletContext2.addServlet(servletName, EntityServlet.class);
 				servlet.setInitParameter(EntityUI.class.getName(), getClass().getName());
 
-				String urlPattern1 = getResources().get(entity).getUri();
+				String urlPattern1 = entry.getValue().getUri();
 				String urlPattern2 = urlPattern1 + "/*";
 				servlet.addMapping(urlPattern1, urlPattern2);
 
@@ -125,7 +132,7 @@ public class DefaultEntityUI implements EntityUI {
 	@SuppressWarnings("unchecked")
 	public Set<Class<? extends RequestHandler>> getControllers() {
 		if (controllers == null) {
-			controllers = safeStream(packages).flatMap(Helpers::getClasses)
+			controllers = safeStream(packages).flatMap(Helpers::packageClasses)
 					.filter(class1 -> class1.getAnnotation(Controller.class) != null)
 					.map(class1 -> (Class<? extends RequestHandler>) class1).collect(linkedHashSetCollector());
 			logger.fine(() -> "controllers " + controllers);
@@ -136,5 +143,10 @@ public class DefaultEntityUI implements EntityUI {
 	@Override
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
+	}
+
+	@Override
+	public String toString() {
+		return "DefaultEntityUI(packages=" + packages + ")";
 	}
 }

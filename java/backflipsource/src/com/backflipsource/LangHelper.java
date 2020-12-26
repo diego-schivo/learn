@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -68,14 +69,18 @@ public interface LangHelper {
 
 	Map<String, Method> getSetters(Class<?> class1);
 
-	Stream<Class<?>> getClasses(String packageName);
+	Stream<Class<?>> packageClasses(String package1);
+
+	Stream<Class<?>> packageClasses(String package1, boolean subpackages);
 
 	List<Type> getArgumentTypes(Type type);
-
-	<A extends Annotation, T> T annotationTypeInstance(A annotation, Function<A, Class<? extends T>> getClass,
-			Class<? extends T> defaultClass);
 
 	Object getFieldValue(Object instance, String field, Class<?> class1);
 
 	void setFieldValue(Object instance, String field, Object value, Class<?> class1);
+
+	<A extends Annotation> Stream<Entry<String, Object>> annotationEntries(A annotation);
+
+	<A extends Annotation, T> T annotationTypeInstance(A annotation, Function<A, Class<? extends T>> getClass,
+			Class<? extends T> defaultClass);
 }

@@ -1,9 +1,8 @@
 package com.backflipsource.servlet;
 
 import static com.backflipsource.Helpers.arrayGet;
-import static com.backflipsource.Helpers.classFields;
 import static com.backflipsource.Helpers.forwardServletRequest;
-import static com.backflipsource.Helpers.getGetter;
+import static com.backflipsource.Helpers.getFieldValue;
 import static com.backflipsource.Helpers.getSetters;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.safeGet;
@@ -13,7 +12,6 @@ import static com.backflipsource.servlet.EntityServlet.CONTEXT;
 import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.backflipsource.Control;
+import com.backflipsource.DefaultDynamicClass;
 import com.backflipsource.RequestHandler;
-import com.backflipsource.ui.Entity;
+import com.backflipsource.dynamic.DynamicField;
 import com.backflipsource.ui.EntityForm;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;
@@ -37,9 +36,9 @@ public abstract class EntityRequestHandler implements RequestHandler {
 
 	protected EntityResource resource;
 
-	protected List<Field> fields;
+	protected List<DynamicField> fields;
 
-	protected Field idField;
+	protected DynamicField idField;
 
 	protected EntityData entityData;
 
@@ -47,17 +46,20 @@ public abstract class EntityRequestHandler implements RequestHandler {
 
 	public EntityRequestHandler(EntityResource resource) {
 		this.resource = resource;
-		fields = classFields(resource.getEntity())
-				.filter(field -> field.getAnnotationsByType(Entity.Field.class).length > 0).collect(toList());
-		idField = safeStream(fields).filter(
-				field -> safeStream(field.getAnnotationsByType(Entity.Field.class)).anyMatch(Entity.Field::identifier))
-				.findFirst().orElse(null);
-		entityData = safeGet(() -> (EntityData) resource.getEntity().getDeclaredField("data").get(null));
-		item0 = safeGet(() -> resource.getEntity().getDeclaredField("instance").get(null));
+		fields = resource.getEntity().fields().filter(field -> field.annotation("Entity.Field") != null)
+				.collect(toList());
+		idField = safeStream(fields).filter(field -> field.annotations("Entity.Field").anyMatch(field2 -> {
+			boolean identifier = field2.getValue("identifier");
+			return identifier;
+		})).findFirst().orElse(null);
+		Class<?> target = (Class<?>) getFieldValue(resource.getEntity(), "target", DefaultDynamicClass.class);
+		entityData = safeGet(() -> (EntityData) target.getDeclaredField("data").get(null));
+		item0 = safeGet(() -> target.getDeclaredField("instance").get(null));
 	}
 
-	protected void render(Control control, Class<? extends Mode> mode, HttpServletRequest request, HttpServletResponse response) {
-		logger.fine(() -> "control " + control + " view " + mode);
+	protected void render(Control control, Class<? extends Mode> mode, HttpServletRequest request,
+			HttpServletResponse response) {
+		logger.fine(() -> "control " + control + " mode " + mode);
 
 		EntityUI.Context context = (EntityUI.Context) request.getAttribute(CONTEXT);
 		((DefaultEntityContext) context).getControls().push(control);
@@ -72,7 +74,8 @@ public abstract class EntityRequestHandler implements RequestHandler {
 
 	protected void save(Object item, HttpServletRequest request) {
 		Map<String, StringConverter<?>> converters = resource.converters(EntityForm.class);
-		Map<String, Method> setters = getSetters(resource.getEntity());
+		Class<?> target = (Class<?>) getFieldValue(resource.getEntity(), "target", DefaultDynamicClass.class);
+		Map<String, Method> setters = getSetters(target);
 
 		safeStream(fields).filter(field -> !Objects.equals(field, idField)).forEach(field -> {
 			StringConverter<?> converter = converters.get(field.getName());
@@ -96,8 +99,7 @@ public abstract class EntityRequestHandler implements RequestHandler {
 
 	@SuppressWarnings("unchecked")
 	protected Object item(String id) {
-		return safeStream(entityData.list())
-				.filter(item -> Objects.equals(safeGet(() -> getGetter(idField).invoke(item)).toString(), id))
+		return safeStream(entityData.list()).filter(item -> Objects.equals(idField.getValue(item).toString(), id))
 				.findFirst().orElse(null);
 	}
 }

@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.backflipsource.Control;
+import com.backflipsource.AbstractControl;
 import com.backflipsource.servlet.DescriptionList;
 import com.backflipsource.servlet.EntityRequestHandler;
 import com.backflipsource.ui.spec.EntityResource;
@@ -27,14 +27,21 @@ public class ListEntities extends EntityRequestHandler {
 	public void handle(HttpServletRequest request, HttpServletResponse response) {
 		Class<? extends Mode> mode = (item0 != null) ? EntityDetail.class : EntityList.class;
 
-		Control control;
+		AbstractEntityControl.Factory factory;
+		Object target;
 		if (entityData != null) {
-			control = new Table.Factory(resource.getEntity(), mode).create(entityData.list());
+			factory = new Table.Factory();
+			target = entityData.list();
 		} else if (item0 != null) {
-			control = new DescriptionList.Factory(resource.getEntity(), mode).create(item0);
+			factory = new DescriptionList.Factory();
+			target = item0;
 		} else {
-			control = null;
+			factory = null;
+			target = null;
 		}
+
+		factory.init(resource.getEntity(), mode);
+		AbstractControl control = factory.create(target);
 
 		render(control, mode, request, response);
 	}

@@ -1,11 +1,5 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.servlet.EntityServlet.getEntityUI;
-
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-
 import com.backflipsource.ui.spec.EntityUI.Mode;
 
 public class Input extends AbstractEntityControl {
@@ -27,9 +21,9 @@ public class Input extends AbstractEntityControl {
 
 		protected String type;
 
-		public Factory(AnnotatedElement annotated, Class<? extends Mode> mode) {
-			super(Input.class, annotated, mode);
-
+//		public Factory(AnnotatedElement annotated, Class<? extends Mode> mode) {
+//			super(Input.class, annotated, mode);
+//
 //			if (getContextListener().getViews().containsKey(field.getType())) {
 //				type = TYPE_HIDDEN;
 //			} else if (LocalDate.class.isAssignableFrom(field.getType())) {
@@ -37,6 +31,11 @@ public class Input extends AbstractEntityControl {
 //			} else {
 //				type = TYPE_TEXT;
 //			}
+//		}
+
+		public Factory() {
+			setControl(Input.class);
+			type = TYPE_TEXT;
 		}
 	}
 }

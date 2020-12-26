@@ -90,6 +90,10 @@ public interface UtilHelper {
 
 	<T> T listSet(List<T> list, int index, T value);
 
+	<T> void collectionFill(Collection<T> collection, Stream<T> stream);
+
+	<K, V> void mapFill(Map<K, V> map, Stream<Entry<K, V>> stream);
+
 	Logger logger(Class<?> class1, Level level);
 
 	@FunctionalInterface

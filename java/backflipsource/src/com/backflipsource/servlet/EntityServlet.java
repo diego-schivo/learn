@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.backflipsource.RequestHandler;
-import com.backflipsource.ui.Entity;
+import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;
 
@@ -44,20 +44,22 @@ public class EntityServlet extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		Class<?> entity = unsafeGet(() -> forName(getServletName()));
-		logger.fine(() -> "entity " + entity);
-
 		Class<?> uiClass = unsafeGet(() -> forName(getInitParameter(EntityUI.class.getName())));
 		ui = entityUI(uiClass);
 		logger.fine(() -> "ui " + ui);
 
-		resource = ui.getResources().get(entity);
+		String key = getServletName();
+
+		DynamicClass entity = ui.getEntities().get(key);
+		logger.fine(() -> "entity " + entity);
+
+		resource = ui.getResources().get(key);
 		logger.fine(() -> "resource " + resource);
 
-		Class<? extends RequestHandler.Provider> providerClass = entity.getAnnotation(Entity.class).handlerProvider();
+		Class<? extends RequestHandler.Provider> providerClass = entity.annotation("Entity")
+				.getValue("handlerProvider");
 		handlerProvider = unsafeGet(() -> (RequestHandler.Provider) providerClass
 				.getConstructor(EntityResource.class, EntityUI.class).newInstance(resource, ui));
-		logger.fine(() -> "handlerProvider " + handlerProvider);
 	}
 
 	@Override

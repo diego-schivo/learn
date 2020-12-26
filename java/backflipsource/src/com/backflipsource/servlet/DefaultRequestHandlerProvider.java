@@ -3,6 +3,7 @@ package com.backflipsource.servlet;
 import static com.backflipsource.Helpers.emptyArray;
 import static com.backflipsource.Helpers.emptyString;
 import static com.backflipsource.Helpers.linkedHashMapCollector;
+import static com.backflipsource.Helpers.listGet;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
@@ -44,7 +45,7 @@ public class DefaultRequestHandlerProvider implements RequestHandler.Provider {
 			if (!emptyArray(controller.parameter())) {
 				matchers.add(new Parameter(controller.parameter()[0], controller.score()));
 			}
-			return new And(matchers);
+			return (matchers.size() >= 2) ? new And(matchers) : listGet(matchers, 0);
 		}, class1 -> {
 			RequestHandler handler = unsafeGet(
 					() -> (RequestHandler) class1.getConstructor(EntityResource.class).newInstance(resource));
@@ -56,11 +57,15 @@ public class DefaultRequestHandlerProvider implements RequestHandler.Provider {
 	public RequestHandler provide(HttpServletRequest request) {
 		RequestHandler handler = safeStream(handlers).map(entry -> {
 			RequestMatcher matcher = entry.getKey();
+			RequestHandler handler2 = entry.getValue();
+			logger.fine(() -> "handler2 = " + handler2);
+
 			int match = matcher.match(request);
 			if (match < 0) {
 				return null;
 			}
-			Entry<Integer, RequestHandler> entry2 = entry(match, entry.getValue());
+
+			Entry<Integer, RequestHandler> entry2 = entry(match, handler2);
 			return entry2;
 		}).filter(Objects::nonNull).max(comparingInt(entry -> entry.getKey())).map(Entry::getValue).orElse(null);
 		logger.fine(() -> "handler " + handler);

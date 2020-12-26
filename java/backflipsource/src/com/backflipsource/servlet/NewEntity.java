@@ -1,7 +1,6 @@
 package com.backflipsource.servlet;
 
 import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.unsafeGet;
 import static com.backflipsource.Helpers.unsafeRun;
 import static java.util.logging.Level.ALL;
 
@@ -24,7 +23,7 @@ public class NewEntity extends EntityRequestHandler {
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response) {
-		Object item = unsafeGet(() -> resource.getEntity().getConstructor().newInstance());
+		Object item = resource.getEntity().newInstance();
 
 		if ("post".equalsIgnoreCase(request.getMethod())) {
 			save(item, request);
@@ -32,6 +31,7 @@ public class NewEntity extends EntityRequestHandler {
 			return;
 		}
 
-		// render(new Form.Factory(entityView).create(item), com.backflipsource.ui.EntityForm.class, request, response);
+		// render(new Form.Factory(entityView).create(item),
+		// com.backflipsource.ui.EntityForm.class, request, response);
 	}
 }

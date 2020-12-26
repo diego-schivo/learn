@@ -45,26 +45,26 @@ public class Select extends AbstractEntityControl {
 
 		protected List<String> options;
 
-		public Factory(AnnotatedElement annotated, Class<? extends Mode> mode) {
-			super(Select.class, annotated, mode);
+		public Factory() {
+			setControl(Select.class);
 
-			if (annotated instanceof Field) {
-				Field field = (Field) annotated;
-
-				multiple = Iterable.class.isAssignableFrom(field.getType());
-
-				Options options2 = field.getAnnotation(Options.class);
-				if (options2 != null) {
-					options = safeList(options2.value());
-				} else {
-					Class<?> type = multiple ? (Class<?>) getArgumentTypes(field.getGenericType()).get(0)
-							: field.getType();
-					List<?> list = safeGet(() -> (List) type.getDeclaredField("list").get(null));
-					options = safeStream(list)
-							.map(item -> safeGet(() -> (String) item.getClass().getMethod("getName").invoke(item)))
-							.collect(toList());
-				}
-			}
+//			if (annotated instanceof Field) {
+//				Field field = (Field) annotated;
+//
+//				multiple = Iterable.class.isAssignableFrom(field.getType());
+//
+//				Options options2 = field.getAnnotation(Options.class);
+//				if (options2 != null) {
+//					options = safeList(options2.value());
+//				} else {
+//					Class<?> type = multiple ? (Class<?>) getArgumentTypes(field.getGenericType()).get(0)
+//							: field.getType();
+//					List<?> list = safeGet(() -> (List) type.getDeclaredField("list").get(null));
+//					options = safeStream(list)
+//							.map(item -> safeGet(() -> (String) item.getClass().getMethod("getName").invoke(item)))
+//							.collect(toList());
+//				}
+//			}
 		}
 	}
 }
