@@ -202,8 +202,16 @@ public class Helpers {
 		getLangHelper().setFieldValue(instance, field, value, class1);
 	}
 
+	public static <A extends Annotation> Stream<Entry<String, Method>> annotationMethods(A annotation) {
+		return getLangHelper().annotationMethods(annotation);
+	}
+
 	public static <A extends Annotation> Stream<Entry<String, Object>> annotationEntries(A annotation) {
 		return getLangHelper().annotationEntries(annotation);
+	}
+
+	public static Stream<Annotation> repeatedAnnotations(Annotation annotation) {
+		return getLangHelper().repeatedAnnotations(annotation);
 	}
 
 	public static <A extends Annotation, T> T annotationTypeInstance(A annotation,

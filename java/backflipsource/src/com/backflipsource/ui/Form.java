@@ -1,13 +1,27 @@
 package com.backflipsource.ui;
 
 import com.backflipsource.ui.Form.Factory;
-import com.backflipsource.ui.spec.EntityUI.Mode;
 
 public class Form extends AbstractEntityControl<Factory> {
 
-	@Override
-	protected Class<? extends Mode> getMode() {
-		return EntityForm.class;
+	protected String action;
+
+	protected String method;
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
 	}
 
 	public static class Factory extends AbstractEntityControl.Factory<Form> {

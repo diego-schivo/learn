@@ -1,18 +1,15 @@
-package com.backflipsource;
+package com.backflipsource.dynamic;
 
 import static com.backflipsource.Helpers.classEnclosingName;
 import static com.backflipsource.Helpers.classFields;
 import static com.backflipsource.Helpers.collectionFill;
+import static com.backflipsource.Helpers.repeatedAnnotations;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import com.backflipsource.dynamic.AbstractDynamicAnnotated;
-import com.backflipsource.dynamic.DynamicClass;
-import com.backflipsource.dynamic.DynamicField;
 
 public class DefaultDynamicClass extends AbstractDynamicAnnotated implements DynamicClass {
 
@@ -33,7 +30,8 @@ public class DefaultDynamicClass extends AbstractDynamicAnnotated implements Dyn
 		this.target = target;
 		fullName = target.getName();
 		name = classEnclosingName(target);
-		collectionFill(annotations, safeStream(target.getAnnotations()).map(DefaultDynamicAnnotation::new));
+		collectionFill(annotations, safeStream(target.getAnnotations())
+				.flatMap(annotation -> repeatedAnnotations(annotation)).map(DefaultDynamicAnnotation::new));
 		collectionFill(fields, classFields(target).map(DefaultDynamicField::new));
 	}
 
@@ -51,10 +49,5 @@ public class DefaultDynamicClass extends AbstractDynamicAnnotated implements Dyn
 	@SuppressWarnings("unchecked")
 	public <T> T newInstance() {
 		return unsafeGet(() -> (T) target.getConstructor().newInstance());
-	}
-
-	@Override
-	public String toString() {
-		return "DefaultDynamicClass(name=" + name + ")";
 	}
 }

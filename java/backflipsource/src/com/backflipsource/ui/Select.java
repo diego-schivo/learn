@@ -26,10 +26,10 @@ public class Select extends AbstractEntityControl {
 		return ((Factory) factory).options;
 	}
 
-	@Override
-	protected Class<? extends Mode> getMode() {
-		return EntityForm.class;
-	}
+//	@Override
+//	protected Class<? extends Mode> getMode() {
+//		return EntityForm.class;
+//	}
 
 	@Target(FIELD)
 	@Retention(RUNTIME)

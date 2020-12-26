@@ -1,16 +1,16 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ include file="/taglibs.jsp" %>
 
-  <h2>${context.servlet.class1.simpleName}</h2>
+  <h2>${context.control.heading}</h2>
 
-  <form method="post" action="${requestURI}">
+  <form action="${context.control.action}" method="${context.control.method}">
     <dl>
-      <c:forEach var="factory" items="${control.factories}">
+      <c:forEach var="factory" items="${context.control.factories}">
         <dt>
-          <label>${context.text(factory)}</label>
+          <label>${factory.heading}</label>
         </dt>
         <dd>
-          <bfs:control var="control" control="${factory.create(control.target)}">
+          <bfs:control var="control" control="${factory.create(context.control.target)}">
             <jsp:include page="${control.page}" />
           </bfs:control>
         </dd>

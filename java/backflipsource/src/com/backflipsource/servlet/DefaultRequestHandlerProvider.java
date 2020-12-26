@@ -48,7 +48,8 @@ public class DefaultRequestHandlerProvider implements RequestHandler.Provider {
 			return (matchers.size() >= 2) ? new And(matchers) : listGet(matchers, 0);
 		}, class1 -> {
 			RequestHandler handler = unsafeGet(
-					() -> (RequestHandler) class1.getConstructor(EntityResource.class).newInstance(resource));
+					() -> (RequestHandler) class1.getConstructor().newInstance());
+			((EntityRequestHandler) handler).setResource(resource);
 			return handler;
 		}));
 	}

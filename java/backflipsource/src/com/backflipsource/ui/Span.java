@@ -11,10 +11,10 @@ public class Span extends AbstractEntityControl {
 		return ((Factory) factory).multiple;
 	}
 
-	@Override
-	protected Class<? extends Mode> getMode() {
-		return EntityDetail.class;
-	}
+//	@Override
+//	protected Class<? extends Mode> getMode() {
+//		return EntityDetail.class;
+//	}
 
 	public static class Factory extends AbstractEntityControl.Factory<Span> {
 

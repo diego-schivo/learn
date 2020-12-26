@@ -14,10 +14,10 @@ import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.safeString;
 import static com.backflipsource.Helpers.unsafeGet;
 import static java.util.Map.entry;
-import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
 import static java.util.logging.Level.ALL;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -25,7 +25,9 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 import com.backflipsource.Control;
+import com.backflipsource.Control.Factory;
 import com.backflipsource.Helpers;
+import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicAnnotation;
 import com.backflipsource.dynamic.DynamicClass;
@@ -72,28 +74,52 @@ public class DefaultEntityResource implements EntityResource {
 	@Override
 	public DynamicClass entity(Class<? extends Mode> mode) {
 		if (entities == null) {
-			entities = safeStream(entityUI.getModes()).collect(
-					linkedHashMapCollector(identity(), mode2 -> nonNullInstance(modeEntity(entity, mode2), entity)));
+			// entities =
+			// safeStream(entityUI.getModes()).collect(linkedHashMapCollector(identity(),
+			// null));
+			entities = new LinkedHashMap<>();
+			safeStream(entityUI.getModes()).forEach(mode2 -> entities.put(mode2, null));
 		}
-		return entities.get(mode);
+		DynamicClass entity = entities.get(mode);
+		if (entity == null) {
+			entity = nonNullInstance(modeEntity(this.entity, mode), this.entity);
+			entities.put(mode, entity);
+		}
+		return entity;
 	}
 
 	@Override
 	public Map<String, Control.Factory<?>> controlFactories(Class<? extends Mode> mode) {
 		if (controlFactories == null) {
-			controlFactories = safeStream(entityUI.getModes()).collect(linkedHashMapCollector(identity(),
-					mode2 -> fieldMap(entity(mode2), field -> controlFactory(field, mode2))));
+			// controlFactories =
+			// safeStream(entityUI.getModes()).collect(linkedHashMapCollector(identity(),
+			// null));
+			controlFactories = new LinkedHashMap<>();
+			safeStream(entityUI.getModes()).forEach(mode2 -> controlFactories.put(mode2, null));
 		}
-		return controlFactories.get(mode);
+		Map<String, Factory<?>> factories = controlFactories.get(mode);
+		if (factories == null) {
+			factories = fieldMap(entity(mode), field -> controlFactory(field, mode));
+			controlFactories.put(mode, factories);
+		}
+		return factories;
 	}
 
 	@Override
 	public Map<String, StringConverter<?>> converters(Class<? extends Mode> mode) {
 		if (converters == null) {
-			converters = safeStream(entityUI.getModes()).collect(linkedHashMapCollector(identity(),
-					mode2 -> fieldMap(entity(mode2), field -> converter(field, mode2))));
+			// converters =
+			// safeStream(entityUI.getModes()).collect(linkedHashMapCollector(identity(),
+			// null));
+			converters = new LinkedHashMap<>();
+			safeStream(entityUI.getModes()).forEach(mode2 -> converters.put(mode2, null));
 		}
-		return converters.get(mode);
+		Map<String, StringConverter<?>> converters2 = converters.get(mode);
+		if (converters2 == null) {
+			converters2 = fieldMap(entity(mode), field -> converter(field, mode));
+			converters.put(mode, converters2);
+		}
+		return converters2;
 	}
 
 	protected String uri(DynamicClass entity) {
@@ -138,22 +164,24 @@ public class DefaultEntityResource implements EntityResource {
 
 	public static String heading(DynamicAnnotated annotated, Class<? extends Mode> mode) {
 		DynamicAnnotation render = modeAnnotation(annotated, "Render", mode);
-		if (render == null) {
-			return null;
-		}
-		return nonEmptyString((String) render.getValue("heading"),
+		return nonEmptyString((render != null) ? render.getValue("heading") : null,
 				() -> joinStrings(camelCaseWords(capitalizeString(annotated.getName())), " "));
 	}
 
-	public static DynamicClass modeEntity(DynamicAnnotated annotated, Class<? extends Mode> mode) {
-		DynamicAnnotation render = modeAnnotation(annotated, "Render", mode);
+	public static DynamicClass modeEntity(DynamicClass entity, Class<? extends Mode> mode) {
+		DynamicAnnotation render = modeAnnotation(entity, "Render", mode);
 
-		DynamicClass entity = (render != null) ? (DynamicClass) render.getValue("entity") : null;
-		if ((entity != null) && safeString(entity.getName()).equals("Object")) {
-			entity = null;
+		Class<?> entity2 = (render != null) ? (Class<?>) render.getValue("entity") : null;
+		DynamicClass entity3;
+		if ((entity2 != null) && DynamicClass.class.isAssignableFrom(entity2)) {
+			entity3 = (DynamicClass) unsafeGet(() -> entity2.getConstructor().newInstance());
+		} else if ((entity2 != null) && entity2 != Object.class) {
+			entity3 = new DefaultDynamicClass(entity2);
+		} else {
+			entity3 = null;
 		}
 
-		return entity;
+		return entity3;
 	}
 
 	protected static <T> Map<String, T> fieldMap(DynamicClass entityClass, Function<DynamicField, T> function) {
@@ -193,12 +221,12 @@ public class DefaultEntityResource implements EntityResource {
 	protected static Class<? extends Control.Factory> controlFactoryClass(DynamicAnnotated entityOrField,
 			Class<? extends Mode> mode) {
 		DynamicAnnotation render = modeAnnotation(entityOrField, "Render", mode);
-		if (render == null) {
-			return null;
-		}
+//		if (render == null) {
+//			return null;
+//		}
 
-		Class<? extends Control.Factory> controlFactory = render.getValue("controlFactory");
-		if (controlFactory == Control.Factory.class) {
+		Class<? extends Control.Factory> controlFactory = (render != null) ? render.getValue("controlFactory") : null;
+		if ((controlFactory == null) || (controlFactory == Control.Factory.class)) {
 			controlFactory = defaultControlFactoryClass(entityOrField, mode);
 		}
 
@@ -206,27 +234,31 @@ public class DefaultEntityResource implements EntityResource {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected static Class<? extends Control.Factory> defaultControlFactoryClass(DynamicAnnotated annotated,
+	protected static Class<? extends Control.Factory> defaultControlFactoryClass(DynamicAnnotated entityOrField,
 			Class<? extends Mode> mode) {
 
-		if (!(annotated instanceof DynamicField)) {
-			return DescriptionList.Factory.class;
+		boolean edit = EntityForm.class.isAssignableFrom(mode);
+
+		if (entityOrField instanceof DynamicClass) {
+			return edit ? Form.Factory.class : DescriptionList.Factory.class;
 		}
 
-		DynamicAnnotation field = modeAnnotation(annotated, "Entity.Field", mode);
-		boolean identifier = (field != null) ? field.getValue("identifier") : false;
+		if (entityOrField instanceof DynamicField) {
+			DynamicAnnotation field = modeAnnotation(entityOrField, "Entity.Field", mode);
+			boolean identifier = (field != null) ? field.getValue("identifier") : false;
 
-		boolean edit = (mode == EntityForm.class);
+			if (identifier) {
+				return edit ? Span.Factory.class : Anchor.Factory.class;
+			}
 
-		if (identifier) {
-			return edit ? Span.Factory.class : Anchor.Factory.class;
+			if (Iterable.class.isAssignableFrom(((DynamicField) entityOrField).getType())) {
+				return Table.Factory.class;
+			}
+
+			return edit ? Input.Factory.class : Span.Factory.class;
 		}
 
-		if (Iterable.class.isAssignableFrom(((DynamicField) annotated).getType())) {
-			return Table.Factory.class;
-		}
-
-		return edit ? Input.Factory.class : Span.Factory.class;
+		return null;
 	}
 
 //	public static AnnotatedElement annotatedElement(Object object) {

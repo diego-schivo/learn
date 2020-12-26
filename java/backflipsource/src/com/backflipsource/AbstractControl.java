@@ -1,5 +1,6 @@
 package com.backflipsource;
 
+import static com.backflipsource.Helpers.classEnclosingName;
 import static com.backflipsource.Helpers.emptyCollection;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.safeStream;
@@ -163,7 +164,7 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
 		@Override
 		public String toString() {
-			return "Factory(name = " + name + ", converter = " + converter + ")";
+			return classEnclosingName(getClass()) + "(name = " + name + ", converter = " + converter + ")";
 		}
 	}
 }

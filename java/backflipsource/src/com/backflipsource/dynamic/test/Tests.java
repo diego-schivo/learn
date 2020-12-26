@@ -1,6 +1,6 @@
 package com.backflipsource.dynamic.test;
 
-import com.backflipsource.DefaultDynamicClass;
+import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.dynamic.DynamicField;
 

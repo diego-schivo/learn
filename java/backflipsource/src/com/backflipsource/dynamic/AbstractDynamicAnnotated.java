@@ -1,5 +1,6 @@
 package com.backflipsource.dynamic;
 
+import static com.backflipsource.Helpers.classEnclosingName;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.safeString;
 
@@ -26,5 +27,10 @@ public abstract class AbstractDynamicAnnotated implements DynamicAnnotated {
 	@Override
 	public Stream<DynamicAnnotation> annotations(String name) {
 		return safeStream(annotations).filter(annotation -> safeString(annotation.getName()).equals(name));
+	}
+
+	@Override
+	public String toString() {
+		return classEnclosingName(getClass()) + "(name=" + name + ")";
 	}
 }

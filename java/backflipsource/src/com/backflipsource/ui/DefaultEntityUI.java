@@ -22,9 +22,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import javax.servlet.ServletRegistration.Dynamic;
 
-import com.backflipsource.DefaultDynamicClass;
 import com.backflipsource.Helpers;
 import com.backflipsource.RequestHandler;
+import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.servlet.EntityServlet;
 import com.backflipsource.ui.Entity.Controller;

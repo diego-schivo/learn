@@ -12,10 +12,10 @@ public class Input extends AbstractEntityControl {
 		return ((Factory) factory).type;
 	}
 
-	@Override
-	protected Class<? extends Mode> getMode() {
-		return EntityForm.class;
-	}
+//	@Override
+//	protected Class<? extends Mode> getMode() {
+//		return EntityForm.class;
+//	}
 
 	public static class Factory extends AbstractEntityControl.Factory<Input> {
 

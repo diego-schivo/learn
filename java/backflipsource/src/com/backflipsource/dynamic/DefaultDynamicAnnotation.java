@@ -1,4 +1,4 @@
-package com.backflipsource;
+package com.backflipsource.dynamic;
 
 import static com.backflipsource.Helpers.annotationEntries;
 import static com.backflipsource.Helpers.classEnclosingName;
@@ -7,8 +7,6 @@ import static com.backflipsource.Helpers.mapFill;
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import com.backflipsource.dynamic.DynamicAnnotation;
 
 public class DefaultDynamicAnnotation implements DynamicAnnotation {
 

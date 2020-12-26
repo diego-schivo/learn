@@ -24,12 +24,16 @@ public class EntityServlet extends HttpServlet {
 
 	public static String CONTEXT = EntityServlet.class.getName() + ".CONTEXT";
 
-	protected static ThreadLocal<EntityUI> threadUI = new ThreadLocal<>();
+	protected static ThreadLocal<Context> threadContext = new ThreadLocal<>();
 
 	private static Logger logger = logger(EntityServlet.class, ALL);
 
 	public static EntityUI getEntityUI() {
-		return threadUI.get();
+		return threadContext.get().getUI();
+	}
+
+	public static HttpServletRequest getInitialRequest() {
+		return threadContext.get().getRequest();
 	}
 
 	protected EntityUI ui;
@@ -66,9 +70,13 @@ public class EntityServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		boolean first = (threadUI.get() == null);
+		boolean first = (threadContext.get() == null);
 		if (first) {
-			threadUI.set(ui);
+			Context context = new Context();
+			context.ui = ui;
+			context.request = request;
+
+			threadContext.set(context);
 		}
 
 		try {
@@ -94,8 +102,23 @@ public class EntityServlet extends HttpServlet {
 			handler.handle(request, response);
 		} finally {
 			if (first) {
-				threadUI.remove();
+				threadContext.remove();
 			}
+		}
+	}
+
+	public static class Context {
+
+		protected EntityUI ui;
+
+		protected HttpServletRequest request;
+
+		public EntityUI getUI() {
+			return ui;
+		}
+
+		public HttpServletRequest getRequest() {
+			return request;
 		}
 	}
 }

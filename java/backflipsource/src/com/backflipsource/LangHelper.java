@@ -79,7 +79,11 @@ public interface LangHelper {
 
 	void setFieldValue(Object instance, String field, Object value, Class<?> class1);
 
+	<A extends Annotation> Stream<Entry<String, Method>> annotationMethods(A annotation);
+
 	<A extends Annotation> Stream<Entry<String, Object>> annotationEntries(A annotation);
+	
+	Stream<Annotation> repeatedAnnotations(Annotation annotation);
 
 	<A extends Annotation, T> T annotationTypeInstance(A annotation, Function<A, Class<? extends T>> getClass,
 			Class<? extends T> defaultClass);

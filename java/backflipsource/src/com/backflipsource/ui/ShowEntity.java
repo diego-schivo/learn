@@ -19,17 +19,12 @@ import com.backflipsource.Converter;
 import com.backflipsource.dynamic.DynamicAnnotation;
 import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.servlet.EntityRequestHandler;
-import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI.Mode;
 
 @Entity.Controller(regex = "_uri_/([^/]+)", score = 1)
 public class ShowEntity extends EntityRequestHandler {
 
 	private static Logger logger = logger(ShowEntity.class, ALL);
-
-	public ShowEntity(EntityResource resource) {
-		super(resource);
-	}
 
 	@Override
 	@SuppressWarnings("rawtypes")
@@ -39,7 +34,7 @@ public class ShowEntity extends EntityRequestHandler {
 		Object item = item(id);
 		logger.fine(() -> "id " + id + " item " + item);
 
-		Class<? extends Mode> mode = EntityDetail.class;
+		Class<? extends Mode> mode = mode(request);
 		DynamicClass modeEntity = resource.entity(mode);
 
 		Object modeItem = null;
@@ -71,6 +66,11 @@ public class ShowEntity extends EntityRequestHandler {
 		Control control = factory.create(nonNullInstance(modeItem, item));
 		logger.fine(() -> "factory " + factory + " control " + control);
 
-		render(control, mode, request, response);
+		render(control, request, response);
+	}
+
+	@Override
+	protected Class<? extends Mode> mode(HttpServletRequest request) {
+		return EntityDetail.class;
 	}
 }

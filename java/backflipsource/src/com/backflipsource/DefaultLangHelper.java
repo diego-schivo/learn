@@ -409,13 +409,35 @@ public class DefaultLangHelper implements LangHelper {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <A extends Annotation> Stream<Entry<String, Object>> annotationEntries(A annotation) {
+	public <A extends Annotation> Stream<Entry<String, Method>> annotationMethods(A annotation) {
 		Class<? extends Annotation> annotationType = annotation.annotationType();
 		Object annotationType2 = getFieldValue(annotationType, "annotationType", annotationType.getClass());
 		Map<String, Method> members = (Map<String, Method>) getFieldValue(annotationType2, "members",
 				annotationType2.getClass());
-		return safeStream(members)
-				.map(entry -> entry(entry.getKey(), safeGet(() -> entry.getValue().invoke(annotation))));
+		return safeStream(members);
+	}
+
+	@Override
+	public <A extends Annotation> Stream<Entry<String, Object>> annotationEntries(A annotation) {
+		return annotationMethods(annotation)
+				.map(entry -> entry(entry.getKey(), unsafeGet(() -> entry.getValue().invoke(annotation))));
+	}
+
+	@Override
+	public Stream<Annotation> repeatedAnnotations(Annotation annotation) {
+		if (annotation == null) {
+			return Stream.empty();
+		}
+		Entry<String, Method> entry = annotationMethods(annotation).findFirst().orElse(null);
+		if (safeString(entry.getKey()).equals("value")) {
+			Method method = entry.getValue();
+			Class<?> class1 = method.getReturnType();
+			if (class1.isArray() && Annotation[].class.isAssignableFrom(class1)) {
+				Annotation[] annotations = (Annotation[]) unsafeGet(() -> method.invoke(annotation));
+				return Stream.of(annotations);
+			}
+		}
+		return Stream.of(annotation);
 	}
 
 	@Override

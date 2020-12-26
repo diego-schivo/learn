@@ -19,12 +19,12 @@ public @interface Render {
 
 	Class<? extends Mode>[] mode() default {};
 
+	Class<?> entity() default Object.class;
+
 	@SuppressWarnings("rawtypes")
 	Class<? extends Control.Factory> controlFactory() default Control.Factory.class;
 
 	String controlPage() default "";
-
-	Class<?> entity() default Object.class;
 
 	String heading() default "";
 

@@ -1,12 +1,15 @@
 package com.backflipsource.ui;
 
+import static com.backflipsource.Helpers.camelCaseWords;
 import static com.backflipsource.Helpers.getArgumentTypes;
+import static com.backflipsource.Helpers.joinStrings;
 import static com.backflipsource.Helpers.listGet;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.nonEmptyString;
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeMap;
 import static com.backflipsource.Helpers.stringWithoutPrefix;
+import static com.backflipsource.Helpers.uncapitalizeString;
 import static com.backflipsource.servlet.EntityServlet.getEntityUI;
 import static com.backflipsource.ui.DefaultEntityResource.controlPage;
 import static com.backflipsource.ui.DefaultEntityResource.converter;
@@ -44,7 +47,7 @@ public abstract class AbstractEntityControl<F extends Factory<?>> extends Abstra
 	public String getTextKey() {
 		if (textKey == null) {
 			textKey = (getResource().getEntity().getName() + "."
-					+ stringWithoutPrefix(getMode().getSimpleName(), "Entity")).toLowerCase();
+					+ stringWithoutPrefix(factory.getMode().getSimpleName(), "Entity")).toLowerCase();
 		}
 		return textKey;
 	}
@@ -58,19 +61,27 @@ public abstract class AbstractEntityControl<F extends Factory<?>> extends Abstra
 	@Override
 	public Collection<Control.Factory<?>> getFactories() {
 		if (factories == null) {
-			factories = safeMap(getResource().controlFactories(getMode())).values();
+			factories = safeMap(getResource().controlFactories(factory.getMode())).values();
 			factories.forEach(factory -> factory.setParent(this));
 			logger.fine(() -> "factories " + factories);
 		}
 		return factories;
 	}
 
-	protected abstract Class<? extends Mode> getMode();
-
 	@SuppressWarnings("rawtypes")
 	public static abstract class Factory<T extends AbstractEntityControl> extends AbstractControl.Factory<T> {
 
+		protected Class<? extends Mode> mode;
+
 		protected EntityResource resource;
+
+		public Class<? extends Mode> getMode() {
+			return mode;
+		}
+
+		public void setMode(Class<? extends Mode> mode) {
+			this.mode = mode;
+		}
 
 		public EntityResource getResource() {
 			return resource;
@@ -85,9 +96,10 @@ public abstract class AbstractEntityControl<F extends Factory<?>> extends Abstra
 			setValueGetter(valueGetter(entityOrField));
 			setConverter(
 					(entityOrField instanceof DynamicField) ? converter((DynamicField) entityOrField, mode) : null);
-			setPage(nonEmptyString(controlPage(entityOrField, mode),
-					() -> "/" + getControl().getSimpleName().toLowerCase() + ".jsp"));
+			setPage(nonEmptyString(controlPage(entityOrField, mode), () -> "/"
+					+ joinStrings(camelCaseWords(uncapitalizeString(getControl().getSimpleName())), "-") + ".jsp"));
 			setHeading(heading(entityOrField, mode));
+			setMode(mode);
 			setResource(resource(entityOrField));
 			logger.fine(() -> "this = " + this);
 		}

@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.backflipsource.Control;
-import com.backflipsource.DefaultDynamicClass;
 import com.backflipsource.RequestHandler;
+import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicField;
 import com.backflipsource.ui.EntityForm;
 import com.backflipsource.ui.spec.EntityResource;
@@ -44,7 +44,7 @@ public abstract class EntityRequestHandler implements RequestHandler {
 
 	protected Object item0;
 
-	public EntityRequestHandler(EntityResource resource) {
+	public void setResource(EntityResource resource) {
 		this.resource = resource;
 		fields = resource.getEntity().fields().filter(field -> field.annotation("Entity.Field") != null)
 				.collect(toList());
@@ -57,8 +57,10 @@ public abstract class EntityRequestHandler implements RequestHandler {
 		item0 = safeGet(() -> target.getDeclaredField("instance").get(null));
 	}
 
-	protected void render(Control control, Class<? extends Mode> mode, HttpServletRequest request,
-			HttpServletResponse response) {
+	protected abstract Class<? extends Mode> mode(HttpServletRequest request);
+
+	protected void render(Control control, HttpServletRequest request, HttpServletResponse response) {
+		Class<? extends Mode> mode = mode(request);
 		logger.fine(() -> "control " + control + " mode " + mode);
 
 		EntityUI.Context context = (EntityUI.Context) request.getAttribute(CONTEXT);

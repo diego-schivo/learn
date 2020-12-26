@@ -6,7 +6,7 @@ import java.lang.annotation.Annotation;
 import java.util.Objects;
 
 import com.backflipsource.Control;
-import com.backflipsource.DefaultDynamicClass;
+import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.petclinic.Owner;
 import com.backflipsource.ui.Anchor;
 import com.backflipsource.ui.DefaultEntityResource;

@@ -1,22 +1,20 @@
-package com.backflipsource;
+package com.backflipsource.dynamic;
 
 import static com.backflipsource.Helpers.collectionFill;
 import static com.backflipsource.Helpers.getFieldValue;
+import static com.backflipsource.Helpers.repeatedAnnotations;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.setFieldValue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
-import com.backflipsource.dynamic.AbstractDynamicAnnotated;
-import com.backflipsource.dynamic.DynamicField;
-
 public class DefaultDynamicField extends AbstractDynamicAnnotated implements DynamicField {
 
 	protected Field target;
 
 	protected Class<?> type;
-	
+
 	protected Type genericType;
 
 	public DefaultDynamicField() {
@@ -31,14 +29,15 @@ public class DefaultDynamicField extends AbstractDynamicAnnotated implements Dyn
 		name = target.getName();
 		type = target.getType();
 		genericType = target.getGenericType();
-		collectionFill(annotations, safeStream(target.getAnnotations()).map(DefaultDynamicAnnotation::new));
+		collectionFill(annotations, safeStream(target.getAnnotations())
+				.flatMap(annotation -> repeatedAnnotations(annotation)).map(DefaultDynamicAnnotation::new));
 	}
 
 	@Override
 	public Class<?> getType() {
 		return type;
 	}
-	
+
 	@Override
 	public Type getGenericType() {
 		return genericType;

@@ -15,12 +15,14 @@ import com.backflipsource.ui.EntityList;
 import com.backflipsource.ui.Render;
 
 @Entity(uri = "/owners")
+@Render(mode = OwnerFind.class, entity = OwnerFilter.class)
+@Render(mode = EntityList.class, entity = OwnerRow.class, heading = "Owners")
 @Render(mode = EntityDetail.class, controlPage = "/owner/description-list.jsp", entity = Owner2.class)
-@Render(mode = EntityList.class, heading = "Owners")
 public class Owner {
 
 	@Entity.Field(identifier = true, mode = EntityList.class, converter = ForInteger.class)
-	@Render(mode = EntityList.class, controlPage = "/owner-id-anchor.jsp", heading = "Name")
+	// @Render(mode = EntityList.class, controlPage = "/owner-id-anchor.jsp", heading = "Name")
+	// @Render(mode = EntityList.class, controlFactory = OwnerName.class, heading = "Name")
 	private Integer id;
 
 	@Render(mode = { EntityDetail.class, EntityForm.class })

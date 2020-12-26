@@ -13,10 +13,10 @@ public class Table extends AbstractEntityControl<Factory> {
 		return items;
 	}
 
-	@Override
-	protected Class<? extends Mode> getMode() {
-		return EntityList.class;
-	}
+//	@Override
+//	protected Class<? extends Mode> getMode() {
+//		return EntityList.class;
+//	}
 
 	public static class Factory extends AbstractEntityControl.Factory<Table> {
 

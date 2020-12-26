@@ -5,7 +5,7 @@
 
 <dl>
   <c:forEach var="factory" items="${context.control.factories}">
-    <dt>${factory.name}</dt>
+    <dt>${factory.heading}</dt>
     <dd>
       <bfs:control var="control" control="${factory.create(context.control.target)}">
         <jsp:include page="${control.page}" />
@@ -13,5 +13,7 @@
     </dd>
   </c:forEach>
 </dl>
+<%--
 <a href="${requestURI.substring(0, requestURI.lastIndexOf(context.control.entityView.uri))}${context.control.entityView.uri}">back</a>
 <a href="${requestURI}/edit">Edit</a>
+--%>
