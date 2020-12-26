@@ -1,6 +1,7 @@
 package com.backflipsource;
 
 import static com.backflipsource.Helpers.annotationEntries;
+import static com.backflipsource.Helpers.classEnclosingName;
 import static com.backflipsource.Helpers.mapFill;
 
 import java.lang.annotation.Annotation;
@@ -26,7 +27,7 @@ public class DefaultDynamicAnnotation implements DynamicAnnotation {
 
 	public void setTarget(Annotation target) {
 		this.target = target;
-		name = target.annotationType().getSimpleName();
+		name = classEnclosingName(target.annotationType());
 		mapFill(values, annotationEntries(target));
 	}
 

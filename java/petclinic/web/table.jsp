@@ -14,10 +14,7 @@
       <c:forEach var="factory" items="${context.control.factories}">
         <td>
           <bfs:control var="control" control="${factory.create(item)}">
-            x${control.page}x
-            <%--
             <jsp:include page="${control.page}" />
-            --%>
           </bfs:control>
         </td>
       </c:forEach>

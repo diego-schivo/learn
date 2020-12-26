@@ -57,15 +57,6 @@ public class DefaultEntityResource implements EntityResource {
 		this.uri = uri(entity);
 		this.entity = entity;
 		this.entityUI = entityUI;
-
-		entities = safeStream(entityUI.getModes())
-				.collect(linkedHashMapCollector(identity(), mode -> nonNullInstance(modeEntity(entity, mode), entity)));
-
-		controlFactories = safeStream(entityUI.getModes()).collect(linkedHashMapCollector(identity(),
-				mode -> fieldMap(entity(mode), field -> controlFactory(field, mode))));
-
-		converters = safeStream(entityUI.getModes()).collect(
-				linkedHashMapCollector(identity(), mode -> fieldMap(entity(mode), field -> converter(field, mode))));
 	}
 
 	@Override
@@ -80,16 +71,28 @@ public class DefaultEntityResource implements EntityResource {
 
 	@Override
 	public DynamicClass entity(Class<? extends Mode> mode) {
+		if (entities == null) {
+			entities = safeStream(entityUI.getModes()).collect(
+					linkedHashMapCollector(identity(), mode2 -> nonNullInstance(modeEntity(entity, mode2), entity)));
+		}
 		return entities.get(mode);
 	}
 
 	@Override
 	public Map<String, Control.Factory<?>> controlFactories(Class<? extends Mode> mode) {
+		if (controlFactories == null) {
+			controlFactories = safeStream(entityUI.getModes()).collect(linkedHashMapCollector(identity(),
+					mode2 -> fieldMap(entity(mode2), field -> controlFactory(field, mode2))));
+		}
 		return controlFactories.get(mode);
 	}
 
 	@Override
 	public Map<String, StringConverter<?>> converters(Class<? extends Mode> mode) {
+		if (converters == null) {
+			converters = safeStream(entityUI.getModes()).collect(linkedHashMapCollector(identity(),
+					mode2 -> fieldMap(entity(mode2), field -> converter(field, mode2))));
+		}
 		return converters.get(mode);
 	}
 
@@ -102,32 +105,26 @@ public class DefaultEntityResource implements EntityResource {
 
 	public static DynamicAnnotation modeAnnotation(DynamicAnnotated annotated, String annotation,
 			Class<? extends Mode> mode) {
-		DynamicAnnotation field = annotated.annotations(annotation)
-				.filter(field2 -> safeList((Class[]) field2.getValue("mode")).contains(mode)).findFirst()
-				.orElseGet(() -> annotated.annotations(annotation)
-						.filter(field2 -> emptyArray((Class[]) field2.getValue("mode"))).findFirst().orElse(null));
+		DynamicAnnotation field = annotated.annotations(annotation).filter(field2 -> {
+			Class<?>[] mode2 = (Class[]) field2.getValue("mode");
+			return safeList(mode2).contains(mode);
+		}).findFirst().orElseGet(() -> annotated.annotations(annotation)
+				.filter(field2 -> emptyArray((Class[]) field2.getValue("mode"))).findFirst().orElse(null));
 		return field;
 	}
 
-	public static StringConverter<?> converter(DynamicAnnotated annotated, Class<? extends Mode> mode) {
-		return converter(modeAnnotation(annotated, "Entity.Field", mode));
-	}
-
 	@SuppressWarnings("unchecked")
-	public static StringConverter<?> converter(DynamicAnnotation field) {
-		if (field == null) {
-			return null;
-		}
-
-		logger.fine(() -> "field " + field);
+	public static StringConverter<?> converter(DynamicField field, Class<? extends Mode> mode) {
+		DynamicAnnotation field2 = modeAnnotation(field, "Entity.Field", mode);
 
 		Class<? extends StringConverter<?>> converterClass = nonNullInstance(
-				field != null ? (Class<? extends StringConverter<?>>) field.getValue("converter") : null,
+				field2 != null ? (Class<? extends StringConverter<?>>) field2.getValue("converter") : null,
 				ForString.class);
-		logger.fine(() -> "converterClass " + converterClass);
 
-		StringConverter<?> converter = safeGet(
-				() -> (StringConverter<?>) converterClass.getConstructor().newInstance());
+		StringConverter<?> converter = (StringConverter<?>) safeGet(
+				() -> converterClass.getConstructor().newInstance());
+
+		logger.fine(() -> "field = " + field + ", field2 = " + field2 + ", converter = " + converter);
 		return converter;
 	}
 
@@ -177,38 +174,34 @@ public class DefaultEntityResource implements EntityResource {
 		return map;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static Control.Factory<?> controlFactory(DynamicAnnotated annotated, Class<? extends Mode> mode) {
-		Class<? extends Control.Factory> factoryClass = controlFactoryClass(annotated, mode);
-		if (factoryClass == null) {
-			return null;
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Control.Factory<?> controlFactory(DynamicAnnotated entityOrField, Class<? extends Mode> mode) {
+		Class<? extends Control.Factory> factoryClass = controlFactoryClass(entityOrField, mode);
+
+		Control.Factory<?> instance = null;
+		if (factoryClass != null) {
+			instance = unsafeGet(() -> factoryClass.getConstructor().newInstance());
+			((AbstractEntityControl.Factory) instance).init(entityOrField, mode);
 		}
 
-		Control.Factory<?> factory = unsafeGet(() -> {
-			Object instance = factoryClass.getConstructor(/* AnnotatedElement.class, Class.class */)
-					.newInstance(/*
-									 * annotated, mode
-									 */);
-			return (Control.Factory) instance;
-		});
-
-		logger.fine(() -> "annotated " + annotated + " mode " + mode + " factory " + factory);
-
+		Control.Factory<?> factory = instance;
+		logger.fine(() -> "entityOrField " + entityOrField + " mode " + mode + " factory " + factory);
 		return factory;
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected static Class<? extends Control.Factory> controlFactoryClass(DynamicAnnotated annotated,
+	protected static Class<? extends Control.Factory> controlFactoryClass(DynamicAnnotated entityOrField,
 			Class<? extends Mode> mode) {
-		DynamicAnnotation render = modeAnnotation(annotated, "Render", mode);
+		DynamicAnnotation render = modeAnnotation(entityOrField, "Render", mode);
 		if (render == null) {
 			return null;
 		}
 
 		Class<? extends Control.Factory> controlFactory = render.getValue("controlFactory");
 		if (controlFactory == Control.Factory.class) {
-			controlFactory = defaultControlFactoryClass(annotated, mode);
+			controlFactory = defaultControlFactoryClass(entityOrField, mode);
 		}
+
 		return controlFactory;
 	}
 
@@ -244,7 +237,7 @@ public class DefaultEntityResource implements EntityResource {
 //		AnnotatedElement annotated = (object instanceof AnnotatedElement) ? (AnnotatedElement) object : null;
 //		return annotated;
 //	}
-	
+
 	@Override
 	public String toString() {
 		return "DefaultEntityResource(uri=" + uri + ")";

@@ -83,4 +83,6 @@ public interface LangHelper {
 
 	<A extends Annotation, T> T annotationTypeInstance(A annotation, Function<A, Class<? extends T>> getClass,
 			Class<? extends T> defaultClass);
+
+	String classEnclosingName(Class<?> class1);
 }

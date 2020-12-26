@@ -19,7 +19,7 @@ import com.backflipsource.ui.Render;
 @Render(mode = EntityList.class, heading = "Owners")
 public class Owner {
 
-	@Entity.Field(identifier = true, mode = List.class, converter = ForInteger.class)
+	@Entity.Field(identifier = true, mode = EntityList.class, converter = ForInteger.class)
 	@Render(mode = EntityList.class, controlPage = "/owner-id-anchor.jsp", heading = "Name")
 	private Integer id;
 

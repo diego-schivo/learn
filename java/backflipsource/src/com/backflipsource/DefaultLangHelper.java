@@ -10,9 +10,11 @@ import static java.lang.Thread.currentThread;
 import static java.nio.file.Files.isDirectory;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.reverse;
 import static java.util.Map.entry;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -425,5 +427,27 @@ public class DefaultLangHelper implements LangHelper {
 		}
 		Class<? extends T> class2 = class1;
 		return safeGet(() -> (T) class2.getConstructor().newInstance());
+	}
+
+	@Override
+	public String classEnclosingName(Class<?> class1) {
+		List<String> simpleNames = safeStream(new Iterator<Class<?>>() {
+
+			Class<?> class2 = class1;
+
+			@Override
+			public boolean hasNext() {
+				return (class2 != null);
+			}
+
+			@Override
+			public Class<?> next() {
+				Class<?> class3 = class2;
+				class2 = class2.getEnclosingClass();
+				return class3;
+			}
+		}).map(Class::getSimpleName).collect(toList());
+		reverse(simpleNames);
+		return joinStrings(safeStream(simpleNames), ".");
 	}
 }

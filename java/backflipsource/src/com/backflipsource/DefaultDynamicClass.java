@@ -1,5 +1,6 @@
 package com.backflipsource;
 
+import static com.backflipsource.Helpers.classEnclosingName;
 import static com.backflipsource.Helpers.classFields;
 import static com.backflipsource.Helpers.collectionFill;
 import static com.backflipsource.Helpers.safeStream;
@@ -31,7 +32,7 @@ public class DefaultDynamicClass extends AbstractDynamicAnnotated implements Dyn
 	public void setTarget(Class<?> target) {
 		this.target = target;
 		fullName = target.getName();
-		name = target.getSimpleName();
+		name = classEnclosingName(target);
 		collectionFill(annotations, safeStream(target.getAnnotations()).map(DefaultDynamicAnnotation::new));
 		collectionFill(fields, classFields(target).map(DefaultDynamicField::new));
 	}

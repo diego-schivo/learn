@@ -211,6 +211,10 @@ public class Helpers {
 		return getLangHelper().annotationTypeInstance(annotation, getClass, defaultClass);
 	}
 
+	public static String classEnclosingName(Class<?> class1) {
+		return getLangHelper().classEnclosingName(class1);
+	}
+
 	public static <T> boolean emptyArray(T[] array) {
 		return getUtilHelper().emptyArray(array);
 	}

@@ -56,4 +56,9 @@ public class DefaultDynamicField extends AbstractDynamicAnnotated implements Dyn
 		setFieldValue(instance, getName(), value, instance.getClass());
 		// unsafeRun(() -> getSetter(target).invoke(instance, value));
 	}
+
+	@Override
+	public String toString() {
+		return "DefaultDynamicField(name=" + name + ")";
+	}
 }

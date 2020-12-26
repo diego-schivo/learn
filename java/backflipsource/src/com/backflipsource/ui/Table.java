@@ -1,6 +1,5 @@
 package com.backflipsource.ui;
 
-import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 import com.backflipsource.ui.Table.Factory;
@@ -28,7 +27,7 @@ public class Table extends AbstractEntityControl<Factory> {
 		@Override
 		public Table create(Object target) {
 			Table control = super.create(target);
-			control.items = (List<?>) ((getValue != null) ? getValue.apply(target) : target);
+			control.items = (List<?>) ((valueGetter != null) ? valueGetter.apply(target) : target);
 			return control;
 		}
 	}

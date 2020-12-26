@@ -71,25 +71,15 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
 		protected String name;
 
-		protected String page;
+		protected Function<Object, Object> valueGetter;
 
 		protected StringConverter converter;
 
-		protected Function<Object, Object> getValue;
-
 		protected Control parent;
 
-		protected String heading;
+		protected String page;
 
-//		protected Factory(Class<T> control, String name, Function<Object, Object> getValue,
-//				StringConverter valueConverter, String page, String heading) {
-//			this.control = control;
-//			this.name = name;
-//			this.getValue = getValue;
-//			this.converter = valueConverter;
-//			this.page = nonEmptyString(page, "/" + control.getSimpleName().toLowerCase() + ".jsp");
-//			this.heading = heading;
-//		}
+		protected String heading;
 
 		public Class<T> getControl() {
 			return control;
@@ -107,12 +97,12 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 			this.name = name;
 		}
 
-		public String getPage() {
-			return page;
+		public Function<Object, Object> getValueGetter() {
+			return valueGetter;
 		}
 
-		public void setPage(String page) {
-			this.page = page;
+		public void setValueGetter(Function<Object, Object> valueGetter) {
+			this.valueGetter = valueGetter;
 		}
 
 		public StringConverter getConverter() {
@@ -123,20 +113,20 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 			this.converter = converter;
 		}
 
-		public Function<Object, Object> getGetValue() {
-			return getValue;
-		}
-
-		public void setGetValue(Function<Object, Object> getValue) {
-			this.getValue = getValue;
-		}
-
 		public Control getParent() {
 			return parent;
 		}
 
 		public void setParent(Control parent) {
 			this.parent = parent;
+		}
+
+		public String getPage() {
+			return page;
+		}
+
+		public void setPage(String page) {
+			this.page = page;
 		}
 
 		public String getHeading() {
@@ -149,6 +139,7 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
 		@Override
 		public T create(Object target) {
+			logger.fine(() -> "this = " + this);
 			T control = unsafeGet(() -> this.control.getConstructor().newInstance());
 			control.factory = this;
 			control.target = target;
@@ -158,16 +149,21 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 
 		@SuppressWarnings("unchecked")
 		protected List<String> values(Object object) {
-			logger.fine(() -> "object " + object);
+			Object value = (valueGetter != null) ? valueGetter.apply(object) : object;
 
-			Object value = (getValue != null) ? getValue.apply(object) : object;
 			Collection<?> collection = (value instanceof Collection) ? (Collection<?>) value
 					: ((value != null) ? singleton(value) : null);
+			logger.fine(() -> "collection = " + collection);
 
 			List<String> list = safeStream(collection).map(converter::convertToString).collect(toList());
-			logger.fine(() -> "list " + list);
+			logger.fine(() -> "list = " + list);
 
 			return list;
+		}
+
+		@Override
+		public String toString() {
+			return "Factory(name = " + name + ", converter = " + converter + ")";
 		}
 	}
 }

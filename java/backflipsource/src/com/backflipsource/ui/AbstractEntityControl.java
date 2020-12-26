@@ -15,7 +15,6 @@ import static java.util.function.Function.identity;
 import static java.util.logging.Level.ALL;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -59,8 +58,7 @@ public abstract class AbstractEntityControl<F extends Factory<?>> extends Abstra
 	@Override
 	public Collection<Control.Factory<?>> getFactories() {
 		if (factories == null) {
-			Map<String, Control.Factory<?>> map = safeGet(() -> getResource().controlFactories(getMode()));
-			factories = safeMap(map).values();
+			factories = safeMap(getResource().controlFactories(getMode())).values();
 			factories.forEach(factory -> factory.setParent(this));
 			logger.fine(() -> "factories " + factories);
 		}
@@ -84,40 +82,43 @@ public abstract class AbstractEntityControl<F extends Factory<?>> extends Abstra
 
 		public void init(DynamicAnnotated entityOrField, Class<? extends Mode> mode) {
 			setName(entityOrField.getName());
-			setGetValue(getValue(entityOrField));
-			setConverter(converter(entityOrField, mode));
+			setValueGetter(valueGetter(entityOrField));
+			setConverter(
+					(entityOrField instanceof DynamicField) ? converter((DynamicField) entityOrField, mode) : null);
 			setPage(nonEmptyString(controlPage(entityOrField, mode),
 					() -> "/" + getControl().getSimpleName().toLowerCase() + ".jsp"));
 			setHeading(heading(entityOrField, mode));
 			setResource(resource(entityOrField));
+			logger.fine(() -> "this = " + this);
 		}
 
-		protected static Function<Object, Object> getValue(DynamicAnnotated annotated) {
-			if (annotated instanceof DynamicField) {
+		protected static Function<Object, Object> valueGetter(DynamicAnnotated entityOrField) {
+			if (entityOrField instanceof DynamicField) {
 				return object -> {
 					if (object == null) {
 						return null;
 					}
-					return ((DynamicField) annotated).getValue(object);
+					return ((DynamicField) entityOrField).getValue(object);
 				};
 			}
-			if (annotated instanceof DynamicClass) {
+			if (entityOrField instanceof DynamicClass) {
 				return identity();
 			}
 			return null;
 		}
 
 		protected static EntityResource resource(DynamicAnnotated entityOrField) {
-			DynamicClass entity;
+			String key;
 			if (entityOrField instanceof DynamicClass) {
-				entity = (DynamicClass) entityOrField;
+				key = ((DynamicClass) entityOrField).getFullName();
 			} else if (entityOrField instanceof DynamicField) {
-				entity = (DynamicClass) listGet(getArgumentTypes(((DynamicField) entityOrField).getGenericType()), 0);
+				Class<?> class1 = (Class<?>) listGet(getArgumentTypes(((DynamicField) entityOrField).getGenericType()),
+						0);
+				key = (class1 != null) ? class1.getName() : null;
 			} else {
-				entity = null;
+				key = null;
 			}
-			DynamicClass key = entity;
-			return safeGet(() -> getEntityUI().getResources().get(entity.getFullName()));
+			return (key != null) ? getEntityUI().getResources().get(key) : null;
 		}
 	}
 }
