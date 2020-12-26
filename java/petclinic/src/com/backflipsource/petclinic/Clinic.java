@@ -10,7 +10,7 @@ import com.backflipsource.ui.Table;
 @Entity
 public class Clinic {
 
-	@Entity.Field(mode = EntityDetail.class, converter = OwnerStringConverter.class)
+	@Entity.Field(converter = OwnerStringConverter.class)
 	@Render(mode = EntityDetail.class, controlFactory = Table.Factory.class)
 	private List<Owner> owners;
 

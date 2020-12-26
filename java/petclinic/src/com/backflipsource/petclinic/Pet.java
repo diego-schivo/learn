@@ -36,7 +36,7 @@ public class Pet {
 	@Options({ "cat", "dog", "lizard", "snake", "bird", "hamster" })
 	private String type;
 
-	// @View.Field
+	@Entity.Field(converter = OwnerStringConverter.class)
 	private Owner owner;
 
 	@Entity.Field(converter = VisitStringConverter.class)

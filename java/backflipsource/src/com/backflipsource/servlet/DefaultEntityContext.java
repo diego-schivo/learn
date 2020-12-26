@@ -48,6 +48,6 @@ public class DefaultEntityContext implements EntityUI.Context {
 	}
 
 	public String text(Control control) {
-		return safeGet(() -> ((AbstractEntityControl<?>) control).getResource().getEntity().getName());
+		return safeGet(() -> ((AbstractEntityControl) control).getResource().getEntity().getName());
 	}
 }

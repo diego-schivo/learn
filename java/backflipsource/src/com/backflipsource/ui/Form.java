@@ -1,8 +1,6 @@
 package com.backflipsource.ui;
 
-import com.backflipsource.ui.Form.Factory;
-
-public class Form extends AbstractEntityControl<Factory> {
+public class Form extends AbstractEntityControl {
 
 	protected String action;
 

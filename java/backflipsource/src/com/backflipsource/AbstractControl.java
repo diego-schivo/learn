@@ -14,14 +14,13 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import com.backflipsource.AbstractControl.Factory;
 import com.backflipsource.servlet.StringConverter;
 
-public abstract class AbstractControl<F extends Factory<?>> implements Control {
+public abstract class AbstractControl implements Control {
 
 	private static Logger logger = logger(AbstractControl.class, ALL);
 
-	protected F factory;
+	protected Factory<?> factory;
 
 	protected Object target;
 
@@ -145,7 +144,15 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 			control.factory = this;
 			control.target = target;
 			control.values = (converter != null) ? values(target) : null;
+
+			init(control);
+
 			return control;
+		}
+
+		@Override
+		public String toString() {
+			return classEnclosingName(getClass()) + "(name = " + name + ", converter = " + converter + ")";
 		}
 
 		@SuppressWarnings("unchecked")
@@ -162,9 +169,7 @@ public abstract class AbstractControl<F extends Factory<?>> implements Control {
 			return list;
 		}
 
-		@Override
-		public String toString() {
-			return classEnclosingName(getClass()) + "(name = " + name + ", converter = " + converter + ")";
+		protected void init(T control) {
 		}
 	}
 }

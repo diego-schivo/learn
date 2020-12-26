@@ -16,13 +16,14 @@ import com.backflipsource.ui.Render;
 
 @Entity(uri = "/owners")
 @Render(mode = OwnerFind.class, entity = OwnerFilter.class)
-@Render(mode = EntityList.class, entity = OwnerRow.class, heading = "Owners")
-@Render(mode = EntityDetail.class, controlPage = "/owner/description-list.jsp", entity = Owner2.class)
+@Render(mode = EntityList.class, entity = OwnerListItem.class, heading = "Owners")
+// @Render(mode = EntityDetail.class, controlPage = "/owner/description-list.jsp", entity = Owner2.class)
 public class Owner {
 
-	@Entity.Field(identifier = true, mode = EntityList.class, converter = ForInteger.class)
-	// @Render(mode = EntityList.class, controlPage = "/owner-id-anchor.jsp", heading = "Name")
-	// @Render(mode = EntityList.class, controlFactory = OwnerName.class, heading = "Name")
+	@Entity.Field(identifier = true, converter = ForInteger.class)
+	// @Render(mode = EntityList.class, controlPage = "/owner-id-anchor.jsp",
+	// heading = "Name")
+	@Render(mode = EntityList.class, controlFactory = OwnerNameFactory.class, heading = "Name")
 	private Integer id;
 
 	@Render(mode = { EntityDetail.class, EntityForm.class })
@@ -43,8 +44,8 @@ public class Owner {
 	@Render
 	private String telephone;
 
-	@Entity.Field(mode = EntityDetail.class, converter = PetStringConverter.class)
-	@Render(mode = EntityDetail.class, controlPage = "/owner-pets-table.jsp")
+	@Entity.Field(converter = PetStringConverter.class)
+	// @Render(mode = EntityDetail.class, controlPage = "/owner-pets-table.jsp")
 	private List<Pet> pets;
 
 	public Owner() {

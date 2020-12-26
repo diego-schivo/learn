@@ -28,24 +28,24 @@ public @interface Entity {
 
 	@Target(FIELD)
 	@Retention(RUNTIME)
-	@Repeatable(Field.Repeated.class)
+	// @Repeatable(Field.Repeated.class)
 	@SuppressWarnings("rawtypes")
 	@interface Field {
 
 		boolean identifier() default false;
 
-		Class<?>[] mode() default {};
+//		Class<?>[] mode() default {};
 
 		Class<? extends StringConverter<?>> converter() default ForString.class;
 
 		Class<? extends Converter> converter2() default Converter.class;
 
-		@Target(FIELD)
-		@Retention(RUNTIME)
-		@interface Repeated {
-
-			Field[] value();
-		}
+//		@Target(FIELD)
+//		@Retention(RUNTIME)
+//		@interface Repeated {
+//
+//			Field[] value();
+//		}
 	}
 
 	@Target(TYPE)

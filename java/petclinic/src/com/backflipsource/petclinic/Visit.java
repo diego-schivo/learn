@@ -26,7 +26,7 @@ public class Visit {
 	@Entity.Field
 	private String description;
 
-	// @View.Field
+	@Entity.Field(converter = PetStringConverter.class)
 	private Pet pet;
 
 	public Visit() {

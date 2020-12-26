@@ -9,13 +9,13 @@ import java.util.stream.Stream;
 import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicField;
 
-public class OwnerRow extends DefaultDynamicClass {
+public class OwnerListItem extends DefaultDynamicClass {
 
-	public OwnerRow() {
+	public OwnerListItem() {
 		super(Owner.class);
 	}
 
-	private static Set<String> excludedFields = Stream.of("firstName", "lastName", "pets").collect(toSet());
+	private static Set<String> excludedFields = Stream.of("firstName", "lastName").collect(toSet()); // , "pets"
 
 	@Override
 	public Stream<DynamicField> fields() {

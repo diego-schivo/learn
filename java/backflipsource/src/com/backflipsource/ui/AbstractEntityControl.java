@@ -27,11 +27,10 @@ import com.backflipsource.Control;
 import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.dynamic.DynamicField;
-import com.backflipsource.ui.AbstractEntityControl.Factory;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI.Mode;
 
-public abstract class AbstractEntityControl<F extends Factory<?>> extends AbstractControl<F> {
+public abstract class AbstractEntityControl extends AbstractControl {
 
 	private static Logger logger = logger(AbstractEntityControl.class, ALL);
 
@@ -40,14 +39,14 @@ public abstract class AbstractEntityControl<F extends Factory<?>> extends Abstra
 	private Collection<Control.Factory<?>> factories;
 
 	public EntityResource getResource() {
-		return factory.resource;
+		return ((Factory<?>) factory).getResource();
 	}
 
 	@Override
 	public String getTextKey() {
 		if (textKey == null) {
 			textKey = (getResource().getEntity().getName() + "."
-					+ stringWithoutPrefix(factory.getMode().getSimpleName(), "Entity")).toLowerCase();
+					+ stringWithoutPrefix(((Factory<?>) factory).getMode().getSimpleName(), "Entity")).toLowerCase();
 		}
 		return textKey;
 	}
@@ -61,14 +60,14 @@ public abstract class AbstractEntityControl<F extends Factory<?>> extends Abstra
 	@Override
 	public Collection<Control.Factory<?>> getFactories() {
 		if (factories == null) {
-			factories = safeMap(getResource().controlFactories(factory.getMode())).values();
+			// factories = safeMap(getResource().controlFactories(EntityDetail.class)).values();
+			factories = safeMap(getResource().controlFactories(((Factory<?>) factory).getMode())).values();
 			factories.forEach(factory -> factory.setParent(this));
 			logger.fine(() -> "factories " + factories);
 		}
 		return factories;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public static abstract class Factory<T extends AbstractEntityControl> extends AbstractControl.Factory<T> {
 
 		protected Class<? extends Mode> mode;
