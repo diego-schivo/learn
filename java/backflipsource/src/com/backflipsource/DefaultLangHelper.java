@@ -5,14 +5,15 @@ import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.Helpers.unsafeRun;
 import static java.lang.Thread.currentThread;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -29,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -271,12 +273,12 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
-	public List<Field> classFields(Class<?> class1) {
+	public Stream<Field> classFields(Class<?> class1) {
 		if (class1 == null) {
-			return emptyList();
+			return Stream.empty();
 		}
 		Field[] fields = class1.getDeclaredFields();
-		return safeStream(fields).filter(field -> !Modifier.isStatic(field.getModifiers())).collect(toList());
+		return safeStream(fields).filter(field -> !Modifier.isStatic(field.getModifiers()));
 	}
 
 	@Override
@@ -319,8 +321,7 @@ public class DefaultLangHelper implements LangHelper {
 		if (class1 == null) {
 			return emptyMap();
 		}
-		List<Field> fields = classFields(class1);
-		return safeStream(fields).map(field -> {
+		return classFields(class1).map(field -> {
 			String getterName = getGetterName(field.getName());
 			Method getter = safeGet(() -> class1.getMethod(getterName));
 			if (getter == null) {
@@ -336,8 +337,7 @@ public class DefaultLangHelper implements LangHelper {
 		if (class1 == null) {
 			return emptyMap();
 		}
-		List<Field> fields = classFields(class1);
-		return safeStream(fields).map(field -> {
+		return classFields(class1).map(field -> {
 			String setterName = getSetterName(field.getName());
 			Method setter = safeStream(class1.getMethods())
 					.filter(method -> Objects.equals(method.getName(), setterName)).findFirst().orElse(null);
@@ -378,5 +378,26 @@ public class DefaultLangHelper implements LangHelper {
 			return emptyList();
 		}
 		return safeList(type2.getActualTypeArguments());
+	}
+
+	@Override
+	public <A extends Annotation, T> T annotationTypeInstance(A annotation, Function<A, Class<? extends T>> getClass,
+			Class<? extends T> defaultClass) {
+		Class<? extends T> class1 = getClass.apply(annotation);
+		if (class1.isInterface()) {
+			class1 = defaultClass;
+		}
+		Class<? extends T> class2 = class1;
+		return safeGet(() -> (T) class2.getConstructor().newInstance());
+	}
+
+	@Override
+	public Object getFieldValue(Object instance, String field, Class<?> class1) {
+		return unsafeGet(() -> class1.getDeclaredField(field).get(instance));
+	}
+
+	@Override
+	public void setFieldValue(Object instance, String field, Object value, Class<?> class1) {
+		unsafeRun(() -> class1.getDeclaredField(field).set(instance, value));
 	}
 }

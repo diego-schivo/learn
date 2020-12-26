@@ -1,5 +1,6 @@
 package com.backflipsource;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -153,7 +154,7 @@ public class Helpers {
 		return getLangHelper().nonNullInstance(t1, t2);
 	}
 
-	public static List<Field> classFields(Class<?> class1) {
+	public static Stream<Field> classFields(Class<?> class1) {
 		return getLangHelper().classFields(class1);
 	}
 
@@ -187,6 +188,19 @@ public class Helpers {
 
 	public static List<Type> getArgumentTypes(Type type) {
 		return getLangHelper().getArgumentTypes(type);
+	}
+
+	public static <A extends Annotation, T> T annotationTypeInstance(A annotation,
+			Function<A, Class<? extends T>> getClass, Class<? extends T> defaultClass) {
+		return getLangHelper().annotationTypeInstance(annotation, getClass, defaultClass);
+	}
+
+	public static Object getFieldValue(Object instance, String field, Class<?> class1) {
+		return getLangHelper().getFieldValue(instance, field, class1);
+	}
+
+	public static void setFieldValue(Object instance, String field, Object value, Class<?> class1) {
+		getLangHelper().setFieldValue(instance, field, value, class1);
 	}
 
 	public static <T> boolean emptyArray(T[] array) {

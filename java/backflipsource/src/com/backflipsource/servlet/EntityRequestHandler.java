@@ -47,7 +47,7 @@ public abstract class EntityRequestHandler implements RequestHandler {
 
 	public EntityRequestHandler(EntityResource resource) {
 		this.resource = resource;
-		fields = safeStream(classFields(resource.getEntity()))
+		fields = classFields(resource.getEntity())
 				.filter(field -> field.getAnnotationsByType(Entity.Field.class).length > 0).collect(toList());
 		idField = safeStream(fields).filter(
 				field -> safeStream(field.getAnnotationsByType(Entity.Field.class)).anyMatch(Entity.Field::identifier))

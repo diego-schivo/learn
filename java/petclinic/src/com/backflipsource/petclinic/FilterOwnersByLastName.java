@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.EntityList;
 import com.backflipsource.ui.ListEntities;
 import com.backflipsource.ui.Table;
 import com.backflipsource.ui.spec.EntityResource;
@@ -28,6 +29,7 @@ public class FilterOwnersByLastName extends ListEntities {
 					.sendRedirect((String) request.getAttribute("requestURI") + "/" + find.get(0).getId()));
 			return;
 		}
-		// render(new Table.Factory(entityView).create(find), List.class, request, response);
+		Class<EntityList> mode = EntityList.class;
+		render(new Table.Factory(resource.getEntity(), mode).create(find), mode, request, response);
 	}
 }

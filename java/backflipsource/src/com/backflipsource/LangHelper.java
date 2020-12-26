@@ -1,10 +1,12 @@
 package com.backflipsource;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -52,7 +54,7 @@ public interface LangHelper {
 
 	<T> T nonNullInstance(T t1, Supplier<T> t2);
 
-	List<Field> classFields(Class<?> class1);
+	Stream<Field> classFields(Class<?> class1);
 
 	String getGetterName(String field);
 
@@ -69,4 +71,11 @@ public interface LangHelper {
 	Stream<Class<?>> getClasses(String packageName);
 
 	List<Type> getArgumentTypes(Type type);
+
+	<A extends Annotation, T> T annotationTypeInstance(A annotation, Function<A, Class<? extends T>> getClass,
+			Class<? extends T> defaultClass);
+
+	Object getFieldValue(Object instance, String field, Class<?> class1);
+
+	void setFieldValue(Object instance, String field, Object value, Class<?> class1);
 }

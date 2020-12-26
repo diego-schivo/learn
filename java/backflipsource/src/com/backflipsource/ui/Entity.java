@@ -9,6 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.backflipsource.Converter;
+import com.backflipsource.DynamicClass;
 import com.backflipsource.RequestHandler;
 import com.backflipsource.RequestMatcher;
 import com.backflipsource.servlet.DefaultRequestHandlerProvider;
@@ -22,6 +23,8 @@ public @interface Entity {
 	String uri() default "";
 
 	Class<? extends RequestHandler.Provider> handlerProvider() default DefaultRequestHandlerProvider.class;
+
+	Class<? extends DynamicClass> descriptor() default DynamicClass.class;
 
 	@Target(FIELD)
 	@Retention(RUNTIME)

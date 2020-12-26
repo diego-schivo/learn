@@ -1,9 +1,11 @@
 package com.backflipsource.ui;
 
 import static com.backflipsource.AbstractControl.Factory.name;
+import static com.backflipsource.Helpers.annotationTypeInstance;
 import static com.backflipsource.Helpers.camelCaseWords;
-import static com.backflipsource.Helpers.classFields;
+import static com.backflipsource.Helpers.capitalizeString;
 import static com.backflipsource.Helpers.emptyArray;
+import static com.backflipsource.Helpers.getFieldValue;
 import static com.backflipsource.Helpers.joinStrings;
 import static com.backflipsource.Helpers.linkedHashMapCollector;
 import static com.backflipsource.Helpers.logger;
@@ -25,6 +27,10 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 import com.backflipsource.Control;
+import com.backflipsource.DefaultDynamicClass;
+import com.backflipsource.DefaultDynamicField;
+import com.backflipsource.DynamicClass;
+import com.backflipsource.DynamicField;
 import com.backflipsource.Helpers;
 import com.backflipsource.servlet.DescriptionList;
 import com.backflipsource.servlet.StringConverter;
@@ -96,7 +102,8 @@ public class DefaultEntityResource implements EntityResource {
 		return uri;
 	}
 
-	public static Entity.Field modeField(AnnotatedElement annotated, Class<? extends Mode> mode) {
+	public static Entity.Field modeField(Object object, Class<? extends Mode> mode) {
+		AnnotatedElement annotated = annotatedElement(object);
 		Entity.Field[] fields = annotated.getAnnotationsByType(Entity.Field.class);
 		Entity.Field field = safeStream(fields).filter(field2 -> safeList(field2.mode()).contains(mode)).findFirst()
 				.orElseGet(
@@ -104,19 +111,22 @@ public class DefaultEntityResource implements EntityResource {
 		return field;
 	}
 
-	public static Render modeRender(AnnotatedElement annotated, Class<? extends Mode> mode) {
-		if (annotated == null || mode == null) {
+	public static Render modeRender(Object object, Class<? extends Mode> mode) {
+		if (object == null || mode == null) {
 			return null;
 		}
 
-		Render[] renders = annotated.getAnnotationsByType(Render.class);
+		AnnotatedElement annotated = annotatedElement(object);
+
+		Render[] renders = (annotated != null) ? annotated.getAnnotationsByType(Render.class) : null;
 		Render render = safeStream(renders).filter(render2 -> safeList(render2.mode()).contains(mode)).findFirst()
 				.orElseGet(() -> safeStream(renders).filter(render2 -> emptyArray(render2.mode())).findFirst()
 						.orElse(null));
 		return render;
 	}
 
-	public static StringConverter<?> converter(AnnotatedElement annotated, Class<? extends Mode> view) {
+	public static StringConverter<?> converter(Object object, Class<? extends Mode> view) {
+		AnnotatedElement annotated = annotatedElement(object);
 		return converter(modeField(annotated, view));
 	}
 
@@ -149,7 +159,8 @@ public class DefaultEntityResource implements EntityResource {
 		if (render == null) {
 			return null;
 		}
-		return nonEmptyString(render.heading(), () -> joinStrings(camelCaseWords(name(annotated)), " "));
+		return nonEmptyString(render.heading(),
+				() -> joinStrings(camelCaseWords(capitalizeString(name(annotated))), " "));
 	}
 
 	public static Class<?> modeEntity(AnnotatedElement annotated, Class<? extends Mode> mode) {
@@ -164,9 +175,13 @@ public class DefaultEntityResource implements EntityResource {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected static <T> Map<String, T> fieldMap(Class<?> entity, Function<Field, T> function) {
+	protected static <T> Map<String, T> fieldMap(Class<?> entityClass, Function<DynamicField, T> function) {
 
-		Map<String, T> map = safeStream(classFields(entity)).map(field -> {
+		DynamicClass descriptor = annotationTypeInstance(entityClass.getAnnotation(Entity.class), Entity::descriptor,
+				DefaultDynamicClass.class);
+		((DefaultDynamicClass) descriptor).setTarget(entityClass);
+
+		Map<String, T> map = descriptor.fields().map(field -> {
 			T result = function.apply(field);
 			logger.fine(() -> "field " + field + " result " + result);
 
@@ -178,12 +193,13 @@ public class DefaultEntityResource implements EntityResource {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static Control.Factory<?> controlFactory(AnnotatedElement annotated, Class<? extends Mode> mode) {
-		Class<? extends Control.Factory> factoryClass = controlFactoryClass(annotated, mode);
+	public static Control.Factory<?> controlFactory(Object object, Class<? extends Mode> mode) {
+		Class<? extends Control.Factory> factoryClass = controlFactoryClass(object, mode);
 		if (factoryClass == null) {
 			return null;
 		}
 
+		AnnotatedElement annotated = annotatedElement(object);
 		Control.Factory<?> factory = unsafeGet(() -> {
 			Object instance = factoryClass.getConstructor(AnnotatedElement.class, Class.class).newInstance(annotated,
 					mode);
@@ -196,29 +212,29 @@ public class DefaultEntityResource implements EntityResource {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected static Class<? extends Control.Factory> controlFactoryClass(AnnotatedElement annotated,
-			Class<? extends Mode> mode) {
-		Render render = modeRender(annotated, mode);
-
-		Class<? extends Control.Factory> controlFactory = (render != null) ? render.controlFactory() : null;
-		if (controlFactory == Control.Factory.class) {
-			controlFactory = null;
+	protected static Class<? extends Control.Factory> controlFactoryClass(Object object, Class<? extends Mode> mode) {
+		Render render = modeRender(object, mode);
+		if (render == null) {
+			return null;
 		}
 
-		if (controlFactory == null) {
-			controlFactory = defaultControlFactoryClass(annotated, mode);
+		Class<? extends Control.Factory> controlFactory = render.controlFactory();
+		if (controlFactory == Control.Factory.class) {
+			controlFactory = defaultControlFactoryClass(object, mode);
 		}
 		return controlFactory;
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected static Class<? extends Control.Factory> defaultControlFactoryClass(AnnotatedElement annotated,
+	protected static Class<? extends Control.Factory> defaultControlFactoryClass(Object object,
 			Class<? extends Mode> mode) {
+		AnnotatedElement annotated = annotatedElement(object);
+
 		if (!(annotated instanceof Field)) {
 			return DescriptionList.Factory.class;
 		}
 
-		Entity.Field field = modeField(annotated, mode);
+		Entity.Field field = modeField(object, mode);
 		boolean identifier = (field != null) && field.identifier();
 
 		boolean edit = (mode == EntityForm.class);
@@ -232,5 +248,14 @@ public class DefaultEntityResource implements EntityResource {
 		}
 
 		return edit ? Input.Factory.class : Span.Factory.class;
+	}
+
+	public static AnnotatedElement annotatedElement(Object object) {
+		if (object instanceof DefaultDynamicField) {
+			object = getFieldValue(object, "target", DefaultDynamicField.class);
+		}
+
+		AnnotatedElement annotated = (object instanceof AnnotatedElement) ? (AnnotatedElement) object : null;
+		return annotated;
 	}
 }

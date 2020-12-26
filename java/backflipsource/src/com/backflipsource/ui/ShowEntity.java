@@ -48,7 +48,7 @@ public class ShowEntity extends EntityRequestHandler {
 			Class<?> class2 = modeEntity;
 
 			Object instance = unsafeGet(() -> class2.getConstructor().newInstance());
-			safeStream(classFields(class2)).filter(field -> field.getAnnotation(Entity.Field.class) != null)
+			classFields(class2).filter(field -> field.getAnnotation(Entity.Field.class) != null)
 					.forEach(field -> {
 						Entity.Field annotation = field.getAnnotation(Entity.Field.class);
 						Class<? extends Converter> converterClass = annotation.converter2();
