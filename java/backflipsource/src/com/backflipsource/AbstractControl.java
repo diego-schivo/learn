@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import com.backflipsource.servlet.StringConverter;
 
-public abstract class AbstractControl implements Control {
+public class AbstractControl implements Control {
 
 	private static Logger logger = logger(AbstractControl.class, ALL);
 
@@ -64,8 +64,23 @@ public abstract class AbstractControl implements Control {
 		return factory.getHeading();
 	}
 
+	@Override
+	public String getTextKey() {
+		return null;
+	}
+
+	@Override
+	public String text(String key) {
+		return null;
+	}
+
+	@Override
+	public Collection<Control.Factory<?>> getFactories() {
+		return null;
+	}
+
 	@SuppressWarnings("rawtypes")
-	public static abstract class Factory<T extends AbstractControl> implements Control.Factory {
+	public static class Factory<T extends AbstractControl> implements Control.Factory {
 
 		protected Class<T> control;
 

@@ -25,7 +25,11 @@ import com.backflipsource.Control;
 import com.backflipsource.RequestHandler;
 import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicField;
+import com.backflipsource.ui.AbstractEntityControl;
+import com.backflipsource.ui.DefaultEntityResource;
+import com.backflipsource.ui.EntityDetail;
 import com.backflipsource.ui.EntityForm;
+import com.backflipsource.ui.EntityList;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;
 import com.backflipsource.ui.spec.EntityUI.Mode;
@@ -57,7 +61,48 @@ public abstract class EntityRequestHandler implements RequestHandler {
 		item0 = safeGet(() -> target.getDeclaredField("instance").get(null));
 	}
 
-	protected abstract Class<? extends Mode> mode(HttpServletRequest request);
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response) {
+		Object target = target(request);
+		logger.fine(() -> "target = " + target);
+
+		Control.Factory<?> factory = controlFactory(target, request);
+		logger.fine(() -> "factory = " + factory);
+
+		if (factory instanceof AbstractEntityControl.Factory) {
+			((AbstractEntityControl.Factory<?>) factory).init(resource.getEntity(), mode(request));
+		}
+
+		Control control = (factory != null) ? factory.create(target) : null;
+		logger.fine(() -> "control = " + control);
+
+		render(control, request, response);
+	}
+
+	protected Object target(HttpServletRequest request) {
+		Object target;
+		if (entityData != null) {
+			target = entityData.list();
+		} else if (item0 != null) {
+			target = item0;
+		} else {
+			target = null;
+		}
+		return target;
+	}
+
+	protected Control.Factory<?> controlFactory(Object target, HttpServletRequest request) {
+		Control.Factory<?> factory;
+//		if (target instanceof Iterable) {
+//			factory = new Table.Factory();
+//		} else if (target != null) {
+//			factory = new DescriptionList.Factory();
+//		} else {
+//			factory  = null;
+//		}
+		factory = DefaultEntityResource.controlFactory(resource.getEntity(), mode(request));
+		return factory;
+	}
 
 	protected void render(Control control, HttpServletRequest request, HttpServletResponse response) {
 		Class<? extends Mode> mode = mode(request);
@@ -72,6 +117,10 @@ public abstract class EntityRequestHandler implements RequestHandler {
 //		String path2 = nonEmptyString(view2 != null ? view2.page() : null, "/entity.jsp");
 		String path2 = "/entity.jsp";
 		forwardServletRequest(path2, request, response);
+	}
+
+	protected Class<? extends Mode> mode(HttpServletRequest request) {
+		return (item0 != null) ? EntityDetail.class : EntityList.class;
 	}
 
 	protected void save(Object item, HttpServletRequest request) {

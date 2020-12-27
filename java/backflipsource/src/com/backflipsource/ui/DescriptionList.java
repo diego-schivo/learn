@@ -1,6 +1,4 @@
-package com.backflipsource.servlet;
-
-import com.backflipsource.ui.AbstractEntityControl;
+package com.backflipsource.ui;
 
 public class DescriptionList extends AbstractEntityControl {
 

@@ -32,7 +32,6 @@ import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicAnnotation;
 import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.dynamic.DynamicField;
-import com.backflipsource.servlet.DescriptionList;
 import com.backflipsource.servlet.StringConverter;
 import com.backflipsource.servlet.StringConverter.ForString;
 import com.backflipsource.ui.spec.EntityResource;
@@ -237,10 +236,21 @@ public class DefaultEntityResource implements EntityResource {
 	protected static Class<? extends Control.Factory> defaultControlFactoryClass(DynamicAnnotated entityOrField,
 			Class<? extends Mode> mode) {
 
-		boolean edit = EntityForm.class.isAssignableFrom(mode);
+		boolean list = EntityList.class.isAssignableFrom(mode);
+		boolean detail = EntityDetail.class.isAssignableFrom(mode);
+		boolean form = EntityForm.class.isAssignableFrom(mode);
 
 		if (entityOrField instanceof DynamicClass) {
-			return edit ? Form.Factory.class : DescriptionList.Factory.class;
+			if (list) {
+				return Table.Factory.class;
+			}
+			if (detail) {
+				return DescriptionList.Factory.class;
+			}
+			if (form) {
+				return Form.Factory.class;
+			}
+			return null;
 		}
 
 		if (entityOrField instanceof DynamicField) {
@@ -248,14 +258,14 @@ public class DefaultEntityResource implements EntityResource {
 			boolean identifier = (field != null) ? field.getValue("identifier") : false;
 
 			if (identifier) {
-				return edit ? Span.Factory.class : Anchor.Factory.class;
+				return form ? Span.Factory.class : Anchor.Factory.class;
 			}
 
-			if (Iterable.class.isAssignableFrom(((DynamicField) entityOrField).getType())) {
-				return Table.Factory.class;
-			}
+//			if (Iterable.class.isAssignableFrom(((DynamicField) entityOrField).getType())) {
+//				return Table.Factory.class;
+//			}
 
-			return edit ? Input.Factory.class : Span.Factory.class;
+			return form ? Input.Factory.class : Span.Factory.class;
 		}
 
 		return null;

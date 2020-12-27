@@ -27,8 +27,7 @@ public class ShowEntity extends EntityRequestHandler {
 	private static Logger logger = logger(ShowEntity.class, ALL);
 
 	@Override
-	@SuppressWarnings("rawtypes")
-	public void handle(HttpServletRequest request, HttpServletResponse response) {
+	protected Object target(HttpServletRequest request) {
 		String path = request.getRequestURI().substring(request.getContextPath().length());
 		String id = substringAfterLast(stringWithoutSuffix(path, "/edit"), "/");
 		Object item = item(id);
@@ -60,13 +59,8 @@ public class ShowEntity extends EntityRequestHandler {
 			});
 			modeItem = instance;
 		}
-
-		Control.Factory<?> factory = controlFactory(resource.getEntity(), mode);
-
-		Control control = factory.create(nonNullInstance(modeItem, item));
-		logger.fine(() -> "factory " + factory + " control " + control);
-
-		render(control, request, response);
+		
+		return nonNullInstance(modeItem, item);
 	}
 
 	@Override
