@@ -1,6 +1,6 @@
 package com.backflipsource.petclinic;
 
-import static com.backflipsource.Helpers.safeString;
+import static com.backflipsource.Helpers.string;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Set;
@@ -19,6 +19,6 @@ public class OwnerListItem extends DefaultDynamicClass {
 
 	@Override
 	public Stream<DynamicField> fields() {
-		return super.fields().filter(field -> !excludedFields.contains(safeString(field.getName())));
+		return super.fields().filter(field -> !excludedFields.contains(string(field.getName())));
 	}
 }

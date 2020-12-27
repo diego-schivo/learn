@@ -5,13 +5,13 @@
 
 <form method="get" action="${requestURI.substring(0, requestURI.lastIndexOf('/'))}">
   <dl>
-    <c:forEach var="factory" items="${context.control.factories}">
+    <c:forEach var="factory" items="${context.control.childFactories()}">
       <c:if test="${factory.name eq 'lastName'}">
         <dt>
           <label>Last name</label>
         </dt>
         <dd>
-          <bfs:control var="control" control="${factory.create(control.target)}">
+          <bfs:control var="control" control="${factory.newControl(control.target, context.control)}">
             <jsp:include page="${control.page}" />
           </bfs:control>
         </dd>

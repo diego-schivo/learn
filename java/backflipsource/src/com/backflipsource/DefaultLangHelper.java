@@ -62,7 +62,7 @@ public class DefaultLangHelper implements LangHelper {
 	}
 
 	@Override
-	public String safeString(Object object) {
+	public String string(Object object) {
 		String string = unsafeString(object);
 		if (string == null) {
 			return emptyString();
@@ -429,7 +429,7 @@ public class DefaultLangHelper implements LangHelper {
 			return Stream.empty();
 		}
 		Entry<String, Method> entry = annotationMethods(annotation).findFirst().orElse(null);
-		if (safeString(entry.getKey()).equals("value")) {
+		if (string(entry.getKey()).equals("value")) {
 			Method method = entry.getValue();
 			Class<?> class1 = method.getReturnType();
 			if (class1.isArray() && Annotation[].class.isAssignableFrom(class1)) {

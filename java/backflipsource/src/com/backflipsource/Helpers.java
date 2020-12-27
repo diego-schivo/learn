@@ -78,8 +78,8 @@ public class Helpers {
 		return getLangHelper().emptyString(string);
 	}
 
-	public static String safeString(Object object) {
-		return getLangHelper().safeString(object);
+	public static String string(Object object) {
+		return getLangHelper().string(object);
 	}
 
 	public static String unsafeString(Object object) {
@@ -221,6 +221,10 @@ public class Helpers {
 
 	public static String classEnclosingName(Class<?> class1) {
 		return getLangHelper().classEnclosingName(class1);
+	}
+
+	public static <T extends Collection<U>, U> T collection(T collection) {
+		return getUtilHelper().collection(collection);
 	}
 
 	public static <T> boolean emptyArray(T[] array) {

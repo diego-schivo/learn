@@ -1,7 +1,7 @@
 package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.safeString;
+import static com.backflipsource.Helpers.string;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class Owner {
 	@Render(mode = EntityForm.class)
 	private String firstName;
 
-	@Render(mode = EntityForm.class)
+	@Render(mode = { OwnerFind.class, EntityForm.class })
 	private String lastName;
 
 	@Entity.Field
@@ -158,8 +158,8 @@ public class Owner {
 		}
 
 		public List<Owner> find(String lastName) {
-			String prefix = safeString(lastName).toLowerCase();
-			return safeStream(list).filter(item -> safeString(item.getLastName()).toLowerCase().startsWith(prefix))
+			String prefix = string(lastName).toLowerCase();
+			return safeStream(list).filter(item -> string(item.getLastName()).toLowerCase().startsWith(prefix))
 					.collect(toList());
 		}
 	}

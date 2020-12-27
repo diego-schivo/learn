@@ -5,12 +5,12 @@
 
   <form action="${context.control.action}" method="${context.control.method}">
     <dl>
-      <c:forEach var="factory" items="${context.control.factories}">
+      <c:forEach var="factory" items="${context.control.childFactories()}">
         <dt>
           <label>${factory.heading}</label>
         </dt>
         <dd>
-          <bfs:control var="control" control="${factory.create(context.control.target)}">
+          <bfs:control var="control" control="${factory.newControl(context.control.target, context.control)}">
             <jsp:include page="${control.page}" />
           </bfs:control>
         </dd>

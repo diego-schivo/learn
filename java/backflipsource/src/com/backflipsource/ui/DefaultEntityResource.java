@@ -11,7 +11,7 @@ import static com.backflipsource.Helpers.nonNullInstance;
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeList;
 import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.safeString;
+import static com.backflipsource.Helpers.string;
 import static com.backflipsource.Helpers.unsafeGet;
 import static java.util.Map.entry;
 import static java.util.function.Predicate.not;
@@ -138,7 +138,7 @@ public class DefaultEntityResource implements EntityResource {
 	}
 
 	protected String uri(DynamicClass entity) {
-		String uri = entity.annotations("Entity").map(annotation -> safeString(annotation.getValue("uri")))
+		String uri = entity.annotations("Entity").map(annotation -> string(annotation.getValue("uri")))
 				.filter(not(Helpers::emptyString)).findFirst().orElse("/" + entity.getName().toLowerCase());
 		logger.fine(() -> "uri " + uri);
 		return uri;
@@ -262,7 +262,7 @@ public class DefaultEntityResource implements EntityResource {
 				return form ? Span.Factory.class : Anchor.Factory.class;
 			}
 
-			if (Iterable.class.isAssignableFrom(((DynamicField) entityOrField).getType())) {
+			if (detail && Iterable.class.isAssignableFrom(((DynamicField) entityOrField).getType())) {
 				return Table.Factory.class;
 			}
 

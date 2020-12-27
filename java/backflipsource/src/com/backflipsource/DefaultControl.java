@@ -23,9 +23,16 @@ public class DefaultControl implements Control {
 
 	protected Factory<?> factory;
 
+	protected Control parent;
+
 	protected Object target;
 
 	protected List<String> values;
+
+	@Override
+	public Control getParent() {
+		return parent;
+	}
 
 	@Override
 	public Object getTarget() {
@@ -56,11 +63,6 @@ public class DefaultControl implements Control {
 	}
 
 	@Override
-	public Control getParent() {
-		return factory.getParent();
-	}
-
-	@Override
 	public String getHeading() {
 		return factory.getHeading();
 	}
@@ -76,7 +78,7 @@ public class DefaultControl implements Control {
 	}
 
 	@Override
-	public Collection<Control.Factory<?>> getFactories() {
+	public Collection<Control.Factory<?>> childFactories() {
 		return null;
 	}
 
@@ -96,7 +98,7 @@ public class DefaultControl implements Control {
 
 		protected StringConverter converter;
 
-		protected Control parent;
+//		protected Control parent;
 
 		protected String page;
 
@@ -134,13 +136,13 @@ public class DefaultControl implements Control {
 			this.converter = converter;
 		}
 
-		public Control getParent() {
-			return parent;
-		}
-
-		public void setParent(Control parent) {
-			this.parent = parent;
-		}
+//		public Control getParent() {
+//			return parent;
+//		}
+//
+//		public void setParent(Control parent) {
+//			this.parent = parent;
+//		}
 
 		public String getPage() {
 			return page;
@@ -160,12 +162,13 @@ public class DefaultControl implements Control {
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public T create(Object target) {
+		public T newControl(Object target, Control parent) {
 			Class<?> controlClass = nonNullInstance(control, DefaultControl.class);
 			logger.fine(() -> "this = " + this + ", controlClass = " + controlClass);
 
 			T control = (T) unsafeGet(() -> controlClass.getConstructor().newInstance());
 			control.factory = this;
+			control.parent = parent;
 			control.target = target;
 			control.values = (converter != null) ? values(target) : null;
 

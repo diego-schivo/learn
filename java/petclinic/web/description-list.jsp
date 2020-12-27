@@ -4,10 +4,10 @@
 <h2>${context.control.heading}</h2>
 
 <dl>
-  <c:forEach var="factory" items="${context.control.factories}">
+  <c:forEach var="factory" items="${context.control.childFactories()}">
     <dt>${factory.heading}</dt>
     <dd>
-      <bfs:control var="control" control="${factory.create(context.control.target)}">
+      <bfs:control var="control" control="${factory.newControl(context.control.target, context.control)}">
         <jsp:include page="${control.page}" />
       </bfs:control>
     </dd>

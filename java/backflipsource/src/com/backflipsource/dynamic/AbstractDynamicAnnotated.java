@@ -2,7 +2,7 @@ package com.backflipsource.dynamic;
 
 import static com.backflipsource.Helpers.classEnclosingName;
 import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.safeString;
+import static com.backflipsource.Helpers.string;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public abstract class AbstractDynamicAnnotated implements DynamicAnnotated {
 
 	@Override
 	public Stream<DynamicAnnotation> annotations(String name) {
-		return safeStream(annotations).filter(annotation -> safeString(annotation.getName()).equals(name));
+		return safeStream(annotations).filter(annotation -> string(annotation.getName()).equals(name));
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import static com.backflipsource.Helpers.getSetters;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
+import static java.util.Collections.EMPTY_SET;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Spliterator.ORDERED;
@@ -55,6 +56,14 @@ import java.util.stream.Stream;
 public class DefaultUtilHelper implements UtilHelper {
 
 	private static Logger logger = Helpers.logger(DefaultUtilHelper.class, FINE);
+
+	@Override
+	public <T extends Collection<U>, U> T collection(T collection) {
+		if (collection == null) {
+			return (T) EMPTY_SET;
+		}
+		return collection;
+	}
 
 	@Override
 	public <T> boolean emptyArray(T[] array) {

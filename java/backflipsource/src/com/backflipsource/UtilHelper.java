@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 
 public interface UtilHelper {
 
+	<T extends Collection<U>, U> T collection(T collection);
+
 	<T> boolean emptyArray(T[] array);
 
 	boolean emptyCollection(Collection<?> collection);

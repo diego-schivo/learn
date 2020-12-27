@@ -57,17 +57,13 @@ public abstract class AbstractEntityControl extends DefaultControl {
 	}
 
 	@Override
-	public Collection<Control.Factory<?>> getFactories() {
+	public Collection<Control.Factory<?>> childFactories() {
 		if (factories == null) {
-			// factories =
-			// safeMap(getResource().controlFactories(EntityDetail.class)).values();
 			Class<? extends Mode> mode = ((Factory<?>) factory).getMode();
-			// mode = EntityList.class;
 			factories = safeMap(getResource().controlFactories(mode)).values();
-			factories.forEach(factory -> {
-				// ((Factory<?>) factory).setUI(((Factory<?>) factory).getUI());
-				factory.setParent(this);
-			});
+//			factories.forEach(factory -> {
+//				factory.setParent(this);
+//			});
 			logger.fine(() -> "factories " + factories);
 		}
 		return factories;

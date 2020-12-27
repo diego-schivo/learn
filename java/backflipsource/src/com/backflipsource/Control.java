@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface Control {
 
+	Control getParent();
+
 	Object getTarget();
 
 	String getName();
@@ -15,24 +17,20 @@ public interface Control {
 
 	String getValue();
 
-	Control getParent();
-
 	String getHeading();
 
 	String getTextKey();
 
 	String text(String key);
 
-	Collection<Control.Factory<?>> getFactories();
-	
+	Collection<Control.Factory<?>> childFactories();
+
 	void init();
 
 	public interface Factory<T extends Control> {
 
 		String getHeading();
 
-		void setParent(Control parent);
-
-		T create(Object target);
+		T newControl(Object target, Control parent);
 	}
 }

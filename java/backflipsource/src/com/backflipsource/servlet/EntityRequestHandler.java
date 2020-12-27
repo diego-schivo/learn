@@ -74,7 +74,7 @@ public abstract class EntityRequestHandler implements RequestHandler {
 			((AbstractEntityControl.Factory<?>) factory).init(EntityServlet.entityUI(), resource.getEntity(), mode(request));
 		}
 
-		Control control = (factory != null) ? factory.create(target) : null;
+		Control control = (factory != null) ? factory.newControl(target, null) : null;
 		logger.fine(() -> "control = " + control);
 
 		render(control, request, response);

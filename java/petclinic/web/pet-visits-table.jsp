@@ -3,15 +3,15 @@
 
 <table>
   <tr>
-    <c:forEach var="factory" items="${control.factories}">
+    <c:forEach var="factory" items="${control.childFactories()}">
       <th>${factory.name eq 'date' ? 'Visit date' : factory.name}</th>
     </c:forEach>
   </tr>
   <c:forEach var="item" items="${control.items}">
     <tr>
-      <c:forEach var="factory" items="${control.factories}">
+      <c:forEach var="factory" items="${control.childFactories()}">
         <td>
-          <bfs:control var="control" control="${factory.create(item)}">
+          <bfs:control var="control" control="${factory.newControl(item, control)}">
             <jsp:include page="${control.page}" />
           </bfs:control>
         </td>

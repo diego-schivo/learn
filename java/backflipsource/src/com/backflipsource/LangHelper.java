@@ -17,7 +17,7 @@ public interface LangHelper {
 
 	boolean emptyString(String string);
 
-	String safeString(Object object);
+	String string(Object object);
 
 	String unsafeString(Object object);
 

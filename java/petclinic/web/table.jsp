@@ -5,15 +5,15 @@
 
 <table>
   <tr>
-    <c:forEach var="factory" items="${context.control.factories}">
+    <c:forEach var="factory" items="${context.control.childFactories()}">
       <th>${factory.heading}</th>
     </c:forEach>
   </tr>
   <c:forEach var="item" items="${context.control.items}">
     <tr>
-      <c:forEach var="factory" items="${context.control.factories}">
+      <c:forEach var="factory" items="${context.control.childFactories()}">
         <td>
-          <bfs:control var="control" control="${factory.create(item)}">
+          <bfs:control var="control" control="${factory.newControl(item, context.control)}">
             <jsp:include page="${control.page}" />
           </bfs:control>
         </td>
