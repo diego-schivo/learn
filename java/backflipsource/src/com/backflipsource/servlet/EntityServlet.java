@@ -2,7 +2,6 @@ package com.backflipsource.servlet;
 
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.ui.spec.EntityUI.entityUI;
 import static java.lang.Class.forName;
 import static java.util.logging.Level.ALL;
 
@@ -28,11 +27,11 @@ public class EntityServlet extends HttpServlet {
 
 	private static Logger logger = logger(EntityServlet.class, ALL);
 
-	public static EntityUI getEntityUI() {
+	public static EntityUI entityUI() {
 		return threadContext.get().getUI();
 	}
 
-	public static HttpServletRequest getInitialRequest() {
+	public static HttpServletRequest initialRequest() {
 		return threadContext.get().getRequest();
 	}
 
@@ -49,7 +48,7 @@ public class EntityServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		Class<?> uiClass = unsafeGet(() -> forName(getInitParameter(EntityUI.class.getName())));
-		ui = entityUI(uiClass);
+		ui = EntityUI.of(uiClass);
 		logger.fine(() -> "ui " + ui);
 
 		String key = getServletName();
@@ -75,6 +74,7 @@ public class EntityServlet extends HttpServlet {
 			Context context = new Context();
 			context.ui = ui;
 			context.request = request;
+			context.response = response;
 
 			threadContext.set(context);
 		}
@@ -113,12 +113,18 @@ public class EntityServlet extends HttpServlet {
 
 		protected HttpServletRequest request;
 
+		protected HttpServletResponse response;
+
 		public EntityUI getUI() {
 			return ui;
 		}
 
 		public HttpServletRequest getRequest() {
 			return request;
+		}
+
+		public HttpServletResponse getResponse() {
+			return response;
 		}
 	}
 }

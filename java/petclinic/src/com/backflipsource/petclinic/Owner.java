@@ -18,18 +18,17 @@ import com.backflipsource.ui.Render;
 @Render(mode = OwnerFind.class, entity = OwnerFilter.class)
 @Render(mode = EntityList.class, entity = OwnerListItem.class, heading = "Owners")
 // @Render(mode = EntityDetail.class, controlPage = "/owner/description-list.jsp", entity = Owner2.class)
+@Render(mode = EntityDetail.class, heading = "Owner Information")
 public class Owner {
 
 	@Entity.Field(identifier = true, converter = ForInteger.class)
-	// @Render(mode = EntityList.class, controlPage = "/owner-id-anchor.jsp",
-	// heading = "Name")
-	@Render(mode = EntityList.class, controlFactory = OwnerNameFactory.class, heading = "Name")
+	@Render(mode = { EntityList.class, EntityDetail.class }, controlFactory = OwnerNameFactory.class, heading = "Name")
 	private Integer id;
 
-	@Render(mode = { EntityDetail.class, EntityForm.class })
+	@Render(mode = EntityForm.class)
 	private String firstName;
 
-	@Render(mode = { EntityDetail.class, EntityForm.class })
+	@Render(mode = EntityForm.class)
 	private String lastName;
 
 	@Entity.Field
@@ -45,6 +44,7 @@ public class Owner {
 	private String telephone;
 
 	@Entity.Field(converter = PetStringConverter.class)
+	@Render
 	// @Render(mode = EntityDetail.class, controlPage = "/owner-pets-table.jsp")
 	private List<Pet> pets;
 

@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +71,7 @@ public abstract class EntityRequestHandler implements RequestHandler {
 		logger.fine(() -> "factory = " + factory);
 
 		if (factory instanceof AbstractEntityControl.Factory) {
-			((AbstractEntityControl.Factory<?>) factory).init(resource.getEntity(), mode(request));
+			((AbstractEntityControl.Factory<?>) factory).init(EntityServlet.entityUI(), resource.getEntity(), mode(request));
 		}
 
 		Control control = (factory != null) ? factory.create(target) : null;
@@ -100,7 +101,7 @@ public abstract class EntityRequestHandler implements RequestHandler {
 //		} else {
 //			factory  = null;
 //		}
-		factory = DefaultEntityResource.controlFactory(resource.getEntity(), mode(request));
+		factory = resource.controlFactory(resource.getEntity(), mode(request));
 		return factory;
 	}
 
@@ -109,7 +110,10 @@ public abstract class EntityRequestHandler implements RequestHandler {
 		logger.fine(() -> "control " + control + " mode " + mode);
 
 		EntityUI.Context context = (EntityUI.Context) request.getAttribute(CONTEXT);
-		((DefaultEntityContext) context).getControls().push(control);
+		Stack<Control> stack = ((DefaultEntityContext) context).getControls();
+
+		control.init();
+		stack.push(control);
 
 //		Entity view2 = safeStream(entityView.getEntity().getAnnotationsByType(Entity.class))
 //				.filter(item -> safeList(item.value()).contains(view)).findFirst().orElse(null);

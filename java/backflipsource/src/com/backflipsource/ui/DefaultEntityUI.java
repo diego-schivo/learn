@@ -1,9 +1,12 @@
 package com.backflipsource.ui;
 
+import static com.backflipsource.Helpers.getArgumentTypes;
 import static com.backflipsource.Helpers.linkedHashMapCollector;
 import static com.backflipsource.Helpers.linkedHashSetCollector;
+import static com.backflipsource.Helpers.listGet;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.nonNullInstance;
+import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeStream;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
@@ -25,7 +28,9 @@ import javax.servlet.ServletRegistration.Dynamic;
 import com.backflipsource.Helpers;
 import com.backflipsource.RequestHandler;
 import com.backflipsource.dynamic.DefaultDynamicClass;
+import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicClass;
+import com.backflipsource.dynamic.DynamicField;
 import com.backflipsource.servlet.EntityServlet;
 import com.backflipsource.ui.Entity.Controller;
 import com.backflipsource.ui.spec.EntityResource;
@@ -67,7 +72,7 @@ public class DefaultEntityUI implements EntityUI {
 		this.packages = nonNullInstance(packages, () -> Stream.of(DefaultEntityUI.class, getClass())
 				.map(Class::getPackageName).collect(linkedHashSetCollector()));
 
-		resourceBundle = getBundle(nonNullInstance(baseName, () -> getClass().getName()));
+		resourceBundle = safeGet(() -> getBundle(nonNullInstance(baseName, () -> getClass().getName())));
 
 		instances.put(getClass(), this);
 	}
@@ -143,6 +148,22 @@ public class DefaultEntityUI implements EntityUI {
 	@Override
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
+	}
+
+	@Override
+	public EntityResource resource(DynamicAnnotated entityOrField) {
+		String key;
+		if (entityOrField instanceof DynamicClass) {
+			DynamicClass entity = (DynamicClass) entityOrField;
+			key = entity.getFullName();
+		} else if (entityOrField instanceof DynamicField) {
+			DynamicField field = (DynamicField) entityOrField;
+			Class<?> entity = (Class<?>) listGet(getArgumentTypes(field.getGenericType()), 0);
+			key = (entity != null) ? entity.getName() : null;
+		} else {
+			key = null;
+		}
+		return (key != null) ? getResources().get(key) : null;
 	}
 
 	@Override

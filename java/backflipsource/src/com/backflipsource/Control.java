@@ -24,6 +24,8 @@ public interface Control {
 	String text(String key);
 
 	Collection<Control.Factory<?>> getFactories();
+	
+	void init();
 
 	public interface Factory<T extends Control> {
 

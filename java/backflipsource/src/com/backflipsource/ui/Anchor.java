@@ -1,6 +1,8 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.servlet.EntityServlet.getInitialRequest;
+import static com.backflipsource.servlet.EntityServlet.initialRequest;
+
+import com.backflipsource.Control;
 
 public class Anchor extends AbstractEntityControl {
 
@@ -31,10 +33,12 @@ public class Anchor extends AbstractEntityControl {
 		}
 
 		@Override
-		protected void init(Anchor control) {
+		protected void init(Control control) {
+			Anchor anchor = (Anchor) control;
+
 			String value = control.getValue();
-			control.setHref(getInitialRequest().getRequestURI() + "/" + value);
-			control.setText(value);
+			anchor.setHref(initialRequest().getRequestURI() + "/" + value);
+			anchor.setText(value);
 		}
 	}
 }

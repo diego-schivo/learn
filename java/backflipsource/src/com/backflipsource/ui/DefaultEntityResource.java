@@ -121,6 +121,22 @@ public class DefaultEntityResource implements EntityResource {
 		return converters2;
 	}
 
+	@Override
+	@SuppressWarnings({ "rawtypes" })
+	public Control.Factory<?> controlFactory(DynamicAnnotated entityOrField, Class<? extends Mode> mode) {
+		Class<? extends Control.Factory> factoryClass = controlFactoryClass(entityOrField, mode);
+
+		Control.Factory<?> instance = null;
+		if (factoryClass != null) {
+			instance = unsafeGet(() -> factoryClass.getConstructor().newInstance());
+			((AbstractEntityControl.Factory<?>) instance).init(entityUI, entityOrField, mode);
+		}
+
+		Control.Factory<?> factory = instance;
+		logger.fine(() -> "entityOrField " + entityOrField + " mode " + mode + " factory " + factory);
+		return factory;
+	}
+
 	protected String uri(DynamicClass entity) {
 		String uri = entity.annotations("Entity").map(annotation -> safeString(annotation.getValue("uri")))
 				.filter(not(Helpers::emptyString)).findFirst().orElse("/" + entity.getName().toLowerCase());
@@ -201,28 +217,13 @@ public class DefaultEntityResource implements EntityResource {
 		return map;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Control.Factory<?> controlFactory(DynamicAnnotated entityOrField, Class<? extends Mode> mode) {
-		Class<? extends Control.Factory> factoryClass = controlFactoryClass(entityOrField, mode);
-
-		Control.Factory<?> instance = null;
-		if (factoryClass != null) {
-			instance = unsafeGet(() -> factoryClass.getConstructor().newInstance());
-			((AbstractEntityControl.Factory) instance).init(entityOrField, mode);
-		}
-
-		Control.Factory<?> factory = instance;
-		logger.fine(() -> "entityOrField " + entityOrField + " mode " + mode + " factory " + factory);
-		return factory;
-	}
-
 	@SuppressWarnings("rawtypes")
-	protected static Class<? extends Control.Factory> controlFactoryClass(DynamicAnnotated entityOrField,
+	protected Class<? extends Control.Factory> controlFactoryClass(DynamicAnnotated entityOrField,
 			Class<? extends Mode> mode) {
 		DynamicAnnotation render = modeAnnotation(entityOrField, "Render", mode);
-//		if (render == null) {
-//			return null;
-//		}
+		if (render == null) {
+			return null;
+		}
 
 		Class<? extends Control.Factory> controlFactory = (render != null) ? render.getValue("controlFactory") : null;
 		if ((controlFactory == null) || (controlFactory == Control.Factory.class)) {
@@ -233,7 +234,7 @@ public class DefaultEntityResource implements EntityResource {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected static Class<? extends Control.Factory> defaultControlFactoryClass(DynamicAnnotated entityOrField,
+	protected Class<? extends Control.Factory> defaultControlFactoryClass(DynamicAnnotated entityOrField,
 			Class<? extends Mode> mode) {
 
 		boolean list = EntityList.class.isAssignableFrom(mode);
@@ -261,9 +262,9 @@ public class DefaultEntityResource implements EntityResource {
 				return form ? Span.Factory.class : Anchor.Factory.class;
 			}
 
-//			if (Iterable.class.isAssignableFrom(((DynamicField) entityOrField).getType())) {
-//				return Table.Factory.class;
-//			}
+			if (Iterable.class.isAssignableFrom(((DynamicField) entityOrField).getType())) {
+				return Table.Factory.class;
+			}
 
 			return form ? Input.Factory.class : Span.Factory.class;
 		}

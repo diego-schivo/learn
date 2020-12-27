@@ -1,16 +1,19 @@
 package com.backflipsource.petclinic;
 
-import static com.backflipsource.servlet.EntityServlet.getInitialRequest;
+import static com.backflipsource.servlet.EntityServlet.initialRequest;
 
+import com.backflipsource.Control;
 import com.backflipsource.ui.Anchor;
 
 public class OwnerNameFactory extends Anchor.Factory {
 
 	@Override
-	protected void init(Anchor control) {
-		control.setHref(getInitialRequest().getRequestURI() + "/" + control.getValue());
+	protected void init(Control control) {
+		Anchor anchor = (Anchor) control;
+
+		anchor.setHref(initialRequest().getRequestURI() + "/" + control.getValue());
 
 		Owner owner = (Owner) control.getTarget();
-		control.setText(owner.getFirstName() + " " + owner.getLastName());
+		anchor.setText(owner.getFirstName() + " " + owner.getLastName());
 	}
 }

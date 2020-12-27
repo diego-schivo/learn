@@ -26,13 +26,16 @@ public class Pet {
 	private Integer id;
 
 	@Entity.Field
+	@Render
 	private String name;
 
 	@Entity.Field(converter = ForLocalDate.class)
+	@Render
 	private LocalDate birthDate;
 
 	@Entity.Field
-	@Render(mode = EntityForm.class, controlFactory = Select.Factory.class)
+	// @Render(mode = EntityForm.class, controlFactory = Select.Factory.class)
+	@Render
 	@Options({ "cat", "dog", "lizard", "snake", "bird", "hamster" })
 	private String type;
 
@@ -40,7 +43,7 @@ public class Pet {
 	private Owner owner;
 
 	@Entity.Field(converter = VisitStringConverter.class)
-	@Render(controlPage = "/pet-visits-table.jsp")
+	// @Render(controlPage = "/pet-visits-table.jsp")
 	private List<Visit> visits;
 
 	public Pet() {

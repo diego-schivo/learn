@@ -6,15 +6,12 @@ import static com.backflipsource.Helpers.nonNullInstance;
 import static com.backflipsource.Helpers.stringWithoutSuffix;
 import static com.backflipsource.Helpers.substringAfterLast;
 import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.ui.DefaultEntityResource.controlFactory;
 import static java.util.logging.Level.ALL;
 
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import com.backflipsource.Control;
 import com.backflipsource.Converter;
 import com.backflipsource.dynamic.DynamicAnnotation;
 import com.backflipsource.dynamic.DynamicClass;
@@ -59,7 +56,7 @@ public class ShowEntity extends EntityRequestHandler {
 			});
 			modeItem = instance;
 		}
-		
+
 		return nonNullInstance(modeItem, item);
 	}
 

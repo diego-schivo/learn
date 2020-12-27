@@ -13,6 +13,7 @@ import javax.servlet.ServletRegistration;
 
 import com.backflipsource.Control;
 import com.backflipsource.RequestHandler;
+import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicClass;
 
 public interface EntityUI {
@@ -29,9 +30,11 @@ public interface EntityUI {
 
 	ResourceBundle getResourceBundle();
 
+	EntityResource resource(DynamicAnnotated entityOrField);
+
 	static Set<Function<Class<?>, EntityUI>> GETTERS = new LinkedHashSet<>();
 
-	static EntityUI entityUI(Class<?> uiClass) {
+	static EntityUI of(Class<?> uiClass) {
 		EntityUI ui = safeStream(GETTERS).map(getter -> getter.apply(uiClass)).filter(Objects::nonNull).findFirst()
 				.orElse(null);
 		return ui;

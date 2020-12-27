@@ -31,8 +31,10 @@ public class ControlTag extends TagSupport {
 	@Override
 	public int doStartTag() throws JspException {
 		Control control = this.control;
+		
 		Stack<Control> stack = stack();
 		if (control != null) {
+			control.init();
 			stack.push(control);
 		}
 		control2 = stack.peek();

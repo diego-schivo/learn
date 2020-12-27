@@ -1,16 +1,14 @@
 package com.backflipsource.ui;
 
 import static com.backflipsource.Helpers.camelCaseWords;
-import static com.backflipsource.Helpers.getArgumentTypes;
 import static com.backflipsource.Helpers.joinStrings;
-import static com.backflipsource.Helpers.listGet;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.nonEmptyString;
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeMap;
 import static com.backflipsource.Helpers.stringWithoutPrefix;
 import static com.backflipsource.Helpers.uncapitalizeString;
-import static com.backflipsource.servlet.EntityServlet.getEntityUI;
+import static com.backflipsource.servlet.EntityServlet.entityUI;
 import static com.backflipsource.ui.DefaultEntityResource.controlPage;
 import static com.backflipsource.ui.DefaultEntityResource.converter;
 import static com.backflipsource.ui.DefaultEntityResource.heading;
@@ -22,15 +20,16 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import com.backflipsource.AbstractControl;
 import com.backflipsource.Control;
+import com.backflipsource.DefaultControl;
 import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.dynamic.DynamicField;
 import com.backflipsource.ui.spec.EntityResource;
+import com.backflipsource.ui.spec.EntityUI;
 import com.backflipsource.ui.spec.EntityUI.Mode;
 
-public abstract class AbstractEntityControl extends AbstractControl {
+public abstract class AbstractEntityControl extends DefaultControl {
 
 	private static Logger logger = logger(AbstractEntityControl.class, ALL);
 
@@ -53,26 +52,45 @@ public abstract class AbstractEntityControl extends AbstractControl {
 
 	@Override
 	public String text(String key) {
-		ResourceBundle resourceBundle = getEntityUI().getResourceBundle();
+		ResourceBundle resourceBundle = entityUI().getResourceBundle();
 		return nonEmptyString(safeGet(() -> resourceBundle.getString(key)), key);
 	}
 
 	@Override
 	public Collection<Control.Factory<?>> getFactories() {
 		if (factories == null) {
-			// factories = safeMap(getResource().controlFactories(EntityDetail.class)).values();
-			factories = safeMap(getResource().controlFactories(((Factory<?>) factory).getMode())).values();
-			factories.forEach(factory -> factory.setParent(this));
+			// factories =
+			// safeMap(getResource().controlFactories(EntityDetail.class)).values();
+			Class<? extends Mode> mode = ((Factory<?>) factory).getMode();
+			// mode = EntityList.class;
+			factories = safeMap(getResource().controlFactories(mode)).values();
+			factories.forEach(factory -> {
+				// ((Factory<?>) factory).setUI(((Factory<?>) factory).getUI());
+				factory.setParent(this);
+			});
 			logger.fine(() -> "factories " + factories);
 		}
 		return factories;
 	}
 
-	public static abstract class Factory<T extends AbstractEntityControl> extends AbstractControl.Factory<T> {
+	public static abstract class Factory<T extends AbstractEntityControl> extends DefaultControl.Factory<T> {
 
-		protected Class<? extends Mode> mode;
+		private EntityUI ui;
 
-		protected EntityResource resource;
+		private Class<? extends Mode> mode;
+
+		private EntityResource resource;
+
+		public EntityUI getUI() {
+//			if (ui == null) {
+//				ui = getEntityUI();
+//			}
+			return ui;
+		}
+
+		public void setUI(EntityUI ui) {
+			this.ui = ui;
+		}
 
 		public Class<? extends Mode> getMode() {
 			return mode;
@@ -90,7 +108,8 @@ public abstract class AbstractEntityControl extends AbstractControl {
 			this.resource = resource;
 		}
 
-		public void init(DynamicAnnotated entityOrField, Class<? extends Mode> mode) {
+		public void init(EntityUI ui, DynamicAnnotated entityOrField, Class<? extends Mode> mode) {
+			setUI(ui);
 			setName(entityOrField.getName());
 			setValueGetter(valueGetter(entityOrField));
 			setConverter(
@@ -99,7 +118,7 @@ public abstract class AbstractEntityControl extends AbstractControl {
 					+ joinStrings(camelCaseWords(uncapitalizeString(getControl().getSimpleName())), "-") + ".jsp"));
 			setHeading(heading(entityOrField, mode));
 			setMode(mode);
-			setResource(resource(entityOrField));
+			setResource(getUI().resource(entityOrField));
 			logger.fine(() -> "this = " + this);
 		}
 
@@ -116,20 +135,6 @@ public abstract class AbstractEntityControl extends AbstractControl {
 				return identity();
 			}
 			return null;
-		}
-
-		protected static EntityResource resource(DynamicAnnotated entityOrField) {
-			String key;
-			if (entityOrField instanceof DynamicClass) {
-				key = ((DynamicClass) entityOrField).getFullName();
-			} else if (entityOrField instanceof DynamicField) {
-				Class<?> class1 = (Class<?>) listGet(getArgumentTypes(((DynamicField) entityOrField).getGenericType()),
-						0);
-				key = (class1 != null) ? class1.getName() : null;
-			} else {
-				key = null;
-			}
-			return (key != null) ? getEntityUI().getResources().get(key) : null;
 		}
 	}
 }

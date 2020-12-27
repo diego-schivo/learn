@@ -3,6 +3,7 @@ package com.backflipsource;
 import static com.backflipsource.Helpers.classEnclosingName;
 import static com.backflipsource.Helpers.emptyCollection;
 import static com.backflipsource.Helpers.logger;
+import static com.backflipsource.Helpers.nonNullInstance;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeGet;
 import static java.util.Collections.singleton;
@@ -16,9 +17,9 @@ import java.util.logging.Logger;
 
 import com.backflipsource.servlet.StringConverter;
 
-public class AbstractControl implements Control {
+public class DefaultControl implements Control {
 
-	private static Logger logger = logger(AbstractControl.class, ALL);
+	private static Logger logger = logger(DefaultControl.class, ALL);
 
 	protected Factory<?> factory;
 
@@ -79,8 +80,13 @@ public class AbstractControl implements Control {
 		return null;
 	}
 
+	@Override
+	public void init() {
+		factory.init(this);
+	}
+
 	@SuppressWarnings("rawtypes")
-	public static class Factory<T extends AbstractControl> implements Control.Factory {
+	public static class Factory<T extends DefaultControl> implements Control.Factory {
 
 		protected Class<T> control;
 
@@ -153,14 +159,17 @@ public class AbstractControl implements Control {
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public T create(Object target) {
-			logger.fine(() -> "this = " + this);
-			T control = unsafeGet(() -> this.control.getConstructor().newInstance());
+			Class<?> controlClass = nonNullInstance(control, DefaultControl.class);
+			logger.fine(() -> "this = " + this + ", controlClass = " + controlClass);
+
+			T control = (T) unsafeGet(() -> controlClass.getConstructor().newInstance());
 			control.factory = this;
 			control.target = target;
 			control.values = (converter != null) ? values(target) : null;
 
-			init(control);
+			// init(control);
 
 			return control;
 		}
@@ -184,7 +193,7 @@ public class AbstractControl implements Control {
 			return list;
 		}
 
-		protected void init(T control) {
+		protected void init(Control control) {
 		}
 	}
 }

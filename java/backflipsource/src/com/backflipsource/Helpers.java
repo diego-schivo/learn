@@ -372,6 +372,10 @@ public class Helpers {
 		return getUtilHelper().logger(class1, level);
 	}
 
+	public static <T> Set<T> linkedHashSet(T... values) {
+		return getUtilHelper().linkedHashSet(values);
+	}
+
 	public static void forwardServletRequest(String path, ServletRequest request, ServletResponse response) {
 		getServletHelper().forwardServletRequest(path, request, response);
 	}

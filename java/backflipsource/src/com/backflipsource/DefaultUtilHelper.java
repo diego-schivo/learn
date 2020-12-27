@@ -14,7 +14,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
 
@@ -32,7 +31,6 @@ import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -51,7 +49,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
@@ -427,7 +424,12 @@ public class DefaultUtilHelper implements UtilHelper {
 
 		return logger;
 	}
-	
+
+	@Override
+	public <T> Set<T> linkedHashSet(T... values) {
+		return Stream.of(values).collect(linkedHashSetCollector());
+	}
+
 //	@Override
 //	public <T> Stream<T> recursiveStream(Stream<T> stream, Function<T, Stream<T>> mapper) {
 //		if (stream == null) {

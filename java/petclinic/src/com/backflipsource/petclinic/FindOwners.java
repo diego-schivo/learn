@@ -1,7 +1,7 @@
 package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.substringBeforeLast;
-import static com.backflipsource.servlet.EntityServlet.getInitialRequest;
+import static com.backflipsource.servlet.EntityServlet.initialRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +23,7 @@ public class FindOwners extends NewEntity {
 	@Override
 	protected void render(Control control, HttpServletRequest request, HttpServletResponse response) {
 		Form form = (Form) control;
-		form.setAction(substringBeforeLast(getInitialRequest().getRequestURI(), "/"));
+		form.setAction(substringBeforeLast(initialRequest().getRequestURI(), "/"));
 		form.setMethod("get");
 
 		super.render(control, request, response);

@@ -95,13 +95,19 @@ public interface UtilHelper {
 	<K, V> void mapFill(Map<K, V> map, Stream<Entry<K, V>> stream);
 
 	Logger logger(Class<?> class1, Level level);
-	
-//	<T> Stream<T> recursiveStream(Stream<T> stream, Function<T, Stream<T>> mapper);
+
+	<T> Set<T> linkedHashSet(T... values);
 
 	@FunctionalInterface
 	public interface RunnableThrowingException {
 
 		void run() throws Exception;
+	}
+
+	@FunctionalInterface
+	public interface ConsumerThrowingException<T> {
+
+		void accept(T t) throws Exception;
 	}
 
 	@FunctionalInterface
