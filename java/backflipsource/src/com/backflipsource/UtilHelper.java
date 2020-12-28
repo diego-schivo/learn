@@ -108,6 +108,7 @@ public interface UtilHelper {
 
 	Logger logger(Class<?> class1, Level level);
 
+	@SuppressWarnings("unchecked")
 	<T> Set<T> linkedHashSet(T... values);
 
 	<T> Iterator<T> iterator(BooleanSupplier hasNext, Supplier<T> next);

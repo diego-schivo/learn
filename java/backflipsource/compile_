@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ ! -d lib ]; then
+  mkdir lib
+  curl -s https://downloads.apache.org/tomcat/tomcat-8/v8.5.59/bin/embed/apache-tomcat-8.5.59-embed.tar.gz | tar -xvz -C lib --strip-components=1 --wildcards '*.jar'
+  wget -P lib https://downloads.apache.org/tomcat/taglibs/taglibs-standard-1.2.5/taglibs-standard-impl-1.2.5.jar
+  wget -P lib https://downloads.apache.org/tomcat/taglibs/taglibs-standard-1.2.5/taglibs-standard-spec-1.2.5.jar
+fi
+mkdir -p bin
+javac -cp 'lib/*' $(find src | grep .java) -d bin
+jar cf backflipsource.jar -C bin .

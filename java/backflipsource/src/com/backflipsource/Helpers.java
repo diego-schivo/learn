@@ -394,6 +394,7 @@ public class Helpers {
 		return getUtilHelper().logger(class1, level);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> Set<T> linkedHashSet(T... values) {
 		return getUtilHelper().linkedHashSet(values);
 	}

@@ -1,4 +1,4 @@
-package com.backflipsource.temp;
+package com.backflipsource.jsp;
 
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.packageClasses;
@@ -13,6 +13,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -24,12 +25,13 @@ public class ReflectionTaglibWriter extends AbstractTaglibWriter {
 	private static Logger logger = logger(ReflectionTaglibWriter.class, ALL);
 
 	public static void main(String[] args) {
+		Path path = Paths.get(".").toAbsolutePath().normalize();
+
 		TaglibWriter taglib = new ReflectionTaglibWriter();
 
-		Path src = Path.of("/home/diego/git/learn/java/backflipsource/src");
+		Path src = path.resolve("src");
 		String package1 = "com.backflipsource.ui";
 		taglib.writeTaglib(src, package1);
-
 	}
 
 	@Override
