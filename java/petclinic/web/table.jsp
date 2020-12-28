@@ -5,19 +5,19 @@
 
 <table>
   <tr>
-    <c:forEach var="factory" items="${context.control.childFactories()}">
+    <ui:controlFactories var="factory">
       <th>${factory.heading}</th>
-    </c:forEach>
+    </ui:controlFactories>
   </tr>
   <c:forEach var="item" items="${context.control.items}">
     <tr>
-      <c:forEach var="factory" items="${context.control.childFactories()}">
+      <ui:controlFactories var="factory">
         <td>
-          <bfs:control var="control" control="${factory.newControl(item, context.control)}">
+          <ui:control var="control" control="${factory.newControl(item, context.control)}">
             <jsp:include page="${control.page}" />
-          </bfs:control>
+          </ui:control>
         </td>
-      </c:forEach>
+      </ui:controlFactories>
     </tr>
   </c:forEach>
 </table>

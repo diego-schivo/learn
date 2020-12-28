@@ -1,4 +1,4 @@
-package com.backflipsource.servlet;
+package com.backflipsource.ui;
 
 import static com.backflipsource.Helpers.emptyString;
 import static java.lang.Integer.parseInt;

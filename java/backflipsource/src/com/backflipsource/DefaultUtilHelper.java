@@ -39,13 +39,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -257,8 +260,8 @@ public class DefaultUtilHelper implements UtilHelper {
 	@Override
 	public <T> T safeGet(SupplierThrowingException<T> supplier) {
 		try {
-			T result = supplier.get();
-			return result;
+			T t = supplier.get();
+			return t;
 		} catch (Exception e) {
 			logger.log(FINER, e.getMessage(), e);
 			return null;
@@ -268,11 +271,42 @@ public class DefaultUtilHelper implements UtilHelper {
 	@Override
 	public <T> T unsafeGet(SupplierThrowingException<T> supplier) {
 		try {
-			T result = supplier.get();
-			return result;
+			T t = supplier.get();
+			return t;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public <T, R> R safeApply(FunctionThrowingException<T, R> function, T t) {
+		try {
+			R r = function.apply(t);
+			return r;
+		} catch (Exception e) {
+			logger.log(FINER, e.getMessage(), e);
+			return null;
+		}
+	}
+
+	@Override
+	public <T, R> R unsafeApply(FunctionThrowingException<T, R> function, T t) {
+		try {
+			R r = function.apply(t);
+			return r;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public <T, R> Function<T, R> safeFunction(FunctionThrowingException<T, R> function) {
+		return t -> safeApply(function, t);
+	}
+
+	@Override
+	public <T, R> Function<T, R> unsafeFunction(FunctionThrowingException<T, R> function) {
+		return t -> unsafeApply(function, t);
 	}
 
 	@Override
@@ -437,6 +471,35 @@ public class DefaultUtilHelper implements UtilHelper {
 	@Override
 	public <T> Set<T> linkedHashSet(T... values) {
 		return Stream.of(values).collect(linkedHashSetCollector());
+	}
+
+	@Override
+	public <T> Iterator<T> iterator(BooleanSupplier hasNext, Supplier<T> next) {
+		return new Iterator<T>() {
+
+			Boolean more;
+
+			@Override
+			public boolean hasNext() {
+				if (more == null) {
+					more = hasNext.getAsBoolean();
+				}
+				return more;
+			}
+
+			@Override
+			public T next() {
+				if (more == null) {
+					more = hasNext();
+				}
+				if (!more) {
+					throw new NoSuchElementException();
+				}
+				more = null;
+				T element = next.get();
+				return element;
+			}
+		};
 	}
 
 //	@Override

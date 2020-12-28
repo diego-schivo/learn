@@ -5,22 +5,19 @@ import static com.backflipsource.Helpers.joinStrings;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.nonEmptyString;
 import static com.backflipsource.Helpers.safeGet;
-import static com.backflipsource.Helpers.safeMap;
 import static com.backflipsource.Helpers.stringWithoutPrefix;
 import static com.backflipsource.Helpers.uncapitalizeString;
-import static com.backflipsource.servlet.EntityServlet.entityUI;
 import static com.backflipsource.ui.DefaultEntityResource.controlPage;
 import static com.backflipsource.ui.DefaultEntityResource.converter;
 import static com.backflipsource.ui.DefaultEntityResource.heading;
+import static com.backflipsource.ui.EntityServlet.entityUI;
 import static java.util.function.Function.identity;
 import static java.util.logging.Level.ALL;
 
-import java.util.Collection;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import com.backflipsource.Control;
 import com.backflipsource.DefaultControl;
 import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicClass;
@@ -35,10 +32,14 @@ public abstract class AbstractEntityControl extends DefaultControl {
 
 	private String textKey;
 
-	private Collection<Control.Factory<?>> factories;
+//	private Collection<Control.Factory<?>> factories;
 
 	public EntityResource getResource() {
 		return ((Factory<?>) factory).getResource();
+	}
+
+	public Class<? extends Mode> getMode() {
+		return ((Factory<?>) factory).getMode();
 	}
 
 	@Override
@@ -56,18 +57,15 @@ public abstract class AbstractEntityControl extends DefaultControl {
 		return nonEmptyString(safeGet(() -> resourceBundle.getString(key)), key);
 	}
 
-	@Override
-	public Collection<Control.Factory<?>> childFactories() {
-		if (factories == null) {
-			Class<? extends Mode> mode = ((Factory<?>) factory).getMode();
-			factories = safeMap(getResource().controlFactories(mode)).values();
-//			factories.forEach(factory -> {
-//				factory.setParent(this);
-//			});
-			logger.fine(() -> "factories " + factories);
-		}
-		return factories;
-	}
+//	@Override
+//	public Collection<Control.Factory<?>> childFactories() {
+//		if (factories == null) {
+//			Class<? extends Mode> mode = ((Factory<?>) factory).getMode();
+//			factories = safeMap(getResource().controlFactories(mode)).values();
+//			logger.fine(() -> "factories " + factories);
+//		}
+//		return factories;
+//	}
 
 	public static abstract class Factory<T extends AbstractEntityControl> extends DefaultControl.Factory<T> {
 

@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -29,6 +30,7 @@ import javax.servlet.ServletResponse;
 
 import org.apache.catalina.startup.Tomcat;
 
+import com.backflipsource.UtilHelper.FunctionThrowingException;
 import com.backflipsource.UtilHelper.RunnableThrowingException;
 import com.backflipsource.UtilHelper.SupplierThrowingException;
 
@@ -328,6 +330,22 @@ public class Helpers {
 		return getUtilHelper().unsafeGet(supplier);
 	}
 
+	public static <T, R> R safeApply(FunctionThrowingException<T, R> function, T t) {
+		return getUtilHelper().safeApply(function, t);
+	}
+
+	public static <T, R> R unsafeApply(FunctionThrowingException<T, R> function, T t) {
+		return getUtilHelper().unsafeApply(function, t);
+	}
+
+	public static <T, R> Function<T, R> safeFunction(FunctionThrowingException<T, R> function) {
+		return getUtilHelper().safeFunction(function);
+	}
+
+	public static <T, R> Function<T, R> unsafeFunction(FunctionThrowingException<T, R> function) {
+		return getUtilHelper().unsafeFunction(function);
+	}
+
 	public static Map<String, Function<Object, Object>> getGetterFunctions(Class<?> class1) {
 		return getUtilHelper().getGetterFunctions(class1);
 	}
@@ -378,6 +396,10 @@ public class Helpers {
 
 	public static <T> Set<T> linkedHashSet(T... values) {
 		return getUtilHelper().linkedHashSet(values);
+	}
+
+	public static <T> Iterator<T> iterator(BooleanSupplier hasNext, Supplier<T> next) {
+		return getUtilHelper().iterator(hasNext, next);
 	}
 
 	public static void forwardServletRequest(String path, ServletRequest request, ServletResponse response) {

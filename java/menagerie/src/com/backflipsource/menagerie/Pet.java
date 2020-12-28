@@ -9,8 +9,8 @@ import java.util.List;
 import com.backflipsource.ui.Entity;
 import com.backflipsource.ui.Render;
 import com.backflipsource.ui.Select;
+import com.backflipsource.ui.StringConverter;
 import com.backflipsource.ui.Select.Options;
-import com.backflipsource.servlet.StringConverter;
 
 @Entity
 public class Pet {

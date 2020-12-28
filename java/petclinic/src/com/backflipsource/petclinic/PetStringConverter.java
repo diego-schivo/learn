@@ -5,7 +5,7 @@ import static com.backflipsource.Helpers.safeStream;
 
 import java.util.Objects;
 
-import com.backflipsource.servlet.StringConverter;
+import com.backflipsource.ui.StringConverter;
 
 public class PetStringConverter implements StringConverter<Pet> {
 

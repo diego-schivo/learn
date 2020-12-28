@@ -4,14 +4,14 @@
 <h2>${context.control.heading}</h2>
 
 <dl>
-  <c:forEach var="factory" items="${context.control.childFactories()}">
+  <ui:controlFactories var="factory">
     <dt>${factory.heading}</dt>
     <dd>
-      <bfs:control var="control" control="${factory.newControl(context.control.target, context.control)}">
+      <ui:control var="control" control="${factory.newControl(context.control.target, context.control)}">
         <jsp:include page="${control.page}" />
-      </bfs:control>
+      </ui:control>
     </dd>
-  </c:forEach>
+  </ui:controlFactories>
 </dl>
 <%--
 <a href="${requestURI.substring(0, requestURI.lastIndexOf(context.control.entityView.uri))}${context.control.entityView.uri}">back</a>

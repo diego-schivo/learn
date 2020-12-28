@@ -10,14 +10,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.backflipsource.servlet.EntityData;
-import com.backflipsource.servlet.StringConverter.ForInteger;
-import com.backflipsource.servlet.StringConverter.ForLocalDate;
 import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.EntityData;
 import com.backflipsource.ui.EntityForm;
 import com.backflipsource.ui.Render;
 import com.backflipsource.ui.Select;
 import com.backflipsource.ui.Select.Options;
+import com.backflipsource.ui.StringConverter.ForInteger;
+import com.backflipsource.ui.StringConverter.ForLocalDate;
 
 @Entity(uri = "/pets")
 public class Pet {

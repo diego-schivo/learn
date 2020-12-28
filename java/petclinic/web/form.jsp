@@ -5,20 +5,20 @@
 
   <form action="${context.control.action}" method="${context.control.method}">
     <dl>
-      <c:forEach var="factory" items="${context.control.childFactories()}">
+      <ui:controlFactories var="factory">
         <dt>
           <label>${factory.heading}</label>
         </dt>
         <dd>
-          <bfs:control var="control" control="${factory.newControl(context.control.target, context.control)}">
+          <ui:control var="control" control="${factory.newControl(context.control.target, context.control)}">
             <jsp:include page="${control.page}" />
-          </bfs:control>
+          </ui:control>
         </dd>
-      </c:forEach>
+      </ui:controlFactories>
     </dl>
-    <bfs:control var="control">
+    <ui:control var="control">
       <button>${context.text(control)}</button>
-    </bfs:control>
+    </ui:control>
   </form>
   <a href="${requestURI.substring(0, requestURI.lastIndexOf('/'))}">back</a>
 

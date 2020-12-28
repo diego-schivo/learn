@@ -1,4 +1,4 @@
-package com.backflipsource.servlet;
+package com.backflipsource.ui;
 
 import static com.backflipsource.Helpers.emptyArray;
 import static com.backflipsource.Helpers.emptyString;
@@ -25,7 +25,6 @@ import com.backflipsource.RequestMatcher;
 import com.backflipsource.RequestMatcher.And;
 import com.backflipsource.RequestMatcher.Parameter;
 import com.backflipsource.RequestMatcher.Regex;
-import com.backflipsource.ui.Entity;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;
 

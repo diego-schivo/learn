@@ -19,6 +19,7 @@ import com.backflipsource.ui.Form;
 import com.backflipsource.ui.Input;
 import com.backflipsource.ui.Span;
 import com.backflipsource.ui.Table;
+import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;
 
 public class Tests {
@@ -33,8 +34,9 @@ public class Tests {
 
 	protected static void testOwnerFind() {
 		DefaultDynamicClass entity = new DefaultDynamicClass(Owner.class);
+		EntityResource resource = ui.resource(entity);
 
-		Control.Factory<?> factory = ui.resource(entity).controlFactory(entity, OwnerFind.class);
+		Control.Factory<?> factory = resource.controlFactory(entity, OwnerFind.class);
 		assert factory != null;
 		assert factory instanceof Form.Factory;
 		Form.Factory formFactory = (Form.Factory) factory;
@@ -42,7 +44,8 @@ public class Tests {
 		Form form = formFactory.newControl(null, null);
 		assert form != null;
 
-		Collection<Control.Factory<?>> factories = form.childFactories();
+		Collection<Control.Factory<?>> factories = resource
+				.controlFactories(((AbstractEntityControl.Factory<?>) factory).getMode()).values();
 		assert factories != null;
 		assert !factories.isEmpty();
 
@@ -60,8 +63,9 @@ public class Tests {
 		Owner george = Owner.data.list().get(0);
 
 		DefaultDynamicClass entity = new DefaultDynamicClass(george.getClass());
+		EntityResource resource = ui.resource(entity);
 
-		Control.Factory<?> factory = ui.resource(entity).controlFactory(entity, EntityList.class);
+		Control.Factory<?> factory = resource.controlFactory(entity, EntityList.class);
 		assert factory != null;
 		assert factory instanceof Table.Factory;
 		Table.Factory tableFactory = (Table.Factory) factory;
@@ -74,7 +78,8 @@ public class Tests {
 		assert items.size() == 1;
 		assert items.get(0) == george;
 
-		Collection<Control.Factory<?>> factories = table.childFactories();
+		Collection<Control.Factory<?>> factories = resource
+				.controlFactories(((AbstractEntityControl.Factory<?>) factory).getMode()).values();
 		assert factories != null;
 		assert !factories.isEmpty();
 
@@ -98,6 +103,6 @@ public class Tests {
 		assert control2.getClass() == Span.class;
 		assert control2.getParent() == table;
 		assert control2.getValue() != null;
-		assert control2.getValue().equals(george.getId().toString());
+		assert control2.getValue().equals(george.getPets().get(0).getName());
 	}
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 import com.backflipsource.Control;
 import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicClass;
-import com.backflipsource.servlet.StringConverter;
+import com.backflipsource.ui.StringConverter;
 import com.backflipsource.ui.spec.EntityUI.Mode;
 
 public interface EntityResource {

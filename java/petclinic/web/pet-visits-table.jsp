@@ -3,19 +3,19 @@
 
 <table>
   <tr>
-    <c:forEach var="factory" items="${control.childFactories()}">
+    <ui:controlFactories var="factory">
       <th>${factory.name eq 'date' ? 'Visit date' : factory.name}</th>
-    </c:forEach>
+    </ui:controlFactories>
   </tr>
   <c:forEach var="item" items="${control.items}">
     <tr>
-      <c:forEach var="factory" items="${control.childFactories()}">
+      <ui:controlFactories var="factory">
         <td>
-          <bfs:control var="control" control="${factory.newControl(item, control)}">
+          <ui:control var="control" control="${factory.newControl(item, control)}">
             <jsp:include page="${control.page}" />
-          </bfs:control>
+          </ui:control>
         </td>
-      </c:forEach>
+     </ui:controlFactories>
     </tr>
   </c:forEach>
   <tr>

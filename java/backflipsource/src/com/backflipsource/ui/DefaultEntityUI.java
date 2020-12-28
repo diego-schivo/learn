@@ -31,7 +31,6 @@ import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicClass;
 import com.backflipsource.dynamic.DynamicField;
-import com.backflipsource.servlet.EntityServlet;
 import com.backflipsource.ui.Entity.Controller;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;

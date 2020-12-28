@@ -21,9 +21,9 @@
 </nav>
 
 <section>
-  <bfs:context var="context">
+  <ui:context var="context">
     <jsp:include page="${context.control.page}" />
-  </bfs:context>
+  </ui:context>
 </section>
 
 </body>

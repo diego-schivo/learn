@@ -6,16 +6,16 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import com.backflipsource.servlet.EntityData;
-import com.backflipsource.servlet.StringConverter.ForInteger;
 import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.EntityData;
 import com.backflipsource.ui.EntityDetail;
 import com.backflipsource.ui.EntityForm;
 import com.backflipsource.ui.EntityList;
 import com.backflipsource.ui.Render;
+import com.backflipsource.ui.StringConverter.ForInteger;
 
 @Entity(uri = "/owners")
-@Render(mode = OwnerFind.class, entity = OwnerFilter.class)
+@Render(mode = OwnerFind.class, entity = OwnerFilter.class, heading = "Find Owners")
 @Render(mode = EntityList.class, entity = OwnerListItem.class, heading = "Owners")
 // @Render(mode = EntityDetail.class, controlPage = "/owner/description-list.jsp", entity = Owner2.class)
 @Render(mode = EntityDetail.class, heading = "Owner Information")

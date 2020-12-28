@@ -1,7 +1,7 @@
 package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.unsafeRun;
-import static com.backflipsource.servlet.EntityServlet.initialRequest;
+import static com.backflipsource.ui.EntityServlet.initialRequest;
 
 import java.util.List;
 import java.util.function.Consumer;

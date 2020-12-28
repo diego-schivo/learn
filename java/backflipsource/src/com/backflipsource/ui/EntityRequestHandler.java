@@ -1,4 +1,4 @@
-package com.backflipsource.servlet;
+package com.backflipsource.ui;
 
 import static com.backflipsource.Helpers.arrayGet;
 import static com.backflipsource.Helpers.forwardServletRequest;
@@ -8,7 +8,7 @@ import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.safeGet;
 import static com.backflipsource.Helpers.safeStream;
 import static com.backflipsource.Helpers.unsafeRun;
-import static com.backflipsource.servlet.EntityServlet.CONTEXT;
+import static com.backflipsource.ui.EntityServlet.CONTEXT;
 import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;
 
@@ -26,11 +26,6 @@ import com.backflipsource.Control;
 import com.backflipsource.RequestHandler;
 import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicField;
-import com.backflipsource.ui.AbstractEntityControl;
-import com.backflipsource.ui.DefaultEntityResource;
-import com.backflipsource.ui.EntityDetail;
-import com.backflipsource.ui.EntityForm;
-import com.backflipsource.ui.EntityList;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;
 import com.backflipsource.ui.spec.EntityUI.Mode;

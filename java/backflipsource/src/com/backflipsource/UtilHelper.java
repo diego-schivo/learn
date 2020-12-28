@@ -12,8 +12,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collector;
@@ -74,6 +76,14 @@ public interface UtilHelper {
 
 	<T> T unsafeGet(SupplierThrowingException<T> supplier);
 
+	<T, R> R safeApply(FunctionThrowingException<T, R> function, T t);
+
+	<T, R> R unsafeApply(FunctionThrowingException<T, R> function, T t);
+
+	<T, R> Function<T, R> safeFunction(FunctionThrowingException<T, R> function);
+
+	<T, R> Function<T, R> unsafeFunction(FunctionThrowingException<T, R> function);
+
 	Map<String, Function<Object, Object>> getGetterFunctions(Class<?> class1);
 
 	Map<String, BiConsumer<Object, Object>> getSetterConsumers(Class<?> class1);
@@ -100,6 +110,8 @@ public interface UtilHelper {
 
 	<T> Set<T> linkedHashSet(T... values);
 
+	<T> Iterator<T> iterator(BooleanSupplier hasNext, Supplier<T> next);
+
 	@FunctionalInterface
 	public interface RunnableThrowingException {
 
@@ -116,5 +128,10 @@ public interface UtilHelper {
 	public interface SupplierThrowingException<T> {
 
 		T get() throws Exception;
+	}
+
+	@FunctionalInterface
+	public interface FunctionThrowingException<T, R> {
+		R apply(T t) throws Exception;
 	}
 }

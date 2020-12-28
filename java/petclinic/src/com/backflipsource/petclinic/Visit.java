@@ -10,9 +10,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.backflipsource.servlet.StringConverter.ForInteger;
-import com.backflipsource.servlet.StringConverter.ForLocalDate;
 import com.backflipsource.ui.Entity;
+import com.backflipsource.ui.StringConverter.ForInteger;
+import com.backflipsource.ui.StringConverter.ForLocalDate;
 
 @Entity(uri = "/visits")
 public class Visit {

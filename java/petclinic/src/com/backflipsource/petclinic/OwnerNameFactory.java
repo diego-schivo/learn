@@ -1,6 +1,6 @@
 package com.backflipsource.petclinic;
 
-import static com.backflipsource.servlet.EntityServlet.initialRequest;
+import static com.backflipsource.ui.EntityServlet.initialRequest;
 
 import com.backflipsource.Control;
 import com.backflipsource.ui.Anchor;

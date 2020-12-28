@@ -1,0 +1,6 @@
+  <tag>
+    <name>%1$2s</name>
+    <tag-class>%2$2s</tag-class>
+    <body-content>scriptless</body-content>
+%3$2s
+  </tag>

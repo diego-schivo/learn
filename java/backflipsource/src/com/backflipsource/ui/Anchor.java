@@ -1,6 +1,6 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.servlet.EntityServlet.initialRequest;
+import static com.backflipsource.ui.EntityServlet.initialRequest;
 
 import com.backflipsource.Control;
 

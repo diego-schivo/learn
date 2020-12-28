@@ -6,7 +6,7 @@ import static java.lang.Integer.parseInt;
 
 import java.util.Objects;
 
-import com.backflipsource.servlet.StringConverter;
+import com.backflipsource.ui.StringConverter;
 
 public class OwnerStringConverter implements StringConverter<Owner> {
 

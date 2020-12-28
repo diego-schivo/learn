@@ -1,7 +1,7 @@
 package com.backflipsource.petclinic;
 
 import static com.backflipsource.Helpers.substringBeforeLast;
-import static com.backflipsource.servlet.EntityServlet.initialRequest;
+import static com.backflipsource.ui.EntityServlet.initialRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

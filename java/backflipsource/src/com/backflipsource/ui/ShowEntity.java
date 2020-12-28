@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.backflipsource.Converter;
 import com.backflipsource.dynamic.DynamicAnnotation;
 import com.backflipsource.dynamic.DynamicClass;
-import com.backflipsource.servlet.EntityRequestHandler;
 import com.backflipsource.ui.spec.EntityUI.Mode;
 
 @Entity.Controller(regex = "_uri_/([^/]+)", score = 1)

@@ -12,9 +12,7 @@ import com.backflipsource.Converter;
 import com.backflipsource.RequestHandler;
 import com.backflipsource.RequestMatcher;
 import com.backflipsource.dynamic.DynamicClass;
-import com.backflipsource.servlet.DefaultRequestHandlerProvider;
-import com.backflipsource.servlet.StringConverter;
-import com.backflipsource.servlet.StringConverter.ForString;
+import com.backflipsource.ui.StringConverter.ForString;
 
 @Target(TYPE)
 @Retention(RUNTIME)

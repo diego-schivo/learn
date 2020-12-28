@@ -1,3 +1,3 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://backflipsource.com/jsp/taglib" prefix="bfs" %>
+<%@ taglib uri="http://backflipsource.com/jsp/taglib/ui" prefix="ui" %>

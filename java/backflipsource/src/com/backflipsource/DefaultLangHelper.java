@@ -374,7 +374,8 @@ public class DefaultLangHelper implements LangHelper {
 		return entries.flatMap(entry -> {
 			String name = package1 + "." + entry.getFileName();
 			if (name.endsWith(".class")) {
-				return Stream.of(unsafeGet(() -> Class.forName(name.substring(0, name.lastIndexOf('.')))));
+				Class<?> class1 = unsafeGet(() -> Class.forName(name.substring(0, name.lastIndexOf('.'))));
+				return (class1.getEnclosingClass() == null) ? Stream.of(class1) : Stream.empty();
 			}
 			return subpackages ? packageClasses(entry, name, true) : Stream.empty();
 		});

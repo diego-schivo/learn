@@ -1,4 +1,4 @@
-package com.backflipsource.servlet;
+package com.backflipsource.ui;
 
 import static com.backflipsource.Helpers.camelCaseWords;
 import static com.backflipsource.Helpers.joinStrings;
@@ -9,7 +9,6 @@ import java.util.Stack;
 import com.backflipsource.Control;
 import com.backflipsource.Helpers;
 import com.backflipsource.RequestHandler;
-import com.backflipsource.ui.AbstractEntityControl;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;
 

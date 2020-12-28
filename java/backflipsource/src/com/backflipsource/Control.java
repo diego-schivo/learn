@@ -23,7 +23,7 @@ public interface Control {
 
 	String text(String key);
 
-	Collection<Control.Factory<?>> childFactories();
+	// Collection<Control.Factory<?>> childFactories();
 
 	void init();
 

@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.backflipsource.servlet.EntityRequestHandler;
 import com.backflipsource.ui.spec.EntityUI.Mode;
 
 @Entity.Controller(regex = "_uri_/.+")
