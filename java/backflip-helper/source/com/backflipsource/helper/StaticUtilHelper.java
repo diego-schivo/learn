@@ -26,9 +26,8 @@ public class StaticUtilHelper {
 	private static UtilHelper instance;
 
 	public static UtilHelper getInstance() {
-		if (instance == null) {
+		if (instance == null)
 			instance = new DefaultUtilHelper();
-		}
 		return instance;
 	}
 
@@ -201,8 +200,7 @@ public class StaticUtilHelper {
 		return getInstance().logger(class1, level);
 	}
 
-	public static @SuppressWarnings("unchecked")
-	<T> Set<T> linkedHashSet(T... values) {
+	public static <T> Set<T> linkedHashSet(T... values) {
 		return getInstance().linkedHashSet(values);
 	}
 
@@ -210,8 +208,7 @@ public class StaticUtilHelper {
 		return getInstance().iterator(hasNext, next);
 	}
 
-	public static @SuppressWarnings("unchecked")
-	<K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
+	public static <K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
 		return getInstance().linkedHashMap(entries);
 	}
 

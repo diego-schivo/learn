@@ -8,9 +8,8 @@ public class StaticNioHelper {
 	private static NioHelper instance;
 
 	public static NioHelper getInstance() {
-		if (instance == null) {
+		if (instance == null)
 			instance = new DefaultNioHelper();
-		}
 		return instance;
 	}
 

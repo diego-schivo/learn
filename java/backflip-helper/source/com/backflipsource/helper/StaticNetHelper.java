@@ -7,9 +7,8 @@ public class StaticNetHelper {
 	private static NetHelper instance;
 
 	public static NetHelper getInstance() {
-		if (instance == null) {
+		if (instance == null)
 			instance = new DefaultNetHelper();
-		}
 		return instance;
 	}
 

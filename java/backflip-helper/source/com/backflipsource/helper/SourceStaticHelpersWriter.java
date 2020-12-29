@@ -1,5 +1,10 @@
 package com.backflipsource.helper;
 
+import static com.backflipsource.helper.JavaPatterns.PATTERN_IMPORT;
+import static com.backflipsource.helper.JavaPatterns.PATTERN_INTERFACE;
+import static com.backflipsource.helper.JavaPatterns.PATTERN_METHOD;
+import static com.backflipsource.helper.JavaPatterns.PATTERN_PACKAGE;
+import static com.backflipsource.helper.JavaPatterns.PATTERN_PARAMETER;
 import static com.backflipsource.helper.StaticLangHelper.joinStrings;
 import static com.backflipsource.helper.StaticNioHelper.acceptDirectoryEntries;
 import static com.backflipsource.helper.StaticUtilHelper.iterator;
@@ -34,7 +39,7 @@ public class SourceStaticHelpersWriter extends AbstractStaticHelpersWriter {
 		acceptDirectoryEntries(source.resolve(package1.replace('.', '/')), "*Helper.java", path -> {
 			String input = unsafeGet(() -> readString(path));
 
-			Matcher matcher = JavaPatterns.PATTERN_INTERFACE.matcher(input);
+			Matcher matcher = PATTERN_INTERFACE.matcher(input);
 			if (!matcher.find()) {
 				return;
 			}
@@ -46,13 +51,13 @@ public class SourceStaticHelpersWriter extends AbstractStaticHelpersWriter {
 	}
 
 	protected String staticClassContent(String source) {
-		Matcher packageMatcher = JavaPatterns.PATTERN_PACKAGE.matcher(source);
+		Matcher packageMatcher = PATTERN_PACKAGE.matcher(source);
 		String package1 = safeStream(iterator(() -> packageMatcher.find(), () -> packageMatcher.group(1))).findFirst()
 				.orElse(null);
 
 		String imports = joinStrings(importContents(source), "\n");
 
-		Matcher interfaceMatcher = JavaPatterns.PATTERN_INTERFACE.matcher(source);
+		Matcher interfaceMatcher = PATTERN_INTERFACE.matcher(source);
 		String interface1 = safeStream(iterator(() -> interfaceMatcher.find(), () -> interfaceMatcher.group(1)))
 				.findFirst().orElse(null);
 		String name = "Static" + interface1;
@@ -65,23 +70,23 @@ public class SourceStaticHelpersWriter extends AbstractStaticHelpersWriter {
 	}
 
 	protected Stream<String> importContents(String source) {
-		Matcher matcher = JavaPatterns.PATTERN_IMPORT.matcher(source);
+		Matcher matcher = PATTERN_IMPORT.matcher(source);
 		return safeStream(iterator(() -> matcher.find(), () -> formatImport(matcher.group(1))));
 	}
 
 	protected Stream<String> staticMethodContents(String source) {
-		Matcher matcher = JavaPatterns.PATTERN_METHOD.matcher(source);
+		Matcher matcher = PATTERN_METHOD.matcher(source);
 		return safeStream(iterator(() -> matcher.find(), () -> {
-			String returnType = matcher.group(1);
-			String name = matcher.group(2);
-			String parameters = matcher.group(3);
+			String returnType = matcher.group("returnType");
+			String name = matcher.group("name");
+			String parameters = matcher.group("parameters");
 			String parameters2 = joinStrings(parameterContents(parameters), ", ");
-			return formatStaticMethod(returnType, name, parameters, parameters2);
+			return formatStaticMethod(returnType, name, parameters, "getInstance()", parameters2);
 		}));
 	}
 
 	protected Stream<String> parameterContents(String input) {
-		Matcher matcher = JavaPatterns.PATTERN_PARAMETER.matcher(input);
+		Matcher matcher = PATTERN_PARAMETER.matcher(input);
 		return safeStream(iterator(() -> matcher.find(), () -> matcher.group("name")));
 	}
 }

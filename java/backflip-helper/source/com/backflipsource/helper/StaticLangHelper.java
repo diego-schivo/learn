@@ -16,9 +16,8 @@ public class StaticLangHelper {
 	private static LangHelper instance;
 
 	public static LangHelper getInstance() {
-		if (instance == null) {
+		if (instance == null)
 			instance = new DefaultLangHelper();
-		}
 		return instance;
 	}
 

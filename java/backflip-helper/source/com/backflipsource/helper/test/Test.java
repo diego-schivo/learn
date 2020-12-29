@@ -8,19 +8,30 @@ import java.util.regex.Matcher;
 public class Test {
 
 	public static void main(String[] args) {
-		oneMethod();
+		interfaceMethod();
+		classMethod();
 		twoMethods();
+		publicStaticMethod();
+		annotatedMethod1();
+		annotatedMethod2();
 		multilineMethod();
 		oneParameter();
 		twoParameters();
 		genericParameter();
 	}
 
-	protected static void oneMethod() {
+	protected static void interfaceMethod() {
 		String input = "interface Foo {\n" + "void bar();\n" + "}";
 		Matcher matcher = PATTERN_METHOD.matcher(input);
 		assert matcher.find();
 		assert matcher.group().equals("void bar();");
+	}
+
+	protected static void classMethod() {
+		String input = "class Foo {\n" + "void bar() {\n" + "baz = qux;\n" + "}\n" + "}";
+		Matcher matcher = PATTERN_METHOD.matcher(input);
+		assert matcher.find();
+		assert matcher.group().equals("void bar() {\n" + "baz = qux;\n" + "}");
 	}
 
 	protected static void twoMethods() {
@@ -30,6 +41,31 @@ public class Test {
 		assert matcher.group().equals("void bar();");
 		assert matcher.find();
 		assert matcher.group().equals("void baz();");
+	}
+
+	protected static void publicStaticMethod() {
+		String input = "class Foo {\n" + "public static void bar() {\n" + "baz = qux;\n" + "}\n" + "}";
+		Matcher matcher = PATTERN_METHOD.matcher(input);
+		assert matcher.find();
+		assert matcher.group().equals("public static void bar() {\n" + "baz = qux;\n" + "}");
+	}
+
+	protected static void annotatedMethod1() {
+		String input = "class Foo {\n" + "@Bar\n" + "Object baz() {\n" + "return qux;\n" + "}\n" + "}";
+		Matcher matcher = PATTERN_METHOD.matcher(input);
+		assert matcher.find();
+		assert matcher.group().equals("@Bar\n" + "Object baz() {\n" + "return qux;\n" + "}");
+		assert matcher.group("returnType").equals("Object");
+		assert matcher.group("name").equals("baz");
+	}
+
+	protected static void annotatedMethod2() {
+		String input = "class Foo {\n" + "@Bar(\"baz\")\n" + "Qux qux() {\n" + "return null;\n" + "}\n" + "}";
+		Matcher matcher = PATTERN_METHOD.matcher(input);
+		assert matcher.find();
+		assert matcher.group().equals("@Bar(\"baz\")\n" + "Qux qux() {\n" + "return null;\n" + "}");
+		assert matcher.group("returnType").equals("Qux");
+		assert matcher.group("name").equals("qux");
 	}
 
 	protected static void multilineMethod() {

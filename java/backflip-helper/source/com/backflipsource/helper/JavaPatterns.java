@@ -8,9 +8,10 @@ import java.util.regex.Pattern;
 
 public interface JavaPatterns {
 
-	Pattern PATTERN_IMPORT = compile("import (\\S[^;]*);");
-	Pattern PATTERN_INTERFACE = compile("public interface (\\S+) \\{");
-	Pattern PATTERN_METHOD = compile("([^\\s\\{;][^\\{;]*)\\s(\\w+)\\((.*?)\\);", DOTALL | MULTILINE);
+	Pattern PATTERN_CLASS = compile("public class (\\w+)( implements \\w+)? \\{");
+	Pattern PATTERN_IMPORT = compile("import ([\\w\\.]+);");
+	Pattern PATTERN_INTERFACE = compile("public interface (\\w+) \\{");
+	Pattern PATTERN_METHOD = compile("(@\\w+(\\(.*?\\))?\\s+)?(public static )?(?<returnType>[^\\s\\{;][^\\{;]*)\\s(?<name>\\w+)\\((?<parameters>.*?)\\)(;| \\{.*?})", DOTALL | MULTILINE);
 	Pattern PATTERN_PACKAGE = compile("package (\\S[^;]*);");
-	Pattern PATTERN_PARAMETER = compile("([^\\s,<]+)(<.*?>)?\\s(?<name>[^\\s,]+)");
+	Pattern PATTERN_PARAMETER = compile("([^\\s,<]+)(<.*?>)?\\s(?<name>\\w+)");
 }

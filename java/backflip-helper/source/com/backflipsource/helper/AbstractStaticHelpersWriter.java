@@ -13,8 +13,8 @@ public abstract class AbstractStaticHelpersWriter implements StaticHelpersWriter
 	private static String staticInstanceFormat = readResource("static-instance.txt", AbstractStaticHelpersWriter.class);
 	private static String staticMethodFormat = readResource("static-method.txt", AbstractStaticHelpersWriter.class);
 
-	protected String formatClass(String package1, String imports, String interface1, String methods) {
-		return format(classFormat, package1, imports, interface1, methods);
+	protected String formatClass(String package1, String imports, String name, String content) {
+		return format(classFormat, package1, imports, name, content);
 	}
 
 	protected String formatImport(String import1) {
@@ -25,9 +25,9 @@ public abstract class AbstractStaticHelpersWriter implements StaticHelpersWriter
 		return format(staticInstanceFormat, interface1, class1);
 	}
 
-	protected String formatStaticMethod(String returnType, String name, String parameters, String parameters2) {
+	protected String formatStaticMethod(String returnType, String name, String parameters, String instance, String parameters2) {
 		return format(staticMethodFormat, returnType, name, parameters,
-				(string(returnType).equals("void") || string(returnType).endsWith(" void")) ? 0 : 1, "getInstance()",
+				(string(returnType).equals("void") || string(returnType).endsWith(" void")) ? 0 : 1, instance,
 				parameters2);
 	}
 }
