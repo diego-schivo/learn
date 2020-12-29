@@ -211,8 +211,9 @@ public class DefaultLangHelper implements LangHelper {
 		if (words == null) {
 			return null;
 		}
-		return Arrays.stream(words).filter(not(this::emptyString)).map(word -> capitalizeString(word.toLowerCase()))
-				.collect(joining());
+		return joinStrings(
+				Arrays.stream(words).filter(not(this::emptyString)).map(word -> capitalizeString(word.toLowerCase())),
+				"");
 	}
 
 	private static Pattern capitalizedLetterOrEnd = Pattern.compile("[A-Z]|$");

@@ -1,3 +1,3 @@
 #!/bin/sh
-javac -sourcepath src -d bin src/com/backflipsource/Compile.java
-java -cp bin com.backflipsource.Compile
+javac -sourcepath source -d javac source/com/backflipsource/Compile.java
+java -classpath javac com.backflipsource.Compile

@@ -1,5 +1,6 @@
 package com.backflipsource.jsp;
 
+import static com.backflipsource.Helpers.acceptDirectoryEntries;
 import static com.backflipsource.Helpers.iterator;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.safeStream;
@@ -7,15 +8,11 @@ import static com.backflipsource.Helpers.stringWithoutSuffix;
 import static com.backflipsource.Helpers.substringBeforeLast;
 import static com.backflipsource.Helpers.uncapitalizeString;
 import static com.backflipsource.Helpers.unsafeFunction;
-import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.Helpers.unsafeRun;
-import static java.nio.file.Files.newDirectoryStream;
 import static java.util.Collections.sort;
 import static java.util.Comparator.comparing;
 import static java.util.logging.Level.ALL;
 import static java.util.regex.Pattern.compile;
 
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,19 +38,14 @@ public class SourceTaglibWriter extends AbstractTaglibWriter {
 
 	}
 
-	private static Pattern packagePattern = compile("package ([\\w\\.]+)");
-	private static Pattern tagClassPattern = compile("public class (\\w+) extends SimpleTagSupport");
-	private static Pattern attributeFieldPattern = compile("protected \\w+ (\\w+)");
+	protected static Pattern packagePattern = compile("package (\\S[^;]*);");
+	protected static Pattern tagClassPattern = compile("public class (\\w+) extends SimpleTagSupport");
+	protected static Pattern attributeFieldPattern = compile("protected \\w+ (\\w+)");
 
 	@Override
 	protected String taglibContent(Path src, String package1) {
 		List<Path> list = new ArrayList<>();
-		unsafeRun(() -> {
-			try (DirectoryStream<Path> stream = unsafeGet(
-					() -> newDirectoryStream(src.resolve(package1.replace('.', '/')), "*.java"))) {
-				stream.forEach(list::add);
-			}
-		});
+		acceptDirectoryEntries(src.resolve(package1.replace('.', '/')), "*.java", list::add);
 		sort(list,
 				comparing(path -> stringWithoutSuffix(substringBeforeLast(path.getFileName().toString(), "."), "Tag")));
 		Stream<String> tags = tagContents(list.stream());

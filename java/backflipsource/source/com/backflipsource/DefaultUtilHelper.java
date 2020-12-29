@@ -501,18 +501,9 @@ public class DefaultUtilHelper implements UtilHelper {
 			}
 		};
 	}
-
-//	@Override
-//	public <T> Stream<T> recursiveStream(Stream<T> stream, Function<T, Stream<T>> mapper) {
-//		if (stream == null) {
-//			return Stream.empty();
-//		}
-//		List<T> list = stream.collect(toList());
-//		if (list.size() == 0) {
-//			return Stream.empty();
-//		}
-//		Stream<T> stream1 = list.stream();
-//		Stream<T> stream2 = list.stream().flatMap(mapper);
-//		return Stream.concat(stream1, recursiveStream(stream2, mapper));
-//	}
+	
+	@Override
+	public <K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
+		return safeStream(entries).collect(linkedHashMapCollector(Entry::getKey, Entry::getValue));
+	}
 }

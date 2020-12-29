@@ -1,5 +1,6 @@
 package com.backflipsource.jsp;
 
+import static com.backflipsource.Helpers.joinStrings;
 import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.substringAfterLast;
 import static com.backflipsource.Helpers.unsafeGet;
@@ -32,11 +33,11 @@ public abstract class AbstractTaglibWriter implements TaglibWriter {
 	protected abstract String taglibContent(Path src, String package1);
 
 	protected String formatTaglib(Stream<String> tags) {
-		return format(taglibFormat, tags.collect(joining("\n")));
+		return format(taglibFormat, joinStrings(tags, "\n"));
 	}
 
 	protected String formatTag(String name, String tagClass, Stream<String> attributes) {
-		return format(tagFormat, name, tagClass, attributes.collect(joining("\n")));
+		return format(tagFormat, name, tagClass, joinStrings(attributes, "\n"));
 	}
 
 	protected String formatAttribute(String name) {

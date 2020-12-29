@@ -113,6 +113,9 @@ public interface UtilHelper {
 
 	<T> Iterator<T> iterator(BooleanSupplier hasNext, Supplier<T> next);
 
+	@SuppressWarnings("unchecked")
+	<K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries);
+
 	@FunctionalInterface
 	public interface RunnableThrowingException {
 

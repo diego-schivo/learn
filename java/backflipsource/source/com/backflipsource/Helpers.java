@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -44,6 +45,10 @@ public class Helpers {
 
 	private static TomcatHelper tomcatHelper;
 
+	private static NioHelper nioHelper;
+
+	private static NetHelper netHelper;
+
 	public static LangHelper getLangHelper() {
 		if (langHelper == null) {
 			langHelper = new DefaultLangHelper();
@@ -70,6 +75,20 @@ public class Helpers {
 			tomcatHelper = new DefaultTomcatHelper();
 		}
 		return tomcatHelper;
+	}
+
+	public static NioHelper getNioHelper() {
+		if (nioHelper == null) {
+			nioHelper = new DefaultNioHelper();
+		}
+		return nioHelper;
+	}
+
+	public static NetHelper getNetHelper() {
+		if (netHelper == null) {
+			netHelper = new DefaultNetHelper();
+		}
+		return netHelper;
 	}
 
 	public static String emptyString() {
@@ -403,11 +422,27 @@ public class Helpers {
 		return getUtilHelper().iterator(hasNext, next);
 	}
 
+	public static <K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
+		return getUtilHelper().linkedHashMap(entries);
+	}
+
 	public static void forwardServletRequest(String path, ServletRequest request, ServletResponse response) {
 		getServletHelper().forwardServletRequest(path, request, response);
 	}
 
 	public static void initTomcat(Tomcat tomcat, int port, String root, String classes) {
 		getTomcatHelper().initTomcat(tomcat, port, root, classes);
+	}
+
+	public static void extractArchive(Path archive, Path directory) {
+		getNioHelper().extractArchive(archive, directory);
+	}
+
+	public static void acceptDirectoryEntries(Path directory, String glob, Consumer<Path> consumer) {
+		getNioHelper().acceptDirectoryEntries(directory, glob, consumer);
+	}
+
+	public static URL url(String spec) {
+		return getNetHelper().url(spec);
 	}
 }
