@@ -16,4 +16,5 @@ public class StaticNetHelper {
 	public static URL url(String spec) {
 		return getInstance().url(spec);
 	}
+
 }

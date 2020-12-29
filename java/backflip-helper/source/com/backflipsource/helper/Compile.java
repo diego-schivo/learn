@@ -66,7 +66,7 @@ public class Compile {
 			compiler.getTask(null, fileManager, null, options, null, compilationUnits).call();
 		}
 
-		StaticClassesWriter staticClassesWriter = new SourceStaticClassesWriter();
-		staticClassesWriter.writeStaticClasses(source, "com.backflipsource.helper");
+		StaticHelpersWriter staticClassesWriter = new SourceStaticHelpersWriter();
+		staticClassesWriter.writeStaticHelpers(source, "com.backflipsource.helper");
 	}
 }

@@ -1,3 +1,0 @@
-	public static {0} {1}({2}) '{'
-		{3,choice,0#|1#return }getInstance().{1}({4});
-	'}'

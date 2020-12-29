@@ -15,22 +15,22 @@ import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
-public class SourceStaticClassesWriter extends AbstractStaticClassesWriter {
+public class SourceStaticHelpersWriter extends AbstractStaticHelpersWriter {
 
 //	private static Logger logger = logger(SourceStaticClassesWriter.class, ALL);
 
 	public static void main(String[] args) throws IOException {
 		Path path = Paths.get(".").toAbsolutePath().normalize();
 
-		StaticClassesWriter writer = new SourceStaticClassesWriter();
+		StaticHelpersWriter writer = new SourceStaticHelpersWriter();
 
 		Path source = path.resolve("source");
 		String package1 = "com.backflipsource.helper";
-		writer.writeStaticClasses(source, package1);
+		writer.writeStaticHelpers(source, package1);
 	}
 
 	@Override
-	public void writeStaticClasses(Path source, String package1) {
+	public void writeStaticHelpers(Path source, String package1) {
 		acceptDirectoryEntries(source.resolve(package1.replace('.', '/')), "*Helper.java", path -> {
 			String input = unsafeGet(() -> readString(path));
 
@@ -58,7 +58,7 @@ public class SourceStaticClassesWriter extends AbstractStaticClassesWriter {
 		String name = "Static" + interface1;
 
 		String staticInstance = formatStaticInstance(interface1, "Default" + interface1);
-		String methods = joinStrings(methodContents(source), "\n");
+		String methods = joinStrings(staticMethodContents(source), "\n");
 		String content = staticInstance + "\n" + methods;
 
 		return formatClass(package1, imports, name, content);
@@ -69,14 +69,14 @@ public class SourceStaticClassesWriter extends AbstractStaticClassesWriter {
 		return safeStream(iterator(() -> matcher.find(), () -> formatImport(matcher.group(1))));
 	}
 
-	protected Stream<String> methodContents(String source) {
+	protected Stream<String> staticMethodContents(String source) {
 		Matcher matcher = JavaPatterns.PATTERN_METHOD.matcher(source);
 		return safeStream(iterator(() -> matcher.find(), () -> {
 			String returnType = matcher.group(1);
 			String name = matcher.group(2);
 			String parameters = matcher.group(3);
 			String parameters2 = joinStrings(parameterContents(parameters), ", ");
-			return formatMethod(returnType, name, parameters, parameters2);
+			return formatStaticMethod(returnType, name, parameters, parameters2);
 		}));
 	}
 

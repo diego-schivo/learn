@@ -17,7 +17,9 @@ public class StaticNioHelper {
 	public static void extractArchive(Path archive, Path directory) {
 		getInstance().extractArchive(archive, directory);
 	}
+
 	public static void acceptDirectoryEntries(Path directory, String glob, Consumer<Path> consumer) {
 		getInstance().acceptDirectoryEntries(directory, glob, consumer);
 	}
+
 }
