@@ -1,12 +1,14 @@
 package com.backflipsource.temp;
 
 import static com.backflipsource.Helpers.logger;
+import static com.backflipsource.Helpers.string;
 import static com.backflipsource.Helpers.unsafeGet;
 import static java.lang.String.format;
 import static java.nio.file.Files.readString;
 import static java.util.logging.Level.ALL;
 
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.logging.Logger;
 
 public abstract class AbstractStaticClassesWriter implements StaticClassesWriter {
@@ -26,7 +28,8 @@ public abstract class AbstractStaticClassesWriter implements StaticClassesWriter
 	}
 
 	protected String formatMethod(String returnType, String name, String parameters, String parameters2) {
-		return format(methodFormat, returnType, name, parameters, parameters2);
+		return MessageFormat.format(methodFormat, returnType, name, parameters,
+				(string(returnType).equals("void") || string(returnType).endsWith(" void")) ? 0 : 1, parameters2);
 	}
 
 	private static String readResource(String resourceName) {

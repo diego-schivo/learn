@@ -115,27 +115,4 @@ public interface UtilHelper {
 
 	@SuppressWarnings("unchecked")
 	<K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries);
-
-	@FunctionalInterface
-	public interface RunnableThrowingException {
-
-		void run() throws Exception;
-	}
-
-	@FunctionalInterface
-	public interface ConsumerThrowingException<T> {
-
-		void accept(T t) throws Exception;
-	}
-
-	@FunctionalInterface
-	public interface SupplierThrowingException<T> {
-
-		T get() throws Exception;
-	}
-
-	@FunctionalInterface
-	public interface FunctionThrowingException<T, R> {
-		R apply(T t) throws Exception;
-	}
 }

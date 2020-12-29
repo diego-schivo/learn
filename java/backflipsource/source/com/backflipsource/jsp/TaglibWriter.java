@@ -4,5 +4,5 @@ import java.nio.file.Path;
 
 public interface TaglibWriter {
 
-	void writeTaglib(Path src, String package1);
+	void writeTaglib(Path source, String package1);
 }

@@ -31,10 +31,6 @@ import javax.servlet.ServletResponse;
 
 import org.apache.catalina.startup.Tomcat;
 
-import com.backflipsource.UtilHelper.FunctionThrowingException;
-import com.backflipsource.UtilHelper.RunnableThrowingException;
-import com.backflipsource.UtilHelper.SupplierThrowingException;
-
 public class Helpers {
 
 	private static LangHelper langHelper;

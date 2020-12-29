@@ -29,30 +29,30 @@ public class SourceStaticClassesWriter extends AbstractStaticClassesWriter {
 
 		StaticClassesWriter taglib = new SourceStaticClassesWriter();
 
-		Path src = path.resolve("src");
+		Path source = path.resolve("source");
 		String package1 = "com.backflipsource";
-		taglib.writeStaticClasses(src, package1);
+		taglib.writeStaticClasses(source, package1);
 	}
 
 	protected static Pattern packagePattern = compile("package (\\S[^;]*);");
 	protected static Pattern importPattern = compile("import (\\S[^;]*);");
-	protected static Pattern interfacePattern = compile("public interface (\\S+) {");
+	protected static Pattern interfacePattern = compile("public interface (\\S+) \\{");
 	protected static Pattern methodPattern = compile("(\\S.*)\\s(\\S+)\\((.*)\\);");
 	protected static Pattern parameterPattern = compile("(\\S[^,]*)\\s(\\S+)(,|$)");
 
 	@Override
-	public void writeStaticClasses(Path src, String package1) {
-		acceptDirectoryEntries(src.resolve(package1.replace('.', '/')), "*Helper.java", path -> {
-			String source = unsafeGet(() -> readString(path));
+	public void writeStaticClasses(Path source, String package1) {
+		acceptDirectoryEntries(source.resolve(package1.replace('.', '/')), "*Helper.java", path -> {
+			String input = unsafeGet(() -> readString(path));
 
-			Matcher matcher = interfacePattern.matcher(source);
+			Matcher matcher = interfacePattern.matcher(input);
 			if (!matcher.find()) {
 				return;
 			}
 
 			Path target = path.getParent().resolve("Static" + path.getFileName().toString());
-			CharSequence content = staticClassContent(source);
-			unsafeRun(() -> writeString(target, content));
+			CharSequence output = staticClassContent(input);
+			unsafeRun(() -> writeString(target, output));
 		});
 	}
 

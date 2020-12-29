@@ -1,3 +1,3 @@
-	public static %1$s %2$s(%3$s) {
-		return getInstance().%2$s(%4$s);
-	}
+	public static {0} {1}({2}) '{'
+		{3,choice,0#|1#return }getInstance().{1}({4});
+	'}'

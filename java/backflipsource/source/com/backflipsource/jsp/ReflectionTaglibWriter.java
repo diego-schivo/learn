@@ -29,9 +29,9 @@ public class ReflectionTaglibWriter extends AbstractTaglibWriter {
 
 		TaglibWriter taglib = new ReflectionTaglibWriter();
 
-		Path src = path.resolve("src");
+		Path source = path.resolve("source");
 		String package1 = "com.backflipsource.ui";
-		taglib.writeTaglib(src, package1);
+		taglib.writeTaglib(source, package1);
 	}
 
 	@Override

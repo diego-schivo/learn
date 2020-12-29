@@ -24,9 +24,9 @@ public abstract class AbstractTaglibWriter implements TaglibWriter {
 	private static String attributeFormat = readResource("attribute.txt");
 
 	@Override
-	public void writeTaglib(Path src, String package1) {
-		Path file = src.resolve("META-INF/" + substringAfterLast(package1, ".") + ".tld");
-		CharSequence content = taglibContent(src, package1);
+	public void writeTaglib(Path source, String package1) {
+		Path file = source.resolve("META-INF/" + substringAfterLast(package1, ".") + ".tld");
+		CharSequence content = taglibContent(source, package1);
 		unsafeRun(() -> writeString(file, content));
 	}
 
