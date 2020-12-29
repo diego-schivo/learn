@@ -1,6 +1,6 @@
 package com.backflipsource;
 
-import static com.backflipsource.Helpers.joinStrings;
+import static com.backflipsource.helper.Helper.joinStrings;
 import static java.lang.Integer.MAX_VALUE;
 import static java.nio.file.FileSystems.newFileSystem;
 import static java.nio.file.FileVisitResult.CONTINUE;
@@ -41,9 +41,6 @@ import java.util.stream.Stream;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
-
-import com.backflipsource.temp.SourceStaticClassesWriter;
-import com.backflipsource.temp.StaticClassesWriter;
 
 public class Compile {
 
@@ -109,9 +106,6 @@ public class Compile {
 			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromPaths(paths);
 			compiler.getTask(null, fileManager, null, options, null, compilationUnits).call();
 		}
-		
-		StaticClassesWriter staticClassesWriter = new SourceStaticClassesWriter();
-		staticClassesWriter.writeStaticClasses(source, "com.backflipsource");
 	}
 
 	private void download(URL url, Path target) {

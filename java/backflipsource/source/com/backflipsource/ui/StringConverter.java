@@ -1,6 +1,6 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.emptyString;
+import static com.backflipsource.helper.Helper.emptyString;
 import static java.lang.Integer.parseInt;
 
 import java.time.LocalDate;

@@ -1,11 +1,11 @@
 package com.backflipsource;
 
-import static com.backflipsource.Helpers.classEnclosingName;
-import static com.backflipsource.Helpers.emptyCollection;
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.nonNullInstance;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.helper.Helper.classEnclosingName;
+import static com.backflipsource.helper.Helper.emptyCollection;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.nonNullInstance;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.unsafeGet;
 import static java.util.Collections.singleton;
 import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;

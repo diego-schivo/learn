@@ -1,11 +1,11 @@
 package com.backflipsource.dynamic;
 
-import static com.backflipsource.Helpers.classEnclosingName;
-import static com.backflipsource.Helpers.classFields;
-import static com.backflipsource.Helpers.collectionFill;
-import static com.backflipsource.Helpers.repeatedAnnotations;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.helper.Helper.classEnclosingName;
+import static com.backflipsource.helper.Helper.classFields;
+import static com.backflipsource.helper.Helper.collectionFill;
+import static com.backflipsource.helper.Helper.repeatedAnnotations;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.unsafeGet;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,18 +1,18 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.camelCaseWords;
-import static com.backflipsource.Helpers.capitalizeString;
-import static com.backflipsource.Helpers.emptyArray;
-import static com.backflipsource.Helpers.joinStrings;
-import static com.backflipsource.Helpers.linkedHashMapCollector;
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.nonEmptyString;
-import static com.backflipsource.Helpers.nonNullInstance;
-import static com.backflipsource.Helpers.safeGet;
-import static com.backflipsource.Helpers.safeList;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.string;
-import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.helper.Helper.camelCaseWords;
+import static com.backflipsource.helper.Helper.capitalizeString;
+import static com.backflipsource.helper.Helper.emptyArray;
+import static com.backflipsource.helper.Helper.joinStrings;
+import static com.backflipsource.helper.Helper.linkedHashMapCollector;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.nonEmptyString;
+import static com.backflipsource.helper.Helper.nonNullInstance;
+import static com.backflipsource.helper.Helper.safeGet;
+import static com.backflipsource.helper.Helper.safeList;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.string;
+import static com.backflipsource.helper.Helper.unsafeGet;
 import static java.util.Map.entry;
 import static java.util.function.Predicate.not;
 import static java.util.logging.Level.ALL;
@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import com.backflipsource.Control;
 import com.backflipsource.Control.Factory;
-import com.backflipsource.Helpers;
+import com.backflipsource.helper.Helper;
 import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicAnnotated;
 import com.backflipsource.dynamic.DynamicAnnotation;
@@ -138,7 +138,7 @@ public class DefaultEntityResource implements EntityResource {
 
 	protected String uri(DynamicClass entity) {
 		String uri = entity.annotations("Entity").map(annotation -> string(annotation.getValue("uri")))
-				.filter(not(Helpers::emptyString)).findFirst().orElse("/" + entity.getName().toLowerCase());
+				.filter(not(Helper::emptyString)).findFirst().orElse("/" + entity.getName().toLowerCase());
 		logger.fine(() -> "uri " + uri);
 		return uri;
 	}

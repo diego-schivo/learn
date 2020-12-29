@@ -1,6 +1,6 @@
 package com.backflipsource.ui.spec;
 
-import static com.backflipsource.Helpers.safeStream;
+import static com.backflipsource.helper.Helper.safeStream;
 
 import java.util.LinkedHashSet;
 import java.util.Map;

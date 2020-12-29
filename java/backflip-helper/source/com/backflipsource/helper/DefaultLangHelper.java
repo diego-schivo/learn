@@ -1,11 +1,11 @@
 package com.backflipsource.helper;
 
-import static com.backflipsource.helper.StaticUtilHelper.linkedHashMapCollector;
-import static com.backflipsource.helper.StaticUtilHelper.safeGet;
-import static com.backflipsource.helper.StaticUtilHelper.safeList;
-import static com.backflipsource.helper.StaticUtilHelper.safeStream;
-import static com.backflipsource.helper.StaticUtilHelper.unsafeGet;
-import static com.backflipsource.helper.StaticUtilHelper.unsafeRun;
+import static com.backflipsource.helper.Helper.linkedHashMapCollector;
+import static com.backflipsource.helper.Helper.safeGet;
+import static com.backflipsource.helper.Helper.safeList;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.unsafeGet;
+import static com.backflipsource.helper.Helper.unsafeRun;
 import static java.lang.Thread.currentThread;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.readString;
@@ -50,6 +50,15 @@ public class DefaultLangHelper implements LangHelper {
 	protected static String SETTER_PREFIX = "set";
 
 	@Override
+	public String string(Object object) {
+		String string = unsafeString(object);
+		if (string == null) {
+			return emptyString();
+		}
+		return string;
+	}
+
+	@Override
 	public String emptyString() {
 		return EMPTY_STRING;
 	}
@@ -60,15 +69,6 @@ public class DefaultLangHelper implements LangHelper {
 			return true;
 		}
 		return string.length() == 0;
-	}
-
-	@Override
-	public String string(Object object) {
-		String string = unsafeString(object);
-		if (string == null) {
-			return emptyString();
-		}
-		return string;
 	}
 
 	@Override

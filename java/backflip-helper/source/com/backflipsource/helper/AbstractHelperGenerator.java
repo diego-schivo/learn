@@ -1,16 +1,16 @@
 package com.backflipsource.helper;
 
-import static com.backflipsource.helper.StaticLangHelper.readResource;
-import static com.backflipsource.helper.StaticLangHelper.string;
+import static com.backflipsource.helper.Helper.readResource;
+import static com.backflipsource.helper.Helper.string;
 import static java.text.MessageFormat.format;
 
-public abstract class AbstractHelperWriter implements HelperWriter {
+public abstract class AbstractHelperGenerator implements HelperGenerator {
 
 //	private static Logger logger = logger(AbstractStaticClassesWriter.class, ALL);
 
-	private static String classFormat = readResource("class.txt", AbstractHelperWriter.class);
-	private static String importFormat = readResource("import.txt", AbstractHelperWriter.class);
-	private static String staticMethodFormat = readResource("static-method.txt", AbstractHelperWriter.class);
+	private static String classFormat = readResource("class.txt", AbstractHelperGenerator.class);
+	private static String importFormat = readResource("import.txt", AbstractHelperGenerator.class);
+	private static String staticMethodFormat = readResource("static-method.txt", AbstractHelperGenerator.class);
 
 	protected String formatClass(String package1, String imports, String name, String content) {
 		return format(classFormat, package1, imports, name, content);

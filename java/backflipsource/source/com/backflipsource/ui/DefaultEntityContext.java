@@ -1,14 +1,14 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.camelCaseWords;
-import static com.backflipsource.Helpers.joinStrings;
-import static com.backflipsource.Helpers.safeGet;
+import static com.backflipsource.helper.Helper.camelCaseWords;
+import static com.backflipsource.helper.Helper.joinStrings;
+import static com.backflipsource.helper.Helper.safeGet;
 
 import java.util.Stack;
 
 import com.backflipsource.Control;
-import com.backflipsource.Helpers;
 import com.backflipsource.RequestHandler;
+import com.backflipsource.helper.Helper;
 import com.backflipsource.ui.spec.EntityResource;
 import com.backflipsource.ui.spec.EntityUI;
 
@@ -43,7 +43,7 @@ public class DefaultEntityContext implements EntityUI.Context {
 	}
 
 	public String text(AbstractEntityControl.Factory<?> factory) {
-		return joinStrings(camelCaseWords(factory.getName()).map(Helpers::capitalizeString), " ");
+		return joinStrings(camelCaseWords(factory.getName()).map(Helper::capitalizeString), " ");
 	}
 
 	public String text(Control control) {

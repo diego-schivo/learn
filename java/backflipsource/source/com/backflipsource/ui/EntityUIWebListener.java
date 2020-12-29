@@ -1,6 +1,6 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.linkedHashSetCollector;
+import static com.backflipsource.helper.Helper.linkedHashSetCollector;
 
 import java.util.Set;
 import java.util.stream.Stream;

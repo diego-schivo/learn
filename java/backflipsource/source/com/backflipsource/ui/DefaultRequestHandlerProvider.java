@@ -1,12 +1,12 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.emptyArray;
-import static com.backflipsource.Helpers.emptyString;
-import static com.backflipsource.Helpers.linkedHashMapCollector;
-import static com.backflipsource.Helpers.listGet;
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.helper.Helper.emptyArray;
+import static com.backflipsource.helper.Helper.emptyString;
+import static com.backflipsource.helper.Helper.linkedHashMapCollector;
+import static com.backflipsource.helper.Helper.listGet;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.unsafeGet;
 import static java.util.Comparator.comparingInt;
 import static java.util.Map.entry;
 import static java.util.logging.Level.ALL;

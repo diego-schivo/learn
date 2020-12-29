@@ -1,7 +1,7 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.unsafeGet;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.unsafeGet;
 import static java.lang.Class.forName;
 import static java.util.logging.Level.ALL;
 

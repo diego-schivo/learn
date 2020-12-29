@@ -1,9 +1,9 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.getArgumentTypes;
-import static com.backflipsource.Helpers.safeGet;
-import static com.backflipsource.Helpers.safeList;
-import static com.backflipsource.Helpers.safeStream;
+import static com.backflipsource.helper.Helper.getArgumentTypes;
+import static com.backflipsource.helper.Helper.safeGet;
+import static com.backflipsource.helper.Helper.safeList;
+import static com.backflipsource.helper.Helper.safeStream;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.stream.Collectors.toList;

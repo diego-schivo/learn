@@ -1,10 +1,10 @@
 package com.backflipsource.dynamic;
 
-import static com.backflipsource.Helpers.collectionFill;
-import static com.backflipsource.Helpers.getFieldValue;
-import static com.backflipsource.Helpers.repeatedAnnotations;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.setFieldValue;
+import static com.backflipsource.helper.Helper.collectionFill;
+import static com.backflipsource.helper.Helper.getFieldValue;
+import static com.backflipsource.helper.Helper.repeatedAnnotations;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.setFieldValue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;

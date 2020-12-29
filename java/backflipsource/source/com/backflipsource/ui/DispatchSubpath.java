@@ -1,7 +1,7 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.forwardServletRequest;
-import static com.backflipsource.Helpers.logger;
+import static com.backflipsource.helper.Helper.forwardServletRequest;
+import static com.backflipsource.helper.Helper.logger;
 import static java.util.logging.Level.ALL;
 
 import java.util.logging.Logger;

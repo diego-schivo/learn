@@ -1,10 +1,10 @@
 package com.backflipsource;
 
-import static com.backflipsource.Helpers.initTomcat;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.startExecutorService;
-import static com.backflipsource.Helpers.stopExecutorService;
-import static com.backflipsource.Helpers.watchDirectories;
+import static com.backflipsource.helper.Helper.initTomcat;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.startExecutorService;
+import static com.backflipsource.helper.Helper.stopExecutorService;
+import static com.backflipsource.helper.Helper.watchDirectories;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getenv;
 import static java.lang.Thread.sleep;

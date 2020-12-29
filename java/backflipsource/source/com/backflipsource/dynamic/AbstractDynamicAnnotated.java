@@ -1,8 +1,8 @@
 package com.backflipsource.dynamic;
 
-import static com.backflipsource.Helpers.classEnclosingName;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.string;
+import static com.backflipsource.helper.Helper.classEnclosingName;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.string;
 
 import java.util.ArrayList;
 import java.util.List;

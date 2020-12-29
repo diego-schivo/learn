@@ -1,5 +1,7 @@
 package com.backflipsource.helper;
 
+import java.nio.file.Path;
+import java.util.Collection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -11,9 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.function.Consumer;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Set;
@@ -28,16 +28,32 @@ import java.util.stream.Collector;
 
 public class Helper {
 
+	public static Iterable<String> javaCompilerOptions(Path currentDir, Path sourceDir, Path classDir, Path javacDir) {
+		return StaticCompileHelper.javaCompilerOptions(currentDir, sourceDir, classDir, javacDir);
+	}
+
+	public static Collection<Path> collectSourceFiles(Path source) {
+		return StaticCompileHelper.collectSourceFiles(source);
+	}
+
+	public static void callJavaCompilerTask(Iterable<String> options, Collection<Path> sourceFiles) {
+		StaticCompileHelper.callJavaCompilerTask(options, sourceFiles);
+	}
+
+	public static void copyResourceFiles(Path source, Path javac) {
+		StaticCompileHelper.copyResourceFiles(source, javac);
+	}
+
+	public static String string(Object object) {
+		return StaticLangHelper.string(object);
+	}
+
 	public static String emptyString() {
 		return StaticLangHelper.emptyString();
 	}
 
 	public static boolean emptyString(String string) {
 		return StaticLangHelper.emptyString(string);
-	}
-
-	public static String string(Object object) {
-		return StaticLangHelper.string(object);
 	}
 
 	public static String unsafeString(Object object) {

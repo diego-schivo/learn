@@ -13,11 +13,11 @@ import java.util.stream.Stream;
 
 public interface LangHelper {
 
+	String string(Object object);
+
 	String emptyString();
 
 	boolean emptyString(String string);
-
-	String string(Object object);
 
 	String unsafeString(Object object);
 

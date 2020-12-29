@@ -1,7 +1,7 @@
 package com.backflipsource;
 
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.safeStream;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.safeStream;
 import static java.util.logging.Level.ALL;
 import static java.util.regex.Pattern.compile;
 

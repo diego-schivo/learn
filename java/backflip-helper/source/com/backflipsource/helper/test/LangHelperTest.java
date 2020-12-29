@@ -1,4 +1,4 @@
-package com.backflipsource.test;
+package com.backflipsource.helper.test;
 
 import static java.util.stream.Collectors.toList;
 
@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.backflipsource.DefaultLangHelper;
-import com.backflipsource.LangHelper;
-import com.backflipsource.test.foo.Foo;
-import com.backflipsource.test.foo.bar.Bar;
+import com.backflipsource.helper.DefaultLangHelper;
+import com.backflipsource.helper.LangHelper;
+import com.backflipsource.helper.test.foo.Foo;
+import com.backflipsource.helper.test.foo.bar.Bar;
 
-public class Tests {
+public class LangHelperTest {
 
 	protected static LangHelper langHelper = new DefaultLangHelper();
 

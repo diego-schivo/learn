@@ -5,12 +5,12 @@ import static com.backflipsource.helper.JavaPatterns.PATTERN_INTERFACE;
 import static com.backflipsource.helper.JavaPatterns.PATTERN_METHOD;
 import static com.backflipsource.helper.JavaPatterns.PATTERN_PACKAGE;
 import static com.backflipsource.helper.JavaPatterns.PATTERN_PARAMETER;
-import static com.backflipsource.helper.StaticLangHelper.joinStrings;
-import static com.backflipsource.helper.StaticNioHelper.acceptDirectoryEntries;
-import static com.backflipsource.helper.StaticUtilHelper.iterator;
-import static com.backflipsource.helper.StaticUtilHelper.safeStream;
-import static com.backflipsource.helper.StaticUtilHelper.unsafeGet;
-import static com.backflipsource.helper.StaticUtilHelper.unsafeRun;
+import static com.backflipsource.helper.Helper.joinStrings;
+import static com.backflipsource.helper.Helper.acceptDirectoryEntries;
+import static com.backflipsource.helper.Helper.iterator;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.unsafeGet;
+import static com.backflipsource.helper.Helper.unsafeRun;
 import static java.nio.file.Files.readString;
 import static java.nio.file.Files.writeString;
 
@@ -20,22 +20,22 @@ import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
-public class SourceStaticHelpersWriter extends AbstractStaticHelpersWriter {
+public class SourceStaticHelpersGenerator extends AbstractStaticHelpersGenerator {
 
 //	private static Logger logger = logger(SourceStaticClassesWriter.class, ALL);
 
 	public static void main(String[] args) throws IOException {
 		Path path = Paths.get(".").toAbsolutePath().normalize();
 
-		StaticHelpersWriter writer = new SourceStaticHelpersWriter();
+		StaticHelpersGenerator writer = new SourceStaticHelpersGenerator();
 
 		Path source = path.resolve("source");
 		String package1 = "com.backflipsource.helper";
-		writer.writeStaticHelpers(source, package1);
+		writer.generateStaticHelpers(source, package1);
 	}
 
 	@Override
-	public void writeStaticHelpers(Path source, String package1) {
+	public void generateStaticHelpers(Path source, String package1) {
 		acceptDirectoryEntries(source.resolve(package1.replace('.', '/')), "*Helper.java", path -> {
 			String input = unsafeGet(() -> readString(path));
 

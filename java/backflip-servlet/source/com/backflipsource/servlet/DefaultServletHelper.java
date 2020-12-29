@@ -1,6 +1,6 @@
-package com.backflipsource;
+package com.backflipsource.servlet;
 
-import static com.backflipsource.Helpers.unsafeRun;
+import static com.backflipsource.helper.Helper.unsafeRun;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

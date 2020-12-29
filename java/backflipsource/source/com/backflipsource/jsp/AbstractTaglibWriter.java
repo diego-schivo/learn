@@ -1,10 +1,10 @@
 package com.backflipsource.jsp;
 
-import static com.backflipsource.Helpers.joinStrings;
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.substringAfterLast;
-import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.Helpers.unsafeRun;
+import static com.backflipsource.helper.Helper.joinStrings;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.substringAfterLast;
+import static com.backflipsource.helper.Helper.unsafeGet;
+import static com.backflipsource.helper.Helper.unsafeRun;
 import static java.nio.file.Files.readString;
 import static java.nio.file.Files.writeString;
 import static java.text.MessageFormat.format;

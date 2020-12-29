@@ -1,8 +1,8 @@
 package com.backflipsource.helper;
 
-import static com.backflipsource.helper.StaticLangHelper.getGetters;
-import static com.backflipsource.helper.StaticLangHelper.getSetters;
-import static com.backflipsource.helper.StaticUtilHelper.logger;
+import static com.backflipsource.helper.Helper.getGetters;
+import static com.backflipsource.helper.Helper.getSetters;
+import static com.backflipsource.helper.Helper.logger;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;

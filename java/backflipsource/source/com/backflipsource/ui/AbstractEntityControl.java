@@ -1,12 +1,12 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.camelCaseWords;
-import static com.backflipsource.Helpers.joinStrings;
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.nonEmptyString;
-import static com.backflipsource.Helpers.safeGet;
-import static com.backflipsource.Helpers.stringWithoutPrefix;
-import static com.backflipsource.Helpers.uncapitalizeString;
+import static com.backflipsource.helper.Helper.camelCaseWords;
+import static com.backflipsource.helper.Helper.joinStrings;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.nonEmptyString;
+import static com.backflipsource.helper.Helper.safeGet;
+import static com.backflipsource.helper.Helper.stringWithoutPrefix;
+import static com.backflipsource.helper.Helper.uncapitalizeString;
 import static com.backflipsource.ui.DefaultEntityResource.controlPage;
 import static com.backflipsource.ui.DefaultEntityResource.converter;
 import static com.backflipsource.ui.DefaultEntityResource.heading;

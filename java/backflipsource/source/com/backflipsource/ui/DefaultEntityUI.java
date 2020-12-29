@@ -1,13 +1,13 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.getArgumentTypes;
-import static com.backflipsource.Helpers.linkedHashMapCollector;
-import static com.backflipsource.Helpers.linkedHashSetCollector;
-import static com.backflipsource.Helpers.listGet;
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.nonNullInstance;
-import static com.backflipsource.Helpers.safeGet;
-import static com.backflipsource.Helpers.safeStream;
+import static com.backflipsource.helper.Helper.getArgumentTypes;
+import static com.backflipsource.helper.Helper.linkedHashMapCollector;
+import static com.backflipsource.helper.Helper.linkedHashSetCollector;
+import static com.backflipsource.helper.Helper.listGet;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.nonNullInstance;
+import static com.backflipsource.helper.Helper.safeGet;
+import static com.backflipsource.helper.Helper.safeStream;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
 import static java.util.logging.Level.ALL;
@@ -25,7 +25,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import javax.servlet.ServletRegistration.Dynamic;
 
-import com.backflipsource.Helpers;
+import com.backflipsource.helper.Helper;
 import com.backflipsource.RequestHandler;
 import com.backflipsource.dynamic.DefaultDynamicClass;
 import com.backflipsource.dynamic.DynamicAnnotated;
@@ -79,7 +79,7 @@ public class DefaultEntityUI implements EntityUI {
 	@Override
 	public Map<String, DynamicClass> getEntities() {
 		if (entities == null) {
-			Set<Class<?>> uniqueClasses = safeStream(packages).flatMap(Helpers::packageClasses)
+			Set<Class<?>> uniqueClasses = safeStream(packages).flatMap(Helper::packageClasses)
 					.collect(linkedHashSetCollector());
 			entities = safeStream(uniqueClasses).filter(class1 -> class1.getAnnotation(Entity.class) != null)
 					.map(DefaultDynamicClass::new)
@@ -93,7 +93,7 @@ public class DefaultEntityUI implements EntityUI {
 	@SuppressWarnings("unchecked")
 	public Set<Class<? extends Mode>> getModes() {
 		if (modes == null) {
-			modes = safeStream(packages).flatMap(Helpers::packageClasses)
+			modes = safeStream(packages).flatMap(Helper::packageClasses)
 					.filter(class1 -> Mode.class.isAssignableFrom(class1)).map(class1 -> (Class<? extends Mode>) class1)
 					.collect(linkedHashSetCollector());
 			logger.fine(() -> "modes " + modes);
@@ -136,7 +136,7 @@ public class DefaultEntityUI implements EntityUI {
 	@SuppressWarnings("unchecked")
 	public Set<Class<? extends RequestHandler>> getControllers() {
 		if (controllers == null) {
-			controllers = safeStream(packages).flatMap(Helpers::packageClasses)
+			controllers = safeStream(packages).flatMap(Helper::packageClasses)
 					.filter(class1 -> class1.getAnnotation(Controller.class) != null)
 					.map(class1 -> (Class<? extends RequestHandler>) class1).collect(linkedHashSetCollector());
 			logger.fine(() -> "controllers " + controllers);

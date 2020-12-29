@@ -1,8 +1,8 @@
 package com.backflipsource.dynamic;
 
-import static com.backflipsource.Helpers.annotationEntries;
-import static com.backflipsource.Helpers.classEnclosingName;
-import static com.backflipsource.Helpers.mapFill;
+import static com.backflipsource.helper.Helper.annotationEntries;
+import static com.backflipsource.helper.Helper.classEnclosingName;
+import static com.backflipsource.helper.Helper.mapFill;
 
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;

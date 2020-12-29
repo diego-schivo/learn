@@ -5,7 +5,7 @@ import static com.backflipsource.helper.JavaPatterns.PATTERN_PARAMETER;
 
 import java.util.regex.Matcher;
 
-public class Test {
+public class JavaPatternsTest {
 
 	public static void main(String[] args) {
 		interfaceMethod();

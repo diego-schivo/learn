@@ -1,9 +1,9 @@
 package com.backflipsource.jsp;
 
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.packageClasses;
-import static com.backflipsource.Helpers.stringWithoutSuffix;
-import static com.backflipsource.Helpers.uncapitalizeString;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.packageClasses;
+import static com.backflipsource.helper.Helper.stringWithoutSuffix;
+import static com.backflipsource.helper.Helper.uncapitalizeString;
 import static java.lang.reflect.Modifier.isProtected;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Collections.sort;

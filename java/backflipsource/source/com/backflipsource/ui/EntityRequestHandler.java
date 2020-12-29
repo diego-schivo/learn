@@ -1,13 +1,13 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.arrayGet;
-import static com.backflipsource.Helpers.forwardServletRequest;
-import static com.backflipsource.Helpers.getFieldValue;
-import static com.backflipsource.Helpers.getSetters;
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.safeGet;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.unsafeRun;
+import static com.backflipsource.helper.Helper.arrayGet;
+import static com.backflipsource.helper.Helper.forwardServletRequest;
+import static com.backflipsource.helper.Helper.getFieldValue;
+import static com.backflipsource.helper.Helper.getSetters;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.safeGet;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.unsafeRun;
 import static com.backflipsource.ui.EntityServlet.CONTEXT;
 import static java.util.logging.Level.ALL;
 import static java.util.stream.Collectors.toList;

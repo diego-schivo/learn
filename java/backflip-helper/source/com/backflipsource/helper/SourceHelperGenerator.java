@@ -4,14 +4,14 @@ import static com.backflipsource.helper.JavaPatterns.PATTERN_CLASS;
 import static com.backflipsource.helper.JavaPatterns.PATTERN_IMPORT;
 import static com.backflipsource.helper.JavaPatterns.PATTERN_METHOD;
 import static com.backflipsource.helper.JavaPatterns.PATTERN_PARAMETER;
-import static com.backflipsource.helper.StaticLangHelper.joinStrings;
-import static com.backflipsource.helper.StaticLangHelper.string;
-import static com.backflipsource.helper.StaticLangHelper.substringBeforeLast;
-import static com.backflipsource.helper.StaticNioHelper.acceptDirectoryEntries;
-import static com.backflipsource.helper.StaticUtilHelper.iterator;
-import static com.backflipsource.helper.StaticUtilHelper.safeStream;
-import static com.backflipsource.helper.StaticUtilHelper.unsafeGet;
-import static com.backflipsource.helper.StaticUtilHelper.unsafeRun;
+import static com.backflipsource.helper.Helper.joinStrings;
+import static com.backflipsource.helper.Helper.string;
+import static com.backflipsource.helper.Helper.substringBeforeLast;
+import static com.backflipsource.helper.Helper.acceptDirectoryEntries;
+import static com.backflipsource.helper.Helper.iterator;
+import static com.backflipsource.helper.Helper.safeStream;
+import static com.backflipsource.helper.Helper.unsafeGet;
+import static com.backflipsource.helper.Helper.unsafeRun;
 import static java.nio.file.Files.readString;
 import static java.nio.file.Files.writeString;
 import static java.util.Collections.sort;
@@ -28,22 +28,22 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
-public class SourceHelperWriter extends AbstractHelperWriter {
+public class SourceHelperGenerator extends AbstractHelperGenerator {
 
 //	private static Logger logger = logger(SourceStaticClassesWriter.class, ALL);
 
 	public static void main(String[] args) throws IOException {
 		Path path = Paths.get(".").toAbsolutePath().normalize();
 
-		HelperWriter writer = new SourceHelperWriter();
+		HelperGenerator writer = new SourceHelperGenerator();
 
 		Path source = path.resolve("source");
 		String package1 = "com.backflipsource.helper";
-		writer.writeHelper(source, package1);
+		writer.generateHelper(source, package1);
 	}
 
 	@Override
-	public void writeHelper(Path source, String package1) {
+	public void generateHelper(Path source, String package1) {
 		Path directory = source.resolve(package1.replace('.', '/'));
 		Path target = directory.resolve("Helper.java");
 		CharSequence output = staticClassContent(directory, package1);

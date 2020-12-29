@@ -1,8 +1,8 @@
 package com.backflipsource.ui;
 
-import static com.backflipsource.Helpers.logger;
-import static com.backflipsource.Helpers.stringWithoutSuffix;
-import static com.backflipsource.Helpers.substringAfterLast;
+import static com.backflipsource.helper.Helper.logger;
+import static com.backflipsource.helper.Helper.stringWithoutSuffix;
+import static com.backflipsource.helper.Helper.substringAfterLast;
 import static java.util.logging.Level.ALL;
 
 import java.util.logging.Logger;

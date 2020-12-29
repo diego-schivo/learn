@@ -21,16 +21,16 @@ public class StaticLangHelper {
 		return instance;
 	}
 
+	public static String string(Object object) {
+		return getInstance().string(object);
+	}
+
 	public static String emptyString() {
 		return getInstance().emptyString();
 	}
 
 	public static boolean emptyString(String string) {
 		return getInstance().emptyString(string);
-	}
-
-	public static String string(Object object) {
-		return getInstance().string(object);
 	}
 
 	public static String unsafeString(Object object) {
