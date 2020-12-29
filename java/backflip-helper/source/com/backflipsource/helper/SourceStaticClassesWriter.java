@@ -3,18 +3,15 @@ package com.backflipsource.helper;
 import static com.backflipsource.helper.StaticLangHelper.joinStrings;
 import static com.backflipsource.helper.StaticNioHelper.acceptDirectoryEntries;
 import static com.backflipsource.helper.StaticUtilHelper.iterator;
-import static com.backflipsource.helper.StaticUtilHelper.logger;
 import static com.backflipsource.helper.StaticUtilHelper.safeStream;
 import static com.backflipsource.helper.StaticUtilHelper.unsafeGet;
 import static com.backflipsource.helper.StaticUtilHelper.unsafeRun;
 import static java.nio.file.Files.readString;
 import static java.nio.file.Files.writeString;
-import static java.util.logging.Level.ALL;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
@@ -58,10 +55,13 @@ public class SourceStaticClassesWriter extends AbstractStaticClassesWriter {
 		Matcher interfaceMatcher = JavaPatterns.PATTERN_INTERFACE.matcher(source);
 		String interface1 = safeStream(iterator(() -> interfaceMatcher.find(), () -> interfaceMatcher.group(1)))
 				.findFirst().orElse(null);
+		String name = "Static" + interface1;
 
+		String staticInstance = formatStaticInstance(interface1, "Default" + interface1);
 		String methods = joinStrings(methodContents(source), "\n");
+		String content = staticInstance + "\n" + methods;
 
-		return formatStaticClass(package1, imports, interface1, methods);
+		return formatClass(package1, imports, name, content);
 	}
 
 	protected Stream<String> importContents(String source) {

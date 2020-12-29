@@ -1,0 +1,8 @@
+	private static {0} instance;
+
+	public static {0} getInstance() '{'
+		if (instance == null) '{'
+			instance = new {1}();
+		'}'
+		return instance;
+	'}'

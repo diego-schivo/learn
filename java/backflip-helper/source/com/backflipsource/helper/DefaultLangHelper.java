@@ -8,6 +8,7 @@ import static com.backflipsource.helper.StaticUtilHelper.unsafeGet;
 import static com.backflipsource.helper.StaticUtilHelper.unsafeRun;
 import static java.lang.Thread.currentThread;
 import static java.nio.file.Files.isDirectory;
+import static java.nio.file.Files.readString;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.reverse;
@@ -473,5 +474,10 @@ public class DefaultLangHelper implements LangHelper {
 		}).map(Class::getSimpleName).collect(toList());
 		reverse(simpleNames);
 		return joinStrings(safeStream(simpleNames), ".");
+	}
+
+	@Override
+	public String readResource(String name, Class<?> class1) {
+		return unsafeGet(() -> readString(Path.of(class1.getResource(name).toURI())));
 	}
 }

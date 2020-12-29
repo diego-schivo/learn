@@ -2,7 +2,7 @@ package {0};
 
 {1}
 
-public class Static{2} '{'
+public class {2} '{'
 
 	private static {2} instance;
 

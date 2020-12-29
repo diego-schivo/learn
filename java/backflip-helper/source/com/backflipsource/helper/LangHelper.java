@@ -89,4 +89,6 @@ public interface LangHelper {
 			Class<? extends T> defaultClass);
 
 	String classEnclosingName(Class<?> class1);
+
+	String readResource(String name, Class<?> class1);
 }

@@ -137,4 +137,7 @@ public class StaticLangHelper {
 	public static String classEnclosingName(Class<?> class1) {
 		return getInstance().classEnclosingName(class1);
 	}
+	public static String readResource(String name, Class<?> class1) {
+		return getInstance().readResource(name, class1);
+	}
 }
