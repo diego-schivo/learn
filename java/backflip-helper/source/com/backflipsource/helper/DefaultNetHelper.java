@@ -1,4 +1,4 @@
-package com.backflipsource;
+package com.backflipsource.helper;
 
 import java.net.MalformedURLException;
 import java.net.URL;

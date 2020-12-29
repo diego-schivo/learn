@@ -6,5 +6,5 @@
   <tlib-version>2.1</tlib-version>
   <short-name>ui</short-name>
   <uri>http://backflipsource.com/jsp/taglib/ui</uri>
-%1$s
+{0}
 </taglib>

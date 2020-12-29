@@ -1,7 +1,8 @@
-package com.backflipsource;
+package com.backflipsource.helper;
 
-import static com.backflipsource.Helpers.getGetters;
-import static com.backflipsource.Helpers.getSetters;
+import static com.backflipsource.helper.StaticLangHelper.getGetters;
+import static com.backflipsource.helper.StaticLangHelper.getSetters;
+import static com.backflipsource.helper.StaticUtilHelper.logger;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
@@ -58,7 +59,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unchecked")
 public class DefaultUtilHelper implements UtilHelper {
 
-	private static Logger logger = Helpers.logger(DefaultUtilHelper.class, FINE);
+//	private static Logger logger = StaticUtilHelper.logger(DefaultUtilHelper.class, FINE);
 
 	@Override
 	public <T extends Collection<U>, U> T collection(T collection) {
@@ -244,7 +245,7 @@ public class DefaultUtilHelper implements UtilHelper {
 		try {
 			runnable.run();
 		} catch (Exception e) {
-			logger.log(FINER, e.getMessage(), e);
+//			logger.log(FINER, e.getMessage(), e);
 		}
 	}
 
@@ -263,7 +264,7 @@ public class DefaultUtilHelper implements UtilHelper {
 			T t = supplier.get();
 			return t;
 		} catch (Exception e) {
-			logger.log(FINER, e.getMessage(), e);
+//			logger.log(FINER, e.getMessage(), e);
 			return null;
 		}
 	}
@@ -284,7 +285,7 @@ public class DefaultUtilHelper implements UtilHelper {
 			R r = function.apply(t);
 			return r;
 		} catch (Exception e) {
-			logger.log(FINER, e.getMessage(), e);
+//			logger.log(FINER, e.getMessage(), e);
 			return null;
 		}
 	}

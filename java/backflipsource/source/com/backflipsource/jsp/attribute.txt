@@ -1,4 +1,4 @@
     <attribute>
-      <name>%1$s</name>
+      <name>{0}</name>
       <rtexprvalue>true</rtexprvalue>
     </attribute>

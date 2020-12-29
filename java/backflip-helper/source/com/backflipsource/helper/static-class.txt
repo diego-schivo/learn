@@ -1,0 +1,17 @@
+package {0};
+
+{1}
+
+public class Static{2} '{'
+
+	private static {2} instance;
+
+	public static {2} getInstance() '{'
+		if (instance == null) '{'
+			instance = new Default{2}();
+		'}'
+		return instance;
+	'}'
+
+{3}
+'}'

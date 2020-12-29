@@ -42,6 +42,9 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
+import com.backflipsource.temp.SourceStaticClassesWriter;
+import com.backflipsource.temp.StaticClassesWriter;
+
 public class Compile {
 
 	public static void main(String[] args) throws IOException {
@@ -106,6 +109,9 @@ public class Compile {
 			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromPaths(paths);
 			compiler.getTask(null, fileManager, null, options, null, compilationUnits).call();
 		}
+		
+		StaticClassesWriter staticClassesWriter = new SourceStaticClassesWriter();
+		staticClassesWriter.writeStaticClasses(source, "com.backflipsource");
 	}
 
 	private void download(URL url, Path target) {

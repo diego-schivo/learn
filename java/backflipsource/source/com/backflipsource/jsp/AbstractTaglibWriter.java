@@ -5,11 +5,10 @@ import static com.backflipsource.Helpers.logger;
 import static com.backflipsource.Helpers.substringAfterLast;
 import static com.backflipsource.Helpers.unsafeGet;
 import static com.backflipsource.Helpers.unsafeRun;
-import static java.lang.String.format;
 import static java.nio.file.Files.readString;
 import static java.nio.file.Files.writeString;
+import static java.text.MessageFormat.format;
 import static java.util.logging.Level.ALL;
-import static java.util.stream.Collectors.joining;
 
 import java.nio.file.Path;
 import java.util.logging.Logger;

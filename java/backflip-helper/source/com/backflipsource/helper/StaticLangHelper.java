@@ -1,4 +1,4 @@
-package com.backflipsource;
+package com.backflipsource.helper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -129,6 +129,10 @@ public class StaticLangHelper {
 	}
 	public static Stream<Annotation> repeatedAnnotations(Annotation annotation) {
 		return getInstance().repeatedAnnotations(annotation);
+	}
+	public static <A extends Annotation, T> T annotationTypeInstance(A annotation, Function<A, Class<? extends T>> getClass,
+			Class<? extends T> defaultClass) {
+		return getInstance().annotationTypeInstance(annotation, getClass, defaultClass);
 	}
 	public static String classEnclosingName(Class<?> class1) {
 		return getInstance().classEnclosingName(class1);

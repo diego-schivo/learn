@@ -1,4 +1,4 @@
-package com.backflipsource;
+package com.backflipsource.helper;
 
 @FunctionalInterface
 public interface FunctionThrowingException<T, R> {

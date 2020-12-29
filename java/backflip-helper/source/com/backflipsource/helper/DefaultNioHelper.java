@@ -1,4 +1,4 @@
-package com.backflipsource;
+package com.backflipsource.helper;
 
 import static java.nio.file.FileSystems.newFileSystem;
 import static java.nio.file.FileVisitResult.CONTINUE;

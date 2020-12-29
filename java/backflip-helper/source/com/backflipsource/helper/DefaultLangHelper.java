@@ -1,11 +1,11 @@
-package com.backflipsource;
+package com.backflipsource.helper;
 
-import static com.backflipsource.Helpers.linkedHashMapCollector;
-import static com.backflipsource.Helpers.safeGet;
-import static com.backflipsource.Helpers.safeList;
-import static com.backflipsource.Helpers.safeStream;
-import static com.backflipsource.Helpers.unsafeGet;
-import static com.backflipsource.Helpers.unsafeRun;
+import static com.backflipsource.helper.StaticUtilHelper.linkedHashMapCollector;
+import static com.backflipsource.helper.StaticUtilHelper.safeGet;
+import static com.backflipsource.helper.StaticUtilHelper.safeList;
+import static com.backflipsource.helper.StaticUtilHelper.safeStream;
+import static com.backflipsource.helper.StaticUtilHelper.unsafeGet;
+import static com.backflipsource.helper.StaticUtilHelper.unsafeRun;
 import static java.lang.Thread.currentThread;
 import static java.nio.file.Files.isDirectory;
 import static java.util.Collections.emptyList;

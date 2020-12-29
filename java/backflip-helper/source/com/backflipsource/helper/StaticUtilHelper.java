@@ -1,4 +1,4 @@
-package com.backflipsource;
+package com.backflipsource.helper;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -95,6 +95,10 @@ public class StaticUtilHelper {
 	public static <K, V> Map<K, V> safeMap(Map<K, V> map) {
 		return getInstance().safeMap(map);
 	}
+	public static <T, K, U> Collector<T, ?, Map<K, U>> linkedHashMapCollector(Function<? super T, ? extends K> keyMapper,
+			Function<? super T, ? extends U> valueMapper) {
+		return getInstance().linkedHashMapCollector(keyMapper, valueMapper);
+	}
 	public static void safeRun(RunnableThrowingException runnable) {
 		getInstance().safeRun(runnable);
 	}
@@ -155,13 +159,15 @@ public class StaticUtilHelper {
 	public static Logger logger(Class<?> class1, Level level) {
 		return getInstance().logger(class1, level);
 	}
-	public static <T> Set<T> linkedHashSet(T... values) {
+	public static @SuppressWarnings("unchecked")
+	<T> Set<T> linkedHashSet(T... values) {
 		return getInstance().linkedHashSet(values);
 	}
 	public static <T> Iterator<T> iterator(BooleanSupplier hasNext, Supplier<T> next) {
 		return getInstance().iterator(hasNext, next);
 	}
-	public static <K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
+	public static @SuppressWarnings("unchecked")
+	<K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
 		return getInstance().linkedHashMap(entries);
 	}
 }

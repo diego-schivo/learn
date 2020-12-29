@@ -1,4 +1,4 @@
-package com.backflipsource;
+package com.backflipsource.helper;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;

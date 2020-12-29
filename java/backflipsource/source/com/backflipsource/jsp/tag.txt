@@ -1,6 +1,6 @@
   <tag>
-    <name>%1$s</name>
-    <tag-class>%2$s</tag-class>
+    <name>{0}</name>
+    <tag-class>{1}</tag-class>
     <body-content>scriptless</body-content>
-%3$s
+{2}
   </tag>
