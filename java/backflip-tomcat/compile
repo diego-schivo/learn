@@ -1,0 +1,3 @@
+#!/bin/sh
+javac -classpath ../backflip-helper/javac -d javac -sourcepath source source/com/backflipsource/tomcat/Compile.java
+java -classpath javac:../backflip-helper/javac com.backflipsource.tomcat.Compile

@@ -208,8 +208,8 @@ public class StaticUtilHelper {
 		return getInstance().iterator(hasNext, next);
 	}
 
-	public static <K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
-		return getInstance().linkedHashMap(entries);
+	public static <K, V> Map<K, V> linkedHashMap(Object... keysAndValues) {
+		return getInstance().linkedHashMap(keysAndValues);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.backflipsource.helper;
 
 import static com.backflipsource.helper.Helper.acceptDirectoryEntries;
+import static com.backflipsource.helper.Helper.downloadFile;
 import static com.backflipsource.helper.Helper.joinStrings;
 import static com.backflipsource.helper.Helper.safeStream;
 import static com.backflipsource.helper.Helper.string;
@@ -10,14 +11,17 @@ import static com.backflipsource.helper.Helper.unsafeRun;
 import static java.lang.Integer.MAX_VALUE;
 import static java.nio.file.Files.copy;
 import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.exists;
 import static java.nio.file.Files.find;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static java.util.Arrays.asList;
 import static javax.tools.ToolProvider.getSystemJavaCompiler;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import javax.tools.JavaCompiler;
@@ -27,12 +31,28 @@ import javax.tools.StandardJavaFileManager;
 public class DefaultCompileHelper implements CompileHelper {
 
 	@Override
-	public Iterable<String> javaCompilerOptions(Path currentDir, Path sourceDir, Path classDir, Path javacDir) {
-		Collection<Path> classFiles = new ArrayList<>();
-		acceptDirectoryEntries(classDir, "*.jar", classFiles::add);
-		String classpath = joinStrings(safeStream(classFiles).map(path -> string(currentDir.relativize(path))), ":");
-		Iterable<String> options = asList("-classpath", classpath, "-d", string(currentDir.relativize(javacDir)),
-				"-sourcepath", string(currentDir.relativize(sourceDir)));
+	public Iterable<String> javaCompilerOptions(Path currentDir, Path classDir, Path javacDir, Path sourceDir) {
+		List<String> options = new ArrayList<>();
+
+		if (classDir != null) {
+			Collection<Path> classFiles = new ArrayList<>();
+			acceptDirectoryEntries(classDir, "*.jar", classFiles::add);
+			String classpath = joinStrings(safeStream(classFiles).map(path -> string(currentDir.relativize(path))),
+					":");
+			options.add("-classpath");
+			options.add(classpath);
+		}
+
+		if (javacDir != null) {
+			options.add("-d");
+			options.add(string(currentDir.relativize(javacDir)));
+		}
+
+		if (sourceDir != null) {
+			options.add("-sourcepath");
+			options.add(string(currentDir.relativize(sourceDir)));
+		}
+
 		return options;
 	}
 
@@ -80,5 +100,17 @@ public class DefaultCompileHelper implements CompileHelper {
 				});
 			});
 		}
+	}
+
+	@Override
+	public void initClassDirectory(Path classDir, Stream<Entry<Path, URL>> stream) {
+		unsafeRun(() -> createDirectories(classDir));
+
+		stream.forEach(entry -> {
+			if (exists(classDir.resolve(entry.getKey()))) {
+				return;
+			}
+			downloadFile(entry.getValue(), classDir);
+		});
 	}
 }

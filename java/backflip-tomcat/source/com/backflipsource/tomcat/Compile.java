@@ -1,4 +1,4 @@
-package com.backflipsource.servlet;
+package com.backflipsource.tomcat;
 
 import static com.backflipsource.helper.Helper.callJavaCompilerTask;
 import static com.backflipsource.helper.Helper.collectSourceFiles;
@@ -14,6 +14,11 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 
+import com.backflipsource.helper.HelperGenerator;
+import com.backflipsource.helper.SourceHelperGenerator;
+import com.backflipsource.helper.SourceStaticHelpersGenerator;
+import com.backflipsource.helper.StaticHelpersGenerator;
+
 public class Compile {
 
 	public static void main(String[] args) {
@@ -23,12 +28,24 @@ public class Compile {
 	public Compile() {
 		Path currentDir = Paths.get(".").toAbsolutePath().normalize();
 
-		Path classDir = currentDir.resolve("class");
-		initClassDirectory(classDir, safeStream(linkedHashMap(Path.of("javax.servlet-api-3.1.0.jar"), url(
-				"https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar"))));
-
-		Path javacDir = currentDir.resolve("javac");
 		Path sourceDir = currentDir.resolve("source");
+
+		StaticHelpersGenerator staticGenerator = new SourceStaticHelpersGenerator();
+		staticGenerator.generateStaticHelpers(sourceDir, "com.backflipsource.tomcat");
+
+		HelperGenerator generator = new SourceHelperGenerator();
+		generator.generateHelper(sourceDir, "com.backflipsource.tomcat");
+
+		Path classDir = currentDir.resolve("class");
+		Path javacDir = currentDir.resolve("javac");
+
+		initClassDirectory(classDir, safeStream(linkedHashMap(Path.of("taglibs-standard-impl-1.2.5.jar"), url(
+				"https://downloads.apache.org/tomcat/taglibs/taglibs-standard-1.2.5/taglibs-standard-impl-1.2.5.jar"),
+				Path.of("taglibs-standard-spec-1.2.5.jar"),
+				url("https://downloads.apache.org/tomcat/taglibs/taglibs-standard-1.2.5/taglibs-standard-spec-1.2.5.jar"),
+				Path.of("tomcat-embed-core.jar"),
+				url("https://downloads.apache.org/tomcat/tomcat-8/v8.5.61/bin/embed/apache-tomcat-8.5.61-embed.zip"))));
+
 		Iterable<String> options = javaCompilerOptions(currentDir, classDir, javacDir, sourceDir);
 
 		List<String> list = (List<String>) options;

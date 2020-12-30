@@ -1,4 +1,4 @@
-package com.backflipsource;
+package com.backflipsource.tomcat;
 
 import org.apache.catalina.startup.Tomcat;
 

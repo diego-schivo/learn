@@ -19,16 +19,15 @@ public class Compile {
 		Path currentDir = Paths.get(".").toAbsolutePath().normalize();
 
 		Path sourceDir = currentDir.resolve("source");
-		Path classDir = currentDir.resolve("class");
-		Path javacDir = currentDir.resolve("javac");
-
 		StaticHelpersGenerator staticGenerator = new SourceStaticHelpersGenerator();
 		staticGenerator.generateStaticHelpers(sourceDir, "com.backflipsource.helper");
 
 		HelperGenerator generator = new SourceHelperGenerator();
 		generator.generateHelper(sourceDir, "com.backflipsource.helper");
 
-		Iterable<String> options = javaCompilerOptions(currentDir, sourceDir, classDir, javacDir);
+		Path javacDir = currentDir.resolve("javac");
+
+		Iterable<String> options = javaCompilerOptions(currentDir, null, javacDir, sourceDir);
 		Collection<Path> sourceFiles = collectSourceFiles(sourceDir);
 		callJavaCompilerTask(options, sourceFiles);
 

@@ -2,18 +2,16 @@ package com.backflipsource.helper;
 
 import static com.backflipsource.helper.Helper.getGetters;
 import static com.backflipsource.helper.Helper.getSetters;
-import static com.backflipsource.helper.Helper.logger;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 import static java.util.Collections.EMPTY_SET;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.Map.entry;
 import static java.util.Spliterator.ORDERED;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.FINER;
 import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toMap;
@@ -502,9 +500,22 @@ public class DefaultUtilHelper implements UtilHelper {
 			}
 		};
 	}
-	
+
 	@Override
-	public <K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
-		return safeStream(entries).collect(linkedHashMapCollector(Entry::getKey, Entry::getValue));
+	public <K, V> Map<K, V> linkedHashMap(Object... keysAndValues) {
+		return safeStream(new Iterator<Entry<K, V>>() {
+
+			int index = 0;
+
+			@Override
+			public boolean hasNext() {
+				return index < keysAndValues.length - 1;
+			}
+
+			@Override
+			public Entry<K, V> next() {
+				return entry((K) keysAndValues[index++], (V) keysAndValues[index++]);
+			}
+		}).collect(linkedHashMapCollector(Entry::getKey, Entry::getValue));
 	}
 }

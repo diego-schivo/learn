@@ -1,7 +1,10 @@
 package com.backflipsource.helper;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 public class StaticCompileHelper {
 
@@ -13,8 +16,8 @@ public class StaticCompileHelper {
 		return instance;
 	}
 
-	public static Iterable<String> javaCompilerOptions(Path currentDir, Path sourceDir, Path classDir, Path javacDir) {
-		return getInstance().javaCompilerOptions(currentDir, sourceDir, classDir, javacDir);
+	public static Iterable<String> javaCompilerOptions(Path currentDir, Path classDir, Path javacDir, Path sourceDir) {
+		return getInstance().javaCompilerOptions(currentDir, classDir, javacDir, sourceDir);
 	}
 
 	public static Collection<Path> collectSourceFiles(Path source) {
@@ -27,6 +30,10 @@ public class StaticCompileHelper {
 
 	public static void copyResourceFiles(Path source, Path javac) {
 		getInstance().copyResourceFiles(source, javac);
+	}
+
+	public static void initClassDirectory(Path classDir, Stream<Entry<Path, URL>> stream) {
+		getInstance().initClassDirectory(classDir, stream);
 	}
 
 }

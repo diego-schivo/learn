@@ -1,10 +1,10 @@
-package com.backflipsource;
+package com.backflipsource.tomcat;
 
-import static com.backflipsource.helper.Helper.initTomcat;
 import static com.backflipsource.helper.Helper.safeStream;
 import static com.backflipsource.helper.Helper.startExecutorService;
 import static com.backflipsource.helper.Helper.stopExecutorService;
 import static com.backflipsource.helper.Helper.watchDirectories;
+import static com.backflipsource.tomcat.Helper.initTomcat;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getenv;
 import static java.lang.Thread.sleep;
@@ -29,7 +29,7 @@ public class Server {
 	private static final String WATCH_EXTENSION = ".java";
 	private static final String WATCH_PATH = "src";
 	private static final int TOMCAT_PORT_DEFAULT = 8081;
-	
+
 	private Tomcat tomcat;
 
 	public Server() {

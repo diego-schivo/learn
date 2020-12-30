@@ -1,18 +1,18 @@
 package com.backflipsource.helper;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
-import java.net.URL;
 import java.util.function.Consumer;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -28,8 +28,8 @@ import java.util.stream.Collector;
 
 public class Helper {
 
-	public static Iterable<String> javaCompilerOptions(Path currentDir, Path sourceDir, Path classDir, Path javacDir) {
-		return StaticCompileHelper.javaCompilerOptions(currentDir, sourceDir, classDir, javacDir);
+	public static Iterable<String> javaCompilerOptions(Path currentDir, Path classDir, Path javacDir, Path sourceDir) {
+		return StaticCompileHelper.javaCompilerOptions(currentDir, classDir, javacDir, sourceDir);
 	}
 
 	public static Collection<Path> collectSourceFiles(Path source) {
@@ -42,6 +42,10 @@ public class Helper {
 
 	public static void copyResourceFiles(Path source, Path javac) {
 		StaticCompileHelper.copyResourceFiles(source, javac);
+	}
+
+	public static void initClassDirectory(Path classDir, Stream<Entry<Path, URL>> stream) {
+		StaticCompileHelper.initClassDirectory(classDir, stream);
 	}
 
 	public static String string(Object object) {
@@ -205,12 +209,16 @@ public class Helper {
 		return StaticNetHelper.url(spec);
 	}
 
+	public static void acceptDirectoryEntries(Path directory, String glob, Consumer<Path> consumer) {
+		StaticNioHelper.acceptDirectoryEntries(directory, glob, consumer);
+	}
+
 	public static void extractArchive(Path archive, Path directory) {
 		StaticNioHelper.extractArchive(archive, directory);
 	}
 
-	public static void acceptDirectoryEntries(Path directory, String glob, Consumer<Path> consumer) {
-		StaticNioHelper.acceptDirectoryEntries(directory, glob, consumer);
+	public static void downloadFile(URL url, Path directory) {
+		StaticNioHelper.downloadFile(url, directory);
 	}
 
 	public static <T extends Collection<U>, U> T collection(T collection) {
@@ -390,8 +398,8 @@ public class Helper {
 		return StaticUtilHelper.iterator(hasNext, next);
 	}
 
-	public static <K, V> Map<K, V> linkedHashMap(Entry<K, V>... entries) {
-		return StaticUtilHelper.linkedHashMap(entries);
+	public static <K, V> Map<K, V> linkedHashMap(Object... keysAndValues) {
+		return StaticUtilHelper.linkedHashMap(keysAndValues);
 	}
 
 }
